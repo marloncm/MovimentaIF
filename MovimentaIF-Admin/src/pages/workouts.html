@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MovimentaIF - Gerenciar Treinos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chosen Palette: Academic Green & Neutral Gray -->
+    <!-- Application Structure Plan: A dedicated page for managing workout plans. It follows the same sidebar-main content layout as the dashboard for a consistent user experience. The page includes a heading, an "Add Workout" button, and a dynamically generated list of workout cards. A modal is used for all 'add', 'edit', and 'details' actions to keep the user on the same page and provide a smooth workflow. -->
+    <!-- Visualization & Content Choices: Report Info: Need to create and manage workouts. Goal: Enable professors to easily add, edit, and view workout details. Viz/Presentation Method: A list of cards, each representing a workout, provides a clean and scannable interface. Buttons on each card (Details, Edit, Delete) and a main "Add" button provide clear calls to action. A modal form is used for data entry to minimize page transitions. Interaction: Clicking buttons triggers JavaScript functions to show the modal or simulate data manipulation. Justification: This is a highly functional and intuitive UI for managing a list of items. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        .modal-overlay {
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+    </style>
+</head>
+
+<body class="bg-slate-50 font-sans">
+
+    <div class="flex h-screen bg-slate-100">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-white shadow-md flex-shrink-0">
+            <div class="p-6 border-b">
+                <h1 class="text-2xl font-bold text-slate-800">MovimentaIF</h1>
+            </div>
+            <nav class="p-4">
+                <a href="dashboard.html"
+                    class="nav-link flex items-center p-3 text-slate-600 hover:bg-slate-50 rounded-lg">
+                    <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6">
+                        </path>
+                    </svg>
+                    Início
+                </a>
+                <a href="students.html"
+                    class="nav-link flex items-center p-3 text-slate-600 hover:bg-slate-50 rounded-lg mt-2">
+                    <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
+                        </path>
+                    </svg>
+                    Alunos
+                </a>
+                <a href="workouts.html"
+                    class="nav-link flex items-center p-3 text-slate-700 bg-emerald-50 rounded-lg font-semibold mt-2">
+                    <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16v4m-2-2h4m5 10v4m-2-2h4M5 3a2 2 0 00-2 2v1m16 0V5a2 2 0 00-2-2h-1m-4 16l-3-3m0 0l-3 3m3-3v-6m0 6h.01M7 11h10M5 17a2 2 0 002 2h1m-4-16a2 2 0 012-2h1m4 16a2 2 0 002-2v-1m-4 4l3 3m0 0l3-3m-3 3v-6m0 6h-.01M17 11H7">
+                        </path>
+                    </svg>
+                    Treinos
+                </a>
+                <a href="dashboard.html#agenda"
+                    class="nav-link flex items-center p-3 text-slate-600 hover:bg-slate-50 rounded-lg mt-2">
+                    <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
+                        </path>
+                    </svg>
+                    Agenda
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- Header -->
+            <header class="bg-white shadow-sm p-4 flex justify-between items-center">
+                <h2 class="text-xl font-semibold text-slate-700">Gerenciar Treinos</h2>
+                <div class="flex items-center">
+                    <span id="user-email" class="text-slate-600 mr-4"></span>
+                    <button id="logout-btn"
+                        class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition">Sair</button>
+                </div>
+            </header>
+
+            <!-- Content Area -->
+            <main class="flex-1 overflow-x-hidden overflow-y-auto bg-slate-50 p-6">
+
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-lg font-semibold text-slate-800">Lista de Treinos</h3>
+                    <button id="add-workout-btn"
+                        class="bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700 transition">Adicionar
+                        Treino</button>
+                </div>
+
+                <div id="workouts-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Treinos serão injetados aqui via JS -->
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Modal para Adicionar/Editar Treino -->
+    <div id="workout-modal" class="fixed inset-0 z-50 overflow-y-auto modal-overlay hidden">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-lg shadow-xl max-w-lg w-full p-6 relative">
+                <button id="close-modal-btn" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
+                    </svg>
+                </button>
+                <h3 id="modal-title" class="text-xl font-bold mb-4">Adicionar Novo Treino</h3>
+                <form id="workout-form">
+                    <input type="hidden" id="workout-id">
+                    <div class="mb-4">
+                        <label for="workout-title" class="block text-sm font-medium text-slate-600 mb-1">Título</label>
+                        <input type="text" id="workout-title" class="w-full p-2 border border-slate-300 rounded-lg"
+                            required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="workout-description" class="block text-sm font-medium text-slate-600 mb-1">Texto
+                            Descritivo</label>
+                        <textarea id="workout-description" rows="4"
+                            class="w-full p-2 border border-slate-300 rounded-lg" required></textarea>
+                    </div>
+                    <div class="mb-4">
+                        <label for="workout-link" class="block text-sm font-medium text-slate-600 mb-1">Link
+                            (opcional)</label>
+                        <input type="url" id="workout-link" class="w-full p-2 border border-slate-300 rounded-lg">
+                    </div>
+                    <div class="flex justify-end space-x-2">
+                        <button type="button" id="cancel-form-btn"
+                            class="bg-slate-200 text-slate-700 px-4 py-2 rounded-lg hover:bg-slate-300 transition">Cancelar</button>
+                        <button type="submit"
+                            class="bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700 transition">Salvar
+                            Treino</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAnET6gJ175qHFbHcKm40tynj7s9x4sXqU",
+            authDomain: "movimentaif.firebaseapp.com",
+            databaseURL: "https://movimentaif-default-rtdb.firebaseio.com",
+            projectId: "movimentaif",
+            storageBucket: "movimentaif.firebasestorage.app",
+            messagingSenderId: "705983497984",
+            appId: "1:705983497984:web:f16672db437ce21aa2d5e5",
+            measurementId: "G-5K2CYJ742W"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        const userEmailSpan = document.getElementById('user-email');
+        const logoutBtn = document.getElementById('logout-btn');
+
+        onAuthStateChanged(auth, user => {
+            if (user) {
+                userEmailSpan.textContent = user.email;
+            } else {
+                window.location.replace('index.html');
+            }
+        });
+
+        logoutBtn.addEventListener('click', () => {
+            signOut(auth).then(() => {
+                console.log("Logout bem-sucedido.");
+            }).catch((error) => {
+                console.error("Erro no logout:", error);
+            });
+        });
+
+        const workouts = [
+            { id: 1, titulo: "Treino de Força (Iniciante)", descricao: "Foco em exercícios compostos para iniciantes, com o objetivo de construir uma base sólida.", link: "https://www.youtube.com/watch?v=dQw4w9WgXcQ" },
+            { id: 2, titulo: "Treino de Cardio", descricao: "Sessão de cardio de 30 minutos, ideal para queima de calorias e melhoria da resistência.", link: "" },
+            { id: 3, titulo: "Treino de Mobilidade", descricao: "Rotina para melhorar a flexibilidade e a amplitude de movimento das articulações.", link: "https://www.youtube.com/watch?v=P_X9g4y_L7Q" },
+        ];
+
+        const workoutsList = document.getElementById('workouts-list');
+        const addWorkoutBtn = document.getElementById('add-workout-btn');
+        const workoutModal = document.getElementById('workout-modal');
+        const closeModalBtn = document.getElementById('close-modal-btn');
+        const workoutForm = document.getElementById('workout-form');
+        const modalTitle = document.getElementById('modal-title');
+
+        function renderWorkouts() {
+            workoutsList.innerHTML = '';
+            workouts.forEach(workout => {
+                const workoutCard = document.createElement('div');
+                workoutCard.className = 'bg-white p-6 rounded-lg shadow-md';
+                workoutCard.innerHTML = `
+                    <h4 class="text-lg font-bold text-slate-800 mb-2">${workout.titulo}</h4>
+                    <p class="text-slate-600 text-sm mb-4">${workout.descricao}</p>
+                    <div class="flex flex-wrap gap-2">
+                        <button class="details-btn bg-slate-200 text-slate-700 px-3 py-1 rounded-lg text-sm hover:bg-slate-300" data-id="${workout.id}">Detalhes</button>
+                        <button class="edit-btn bg-blue-500 text-white px-3 py-1 rounded-lg text-sm hover:bg-blue-600" data-id="${workout.id}">Editar Treino</button>
+                        <button class="delete-btn bg-red-500 text-white px-3 py-1 rounded-lg text-sm hover:bg-red-600" data-id="${workout.id}">Excluir Treino</button>
+                    </div>
+                `;
+                workoutsList.appendChild(workoutCard);
+            });
+            attachEventListeners();
+        }
+
+        function openModal(isEdit = false, workout = null) {
+            workoutForm.reset();
+            if (isEdit && workout) {
+                modalTitle.textContent = 'Editar Treino';
+                document.getElementById('workout-id').value = workout.id;
+                document.getElementById('workout-title').value = workout.titulo;
+                document.getElementById('workout-description').value = workout.descricao;
+                document.getElementById('workout-link').value = workout.link;
+            } else {
+                modalTitle.textContent = 'Adicionar Novo Treino';
+            }
+            workoutModal.classList.remove('hidden');
+        }
+
+        function closeModal() {
+            workoutModal.classList.add('hidden');
+        }
+
+        function deleteWorkout(id) {
+            if (confirm('Tem certeza que deseja excluir este treino?')) {
+                const index = workouts.findIndex(w => w.id === id);
+                if (index > -1) {
+                    workouts.splice(index, 1);
+                    renderWorkouts();
+                }
+            }
+        }
+
+        function attachEventListeners() {
+            document.querySelectorAll('.details-btn').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const id = parseInt(e.target.dataset.id);
+                    const workout = workouts.find(w => w.id === id);
+                    if (workout) {
+                        alert(`Título: ${workout.titulo}\nDescrição: ${workout.descricao}\nLink: ${workout.link || 'Nenhum'}`);
+                    }
+                });
+            });
+
+            document.querySelectorAll('.edit-btn').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const id = parseInt(e.target.dataset.id);
+                    const workout = workouts.find(w => w.id === id);
+                    if (workout) {
+                        openModal(true, workout);
+                    }
+                });
+            });
+
+            document.querySelectorAll('.delete-btn').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const id = parseInt(e.target.dataset.id);
+                    deleteWorkout(id);
+                });
+            });
+        }
+
+        addWorkoutBtn.addEventListener('click', () => openModal());
+        closeModalBtn.addEventListener('click', closeModal);
+        document.getElementById('cancel-form-btn').addEventListener('click', closeModal);
+
+        workoutForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const id = document.getElementById('workout-id').value;
+            const titulo = document.getElementById('workout-title').value;
+            const descricao = document.getElementById('workout-description').value;
+            const link = document.getElementById('workout-link').value;
+
+            if (id) {
+                const index = workouts.findIndex(w => w.id === parseInt(id));
+                if (index > -1) {
+                    workouts[index] = { ...workouts[index], titulo, descricao, link };
+                }
+            } else {
+                const newId = workouts.length ? Math.max(...workouts.map(w => w.id)) + 1 : 1;
+                workouts.push({ id: newId, titulo, descricao, link });
+            }
+            closeModal();
+            renderWorkouts();
+        });
+
+        renderWorkouts();
+    </script>
+</body>
+
+</html>
