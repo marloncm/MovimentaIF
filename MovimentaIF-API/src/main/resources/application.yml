@@ -4,3 +4,5 @@ spring:
       resource server:
         jwt:
           jwk-set-uri: https://www.googleapis.com/service_accounts/v1/jwk/securetoken@system.gserviceaccount.com
+          issuer-uri: https://securetoken.google.com/movimentaif
+          audiences: movimentaif

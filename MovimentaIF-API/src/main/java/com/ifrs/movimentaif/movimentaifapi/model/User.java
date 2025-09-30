@@ -1,39 +1,82 @@
 package com.ifrs.movimentaif.movimentaifapi.model;
 
-import lombok.Data;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
-@Data
 public class User {
-    private String uid;
-    private String name;
+    private String userId;
+    private String userName;
+    private Date age;
+    private String phoneNumber;
     private String email;
-    private String role; // STUDENT, TEACHER, ADMIN
-    private long createdAt;
+    private String role; //USER, ADMIN
+    private Date createdAt; // Alterado para java.util.Date
+    private boolean isActive; //active or inactive
+    private String affiliationType; //STUDENT, PROFESSOR, STAFF TODO transformar em enum
+    private boolean interviewed;
+    private boolean didFirstWorkout;
+    private boolean scheduledFirstWorkout;
+    private boolean isAppUser;
+    private Date firstWorkoutDate;
+    private String workoutChartId;
 
-    public User(){}
+    public User(){
+        this.userId = UUID.randomUUID().toString();
+        this.createdAt = new Date();
+        this.isActive = false;
+        this.interviewed = false;
+        this.didFirstWorkout = false;
+        this.scheduledFirstWorkout = false;
+    }
 
-    public User(String uid, String name, String email, String role, long createdAt){
-        this.uid = uid;
-        this.name = name;
+    public User(String userId, String email){
+        this.userId = userId;
+        this.email = email;
+        this.createdAt = new Date();
+
+    }
+
+    public User(String userId, String userName, String email, String role) {
+        this.userId = userId;
+        this.userName = userName;
+        this.email = email;
+        this.role = role;
+        this.createdAt = new Date();
+    }
+
+    public User(String userName, String email, String role) {
+        this.userId = UUID.randomUUID().toString();
+        this.userName = userName;
+        this.email = email;
+        this.role = role;
+        this.createdAt = new Date();
+    }
+
+    public User(String uid, String userName, String email, String role, Date createdAt){
+        this.userId = uid;
+        this.userName = userName;
         this.email = email;
         this.role = role;
         this.createdAt = createdAt;
     }
 
-    public String getUid() {
-        return uid;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setUid(String uid) {
-        this.uid = uid;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
-    public String getName() {
-        return name;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public String getEmail() {
@@ -52,11 +95,86 @@ public class User {
         this.role = role;
     }
 
-    public long getCreatedAt() {
+    public Date getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(long createdAt) {
+    public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
+
+    public Date getAge() {
+        return age;
+    }
+
+    public void setAge(Date age) {
+        this.age = age;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        this.isActive = active;
+    }
+
+    public String getAffiliationType() {
+        return affiliationType;
+    }
+
+    public void setAffiliationType(String affiliationType) {
+        this.affiliationType = affiliationType;
+    }
+
+    public boolean isInterviewed() {
+        return interviewed;
+    }
+
+    public void setInterviewed(boolean interviewed) {
+        this.interviewed = interviewed;
+    }
+
+    public boolean isDidFirstWorkout() {
+        return didFirstWorkout;
+    }
+
+    public void setDidFirstWorkout(boolean didFirstWorkout) {
+        this.didFirstWorkout = didFirstWorkout;
+    }
+
+    public boolean isScheduledFirstWorkout() {
+        return scheduledFirstWorkout;
+    }
+
+    public void setScheduledFirstWorkout(boolean scheduledFirstWorkout) {
+        this.scheduledFirstWorkout = scheduledFirstWorkout;
+    }
+
+    public boolean isAppUser() {
+        return isAppUser;
+    }
+
+    public void setAppUser(boolean appUser) {
+        isAppUser = appUser;
+    }
+
+    public Date getFirstWorkoutDate() {
+        return firstWorkoutDate;
+    }
+
+    public void setFirstWorkoutDate(Date firstWorkoutDate) {
+        this.firstWorkoutDate = firstWorkoutDate;
+    }
+
+
+
 }

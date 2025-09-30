@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MovimentaIF - Gerenciar Alunos</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        xintegrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        xintegrity="sha512-ieo5gL4x1I85z6Nn4Qp7E7gYQx3T8n5b9G5p5M5r8b5+Wj1fFvYV5j5N8W5t4/eG5p5M5p4p5t5a5F5+w=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        :root {
+            /* Cores Neutras (Bootstrap/Slate) */
+            --bs-slate-700: #334155;
+            --bs-slate-800: #1e293b;
+
+            /* Cor de Fundo Neutra e Profissional */
+            --color-light-bg: #f4f6f8;
+
+            /* Cores da Marca (CMYK/RGB fornecidos) */
+            --color-primary-orange: rgb(243, 153, 29);
+            /* Laranja */
+            --color-secondary-cherry: rgb(220, 50, 112);
+            /* Cereja */
+
+            /* DEFINIÇÃO DO NOVO PRIMÁRIO DO BOOTSTRAP: Laranja (Para links e botões de ação) */
+            --bs-primary: var(--color-primary-orange);
+            --bs-btn-primary-bg: var(--color-primary-orange);
+            --bs-btn-primary-border-color: var(--color-primary-orange);
+            --bs-btn-primary-hover-bg: #E08518;
+            --bs-btn-primary-hover-border-color: #E08518;
+
+            /* DEFINIÇÃO DO SECUNDÁRIO DO BOOTSTRAP: Cinza escuro (Para botões neutros) */
+            --bs-secondary: #6c757d;
+            --bs-btn-secondary-bg: #6c757d;
+            --bs-btn-secondary-border-color: #6c757d;
+        }
+
+        /* APLICAÇÃO DA COR DE FUNDO NEUTRA EM TODO O BODY */
+        body {
+            background-color: var(--color-light-bg);
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+        }
+
+        .text-custom-slate-600 {
+            color: var(--bs-slate-600);
+        }
+
+        .text-custom-slate-700 {
+            color: var(--bs-slate-700);
+        }
+
+        .text-custom-slate-800 {
+            color: var(--bs-slate-800);
+        }
+
+        /* O Sidebar, Header e o Card principal devem ser brancos para contraste */
+        .bg-custom-white {
+            background-color: white !important;
+        }
+
+        /* O nav-link ativo usa a cor primária (Laranja) */
+        .nav-link.active {
+            background-color: var(--bs-primary) !important;
+            color: white !important;
+            font-weight: 600;
+        }
+
+        /* Os botões de outline primário (Detathes) herdam o novo Laranja */
+        .btn-outline-primary {
+            --bs-btn-color: var(--bs-primary);
+            --bs-btn-border-color: var(--bs-primary);
+            --bs-btn-hover-bg: var(--bs-primary);
+            --bs-btn-hover-border-color: var(--bs-primary);
+            --bs-btn-active-bg: var(--bs-primary);
+            --bs-btn-active-border-color: var(--bs-primary);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="d-flex h-100">
+        <!-- Sidebar: Fundo Branco -->
+        <aside class="col-md-2 bg-custom-white shadow-lg d-flex flex-column flex-shrink-0">
+            <div class="p-4 border-bottom">
+                <h1 class="h4 fw-bold text-custom-slate-800">MovimentaIF</h1>
+            </div>
+            <nav class="nav nav-pills flex-column p-3">
+                <a href="dashboard.html" class="nav-link text-custom-slate-600 rounded-pill mt-2">
+                    <i class="fa-solid fa-house me-2"></i> Início
+                </a>
+                <a href="users.html" class="nav-link active rounded-pill mt-2">
+                    <i class="fa-solid fa-users me-2"></i> Alunos
+                </a>
+                <a href="workouts.html" class="nav-link text-custom-slate-600 rounded-pill mt-2">
+                    <i class="fa-solid fa-dumbbell me-2"></i> Treinos
+                </a>
+                <a href="agenda.html" class="nav-link text-custom-slate-600 rounded-pill mt-2">
+                    <i class="fa-solid fa-calendar-alt me-2"></i> Agenda
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="col-md-10 d-flex flex-column overflow-hidden">
+            <!-- Header: Fundo Branco -->
+            <header class="bg-custom-white shadow-sm p-4 d-flex justify-content-between align-items-center">
+                <h2 class="h5 fw-bold text-custom-slate-700">Gerenciar Alunos</h2>
+                <div class="d-flex align-items-center">
+                    <span id="user-email" class="text-custom-slate-600 me-3"></span>
+                    <button id="logout-btn" class="btn btn-secondary btn-sm rounded-pill">Sair</button>
+                </div>
+            </header>
+
+            <!-- Content Area: Fundo Neutro (herda do body) -->
+            <main class="flex-grow-1 overflow-auto p-4">
+                <div class="container-fluid">
+                    <!-- O CARD principal dos dados é branco para contraste e legibilidade -->
+                    <div class="bg-custom-white p-4 rounded-3 shadow-sm">
+                        <input type="text" id="search-input" class="form-control mb-3 rounded-pill"
+                            placeholder="Buscar aluno por nome...">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th scope="col">Nome</th>
+                                        <th scope="col">E-mail</th>
+                                        <th scope="col">Status</th>
+                                        <th scope="col" class="text-end">Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="users-table-body">
+                                    <tr>
+                                        <td colspan="4" class="text-center p-5">
+                                            <div class="spinner-border text-success" role="status">
+                                                <span class="visually-hidden">Carregando...</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        xintegrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAnET6gJ175qHFbHcKm40tynj7s9x4sXqU",
+            authDomain: "movimentaif.firebaseapp.com",
+            databaseURL: "https://movimentaif-default-rtdb.firebaseio.com",
+            projectId: "movimentaif",
+            storageBucket: "movimentaif.firebasestorage.app",
+            messagingSenderId: "705983497984",
+            appId: "1:705983497984:web:f16672db43ce21aa2d5e5",
+            measurementId: "G-5K2CYJ742W"
+        };
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        const usersTableBody = document.getElementById('users-table-body');
+        const searchInput = document.getElementById('search-input');
+        const API_BASE_URL = 'http://localhost:8080/api/users';
+        let allUsers = [];
+
+        async function getAuthTokenAndFetch(url, options = {}) {
+            const user = auth.currentUser;
+            if (!user) {
+                console.error("No authenticated user to get token for.");
+                window.location.replace('index.html');
+                return Promise.reject(new Error("No user authenticated."));
+            }
+            const token = await user.getIdToken();
+            const headers = {
+                ...options.headers,
+                'Authorization': `Bearer ${token}`
+            };
+            return fetch(url, { ...options, headers });
+        }
+
+        onAuthStateChanged(auth, user => {
+            if (user) {
+                document.getElementById('user-email').textContent = user.email;
+                fetchUsers();
+            } else {
+                window.location.replace('index.html');
+            }
+        });
+
+        document.getElementById('logout-btn').addEventListener('click', () => {
+            signOut(auth).then(() => {
+                window.location.replace('index.html');
+            });
+        });
+
+        async function fetchUsers() {
+            usersTableBody.innerHTML = `
+                <tr>
+                    <td colspan="4" class="text-center p-5">
+                        <div class="spinner-border text-success" role="status">
+                            <span class="visually-hidden">Carregando...</span>
+                        </div>
+                    </td>
+                </tr>
+            `;
+            try {
+                // Rota para buscar apenas usuários do app móvel
+                const response = await getAuthTokenAndFetch(`${API_BASE_URL}/appusers`);
+                if (!response.ok) {
+                    throw new Error('Erro ao buscar a lista de alunos.');
+                }
+                const users = await response.json();
+                allUsers = users;
+                renderUsers(allUsers);
+            } catch (error) {
+                usersTableBody.innerHTML = `
+                    <tr>
+                        <td colspan="4" class="text-center p-5">
+                            <div class="alert alert-danger" role="alert">
+                                Erro ao carregar alunos: ${error.message}
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+
+        function renderUsers(users) {
+            usersTableBody.innerHTML = '';
+            if (users.length === 0) {
+                usersTableBody.innerHTML = `
+                    <tr>
+                        <td colspan="4" class="text-center p-5">
+                            <div class="alert alert-info" role="alert">Nenhum aluno cadastrado.</div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            users.forEach(user => {
+                const row = document.createElement('tr');
+                const statusBadge = user.isActive ?
+                    `<span class="badge bg-success">Ativo</span>` :
+                    `<span class="badge bg-danger">Inativo</span>`;
+
+                row.innerHTML = `
+                    <td>${user.userName || user.email}</td>
+                    <td>${user.email}</td>
+                    <td>${statusBadge}</td>
+                    <td class="text-end">
+                        <a href="user-details.html?uid=${user.userId}" class="btn btn-sm btn-outline-primary rounded-pill">
+                            <i class="fa-solid fa-info-circle me-1"></i> Detalhes
+                        </a>
+                    </td>
+                `;
+                usersTableBody.appendChild(row);
+            });
+        }
+
+        searchInput.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const filteredUsers = allUsers.filter(user =>
+                (user.userName && user.userName.toLowerCase().includes(searchTerm)) ||
+                (user.email && user.email.toLowerCase().includes(searchTerm))
+            );
+            renderUsers(filteredUsers);
+        });
+    </script>
+</body>
+
+</html>

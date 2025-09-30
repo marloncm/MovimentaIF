@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MovimentaIF - Detalhes do Aluno</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        xintegrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        xintegrity="sha512-ieo5gL4x1I85z6Nn4Qp7E7gYx3T8n5b9G5p5M5r8b5+Wj1fFvYV5j5N8W5t4/eG5p5M5p4p5t5a5F5+w=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        :root {
+            /* Cores Neutras (Bootstrap/Slate) */
+            --bs-slate-700: #334155;
+            --bs-slate-800: #1e293b;
+
+            /* Cores da Marca (CMYK/RGB fornecidos) */
+            --color-primary-orange: rgb(243, 153, 29);
+            --color-secondary-cherry: rgb(220, 50, 112);
+            /* NOVA COR: Tonalidade muito clara da cor primária para o fundo */
+            --color-light-bg: #fff8f0;
+            /* Um off-white com toque de laranja/bege */
+        }
+
+        body {
+            background-color: white;
+            /* Fundo base branco */
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+        }
+
+        /* Classe para aplicar o novo fundo de tela */
+        .bg-custom-light-bg {
+            background-color: var(--color-light-bg);
+        }
+
+        .text-custom-slate-600 {
+            color: var(--bs-slate-600);
+        }
+
+        .text-custom-slate-700 {
+            color: var(--bs-slate-700);
+        }
+
+        .text-custom-slate-800 {
+            color: var(--bs-slate-800);
+        }
+
+        .bg-custom-white {
+            background-color: white;
+        }
+
+        /* Estilo base para os botões de aba */
+        .tab-btn {
+            border-width: 2px;
+            border-style: solid;
+            transition: all 0.2s;
+            color: var(--color-secondary-cherry);
+            border-color: var(--color-secondary-cherry);
+            background-color: white;
+        }
+
+        .tab-btn:hover:not(.active) {
+            /* Uso do novo fundo claro no hover para harmonizar */
+            background-color: var(--color-light-bg);
+            color: var(--color-secondary-cherry);
+            border-color: var(--color-secondary-cherry);
+        }
+
+        /* Estilo para o botão de aba ATIVO (cor primária) */
+        .tab-btn.active {
+            background-color: var(--color-primary-orange) !important;
+            border-color: var(--color-primary-orange) !important;
+            color: white !important;
+        }
+
+        .checkmark-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .checkmark-list li {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- CONTAINER PRINCIPAL: Aplicando a cor de fundo clara -->
+    <div class="d-flex h-100 bg-custom-light-bg">
+        <!-- Sidebar: Mantendo o fundo branco para contraste -->
+        <aside class="col-md-2 bg-custom-white shadow-lg d-flex flex-column flex-shrink-0">
+            <div class="p-4 border-bottom">
+                <h1 class="h4 fw-bold text-custom-slate-800">MovimentaIF</h1>
+            </div>
+            <nav class="nav nav-pills flex-column p-3">
+                <a href="dashboard.html" class="nav-link text-custom-slate-600 rounded-pill mt-2">
+                    <i class="fa-solid fa-house me-2"></i> Início
+                </a>
+                <a href="users.html" class="nav-link active rounded-pill mt-2">
+                    <i class="fa-solid fa-users me-2"></i> Alunos
+                </a>
+                <a href="workouts.html" class="nav-link text-custom-slate-600 rounded-pill mt-2">
+                    <i class="fa-solid fa-dumbbell me-2"></i> Treinos
+                </a>
+                <a href="agenda.html" class="nav-link text-custom-slate-600 rounded-pill mt-2">
+                    <i class="fa-solid fa-calendar-alt me-2"></i> Agenda
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="col-md-10 d-flex flex-column overflow-hidden">
+            <!-- Header: Mantendo o fundo branco para separação visual -->
+            <header class="bg-custom-white shadow-sm p-4 d-flex justify-content-between align-items-center">
+                <h2 class="h5 fw-bold text-custom-slate-700">Detalhes do Aluno</h2>
+                <div class="d-flex align-items-center">
+                    <span id="user-email" class="text-custom-slate-600 me-3"></span>
+                    <button id="logout-btn" class="btn btn-danger btn-sm rounded-pill">Sair</button>
+                </div>
+            </header>
+
+            <!-- Content Area: Aplicando o novo fundo claro -->
+            <main class="flex-grow-1 overflow-auto bg-custom-light-bg p-4">
+                <div class="container-fluid" id="main-content">
+                    <a href="users.html" class="btn btn-sm btn-outline-secondary rounded-pill mb-3">
+                        <i class="fa-solid fa-arrow-left me-1"></i> Voltar
+                    </a>
+
+                    <div id="loading-spinner" class="text-center p-5">
+                        <div class="spinner-border text-success" role="status">
+                            <span class="visually-hidden">Carregando...</span>
+                        </div>
+                    </div>
+
+                    <div id="user-details-container" class="d-none">
+                        <div class="d-flex justify-content-between flex-wrap gap-2 mb-4">
+                            <button id="tab-info"
+                                class="btn tab-btn rounded-pill fw-bold flex-grow-1 active">Informações Gerais</button>
+                            <button id="tab-parq" class="btn tab-btn rounded-pill fw-bold flex-grow-1">Questionário
+                                PAR-Q</button>
+                            <button id="tab-anamnese" class="btn tab-btn rounded-pill fw-bold flex-grow-1">Ficha de
+                                Anamnese</button>
+                        </div>
+
+                        <div id="content-view">
+                            <!-- O conteúdo dinâmico do SPA será carregado aqui -->
+                        </div>
+                    </div>
+
+                    <div id="error-alert" class="alert alert-danger d-none mt-3" role="alert">
+                        Erro ao carregar os dados do aluno.
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        xintegrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+
+        // Configurações do Firebase (mantidas por segurança)
+        const firebaseConfig = {
+            apiKey: "AIzaSyAnET6gJ175qHFbHcKm40tynj7s9x4sXqU",
+            authDomain: "movimentaif.firebaseapp.com",
+            databaseURL: "https://movimentaif-default-rtdb.firebaseio.com",
+            projectId: "movimentaif",
+            storageBucket: "movimentaif.firebasestorage.app",
+            messagingSenderId: "705983497984",
+            appId: "1:705983497984:web:f16672db437ce21aa2d5e5",
+            measurementId: "G-5K2CYJ742W"
+        };
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        const API_BASE_URL = 'http://localhost:8080/api/users';
+        const loadingSpinner = document.getElementById('loading-spinner');
+        const userDetailsContainer = document.getElementById('user-details-container');
+        const errorAlert = document.getElementById('error-alert');
+        const contentView = document.getElementById('content-view');
+
+        let currentUserData = null;
+
+        async function getAuthTokenAndFetch(url, options = {}) {
+            const user = auth.currentUser;
+            if (!user) {
+                console.error("No authenticated user to get token for.");
+                window.location.replace('index.html');
+                return Promise.reject(new Error("No user authenticated."));
+            }
+            const token = await user.getIdToken();
+            const headers = { ...options.headers, 'Authorization': `Bearer ${token}` };
+            return fetch(url, { ...options, headers });
+        }
+
+        onAuthStateChanged(auth, user => {
+            if (user) {
+                document.getElementById('user-email').textContent = user.email;
+                fetchUserDetails();
+            } else {
+                window.location.replace('index.html');
+            }
+        });
+
+        document.getElementById('logout-btn').addEventListener('click', () => {
+            signOut(auth).then(() => {
+                window.location.replace('index.html');
+            });
+        });
+
+        async function fetchUserDetails() {
+            loadingSpinner.classList.remove('d-none');
+            errorAlert.classList.add('d-none');
+            userDetailsContainer.classList.add('d-none');
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const userId = urlParams.get('uid');
+
+            if (!userId) {
+                loadingSpinner.classList.add('d-none');
+                errorAlert.textContent = "ID do usuário não encontrado na URL.";
+                errorAlert.classList.remove('d-none');
+                return;
+            }
+
+            try {
+                const response = await getAuthTokenAndFetch(`${API_BASE_URL}/${userId}`);
+
+                if (response.status === 404) {
+                    throw new Error('Aluno não encontrado.');
+                }
+                if (!response.ok) {
+                    throw new Error(`Erro ao buscar os dados do aluno.`);
+                }
+
+                currentUserData = await response.json();
+
+                renderUserTabs('info'); // Carrega a primeira aba por padrão
+                userDetailsContainer.classList.remove('d-none');
+
+            } catch (error) {
+                errorAlert.textContent = error.message;
+                errorAlert.classList.remove('d-none');
+            } finally {
+                loadingSpinner.classList.add('d-none');
+            }
+        }
+
+        function renderUserTabs(tab) {
+            const tabs = {
+                'info': document.getElementById('tab-info'),
+                'parq': document.getElementById('tab-parq'),
+                'anamnese': document.getElementById('tab-anamnese')
+            };
+
+            for (const key in tabs) {
+                if (tabs[key]) {
+                    tabs[key].classList.remove('active');
+                }
+            }
+
+            if (tabs[tab]) {
+                tabs[tab].classList.add('active');
+            }
+
+            let contentHTML = '';
+
+            if (tab === 'info') {
+                const checkIcon = '<i class="fa-solid fa-check-circle me-2 text-success"></i>';
+                const crossIcon = '<i class="fa-solid fa-times-circle me-2 text-danger"></i>';
+
+                const isInterviewedIcon = currentUserData.interviewed ? checkIcon : crossIcon;
+                const didFirstWorkoutIcon = currentUserData.didFirstWorkout ? checkIcon : crossIcon;
+                const scheduledFirstWorkoutIcon = currentUserData.scheduledFirstWorkout ? checkIcon : crossIcon;
+                const isActiveIcon = currentUserData.isActive ? checkIcon : crossIcon;
+
+                // Formatação da data
+                let firstWorkoutDate = 'N/A';
+                if (currentUserData.firstWorkoutDate) {
+                    firstWorkoutDate = 'N/A (API não retornou formato padrão)';
+                }
+
+                contentHTML = `
+                    <div class="row">
+                        <div class="col-md-5">
+                            <div class="card shadow-sm p-4 rounded-3 bg-white">
+                                <h5 class="fw-bold text-custom-slate-800">Status</h5>
+                                <ul class="checkmark-list mt-3">
+                                    <li>${isInterviewedIcon}<span class="text-muted"> Entrevista realizada</span></li>
+                                    <li>${didFirstWorkoutIcon}<span class="text-muted"> Realizou o primeiro treino</span></li>
+                                    <li>${scheduledFirstWorkoutIcon}<span class="text-muted"> Agendou o primeiro treino</span></li>
+                                    <li>${isActiveIcon}<span class="text-muted"> Status do usuário ativo</span></li>
+                                </ul>
+                                <hr class="my-4">
+                                <div>
+                                    <h5 class="fw-bold text-custom-slate-800">Dados do Primeiro Treino</h5>
+                                    <p class="text-muted mt-2">
+                                        <i class="fa-solid fa-calendar-alt me-2"></i>
+                                        Data do primeiro treino: <span class="fw-semibold">${firstWorkoutDate}</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-7">
+                            <div class="card shadow-sm p-4 rounded-3 bg-white">
+                                <h5 class="fw-bold text-custom-slate-800">Informações Pessoais</h5>
+                                <div class="mt-3">
+                                    <p class="mb-2"><i class="fa-solid fa-user me-2"></i> <strong>Nome:</strong> <span>${currentUserData.userName || 'N/A'}</span></p>
+                                    <p class="mb-2"><i class="fa-solid fa-envelope me-2"></i> <strong>E-mail:</strong> <span>${currentUserData.email || 'N/A'}</span></p>
+                                    <p class="mb-2"><i class="fa-solid fa-phone me-2"></i> <strong>Telefone:</strong> <span>${currentUserData.phoneNumber || 'N/A'}</span></p>
+                                    <p class="mb-2"><i class="fa-solid fa-calendar-day me-2"></i> <strong>Data de Nasc:</strong> <span>${currentUserData.age ? new Date(currentUserData.age).toLocaleDateString('pt-BR') : 'N/A'}</span></p>
+                                    <p class="mb-2"><i class="fa-solid fa-id-card me-2"></i> <strong>Afiliação:</strong> <span>${currentUserData.affiliationType || 'N/A'}</span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card shadow-sm mt-4 p-4 rounded-3 bg-white">
+                        <h5 class="fw-bold text-custom-slate-800">Observações do Professor</h5>
+                        <div class="form-floating mt-3">
+                            <textarea class="form-control" placeholder="Deixe um comentário aqui" id="floatingTextarea2" style="height: 100px"></textarea>
+                            <label for="floatingTextarea2" class="text-muted">Adicione suas observações...</label>
+                        </div>
+                    </div>
+                `;
+            } else if (tab === 'parq') {
+                tabs['parq'].classList.add('active');
+
+                const parqPreenchido = currentUserData.interviewed;
+
+                contentHTML = `
+                    <div class="card shadow-sm p-4 rounded-3 bg-white">
+                        <h5 class="fw-bold text-custom-slate-800">Questionário de Prontidão para Atividade Física (PAR-Q)</h5>
+                        <div class="mt-3 table-responsive-sm">
+                            ${parqPreenchido ? `
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Pergunta</th>
+                                            <th class="text-center">Sim</th>
+                                            <th class="text-center">Não</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Exemplo: Você usará dados do Firebase/API aqui -->
+                                        <tr>
+                                            <td>Algum médico já lhe disse que você tem um problema do coração?</td>
+                                            <td class="text-center"><span class="badge bg-danger">Sim</span></td>
+                                            <td class="text-center"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Você sente dores no peito quando pratica atividade física?</td>
+                                            <td class="text-center"></td>
+                                            <td class="text-center"><span class="badge bg-success">Não</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            ` : `
+                                <div class="alert alert-info text-center mt-4">
+                                    O questionário PAR-Q ainda não foi preenchido por este aluno.
+                                </div>
+                            `}
+                        </div>
+                    </div>
+                `;
+            } else if (tab === 'anamnese') {
+                tabs['anamnese'].classList.add('active');
+
+                const anamnesePreenchida = currentUserData.interviewed;
+
+                contentHTML = `
+                    <div class="card shadow-sm p-4 rounded-3 bg-white">
+                        <h5 class="fw-bold text-custom-slate-800">Ficha de Anamnese</h5>
+                        <div class="mt-3">
+                            ${anamnesePreenchida ? `
+                                <p class="mb-2"><i class="fa-solid fa-weight me-2"></i> <strong>Peso:</strong> <span>80 kg</span></p>
+                                <p class="mb-2"><i class="fa-solid fa-ruler-vertical me-2"></i> <strong>Altura:</strong> <span>1.75 m</span></p>
+                                <p class="mb-2"><i class="fa-solid fa-heartbeat me-2"></i> <strong>Problemas cardíacos:</strong> <span>Nenhum</span></p>
+                                <p class="mb-2"><i class="fa-solid fa-allergies me-2"></i> <strong>Alergias:</strong> <span>Pólen</span></p>
+                            ` : `
+                                <div class="alert alert-info text-center mt-4">
+                                    A ficha de anamnese ainda não foi preenchida por este aluno.
+                                </div>
+                            `}
+                        </div>
+                    </div>
+                `;
+            }
+
+            contentView.innerHTML = contentHTML;
+        }
+
+        document.addEventListener('click', (e) => {
+            if (e.target.id === 'tab-info') renderUserTabs('info');
+            if (e.target.id === 'tab-parq') renderUserTabs('parq');
+            if (e.target.id === 'tab-anamnese') renderUserTabs('anamnese');
+        });
+
+    </script>
+</body>
+
+</html>
