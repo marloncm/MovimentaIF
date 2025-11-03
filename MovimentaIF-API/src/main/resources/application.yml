@@ -1,8 +1,18 @@
+#spring:
+#  security:
+#    oauth2:
+#      resource server:
+#        jwt:
+#          jwk-set-uri: https://www.googleapis.com/service_accounts/v1/jwk/securetoken@system.gserviceaccount.com
+#          issuer-uri: https://securetoken.google.com/movimentaif
+#          audiences: movimentaif
+
+
 spring:
   security:
     oauth2:
-      resource server:
+      resourceserver:
         jwt:
-          jwk-set-uri: https://www.googleapis.com/service_accounts/v1/jwk/securetoken@system.gserviceaccount.com
+          # Substitua 'movimentaif' pelo ID real do seu projeto Firebase
           issuer-uri: https://securetoken.google.com/movimentaif
-          audiences: movimentaif
+          # O Spring irá deduzir o jwk-set-uri com base no issuer-uri.

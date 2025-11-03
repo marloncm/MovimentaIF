@@ -86,7 +86,11 @@ public class UserService {
             existingUser.setPhoneNumber(user.getPhoneNumber() != null && !user.getPhoneNumber().isEmpty() ? user.getPhoneNumber() : existingUser.getPhoneNumber());
             existingUser.setEmail(user.getEmail() != null && !user.getEmail().isEmpty() ? user.getEmail() : existingUser.getEmail());
             existingUser.setRole(user.getRole() != null && !user.getRole().isEmpty() ? user.getRole() : existingUser.getRole());
-            // existingUser.setCreatedAt(user.getCreatedAt() != 0 ? user.getCreatedAt() : existingUser.getCreatedAt());
+            existingUser.setActive(user.isActive() != existingUser.isActive() ? user.isActive() : existingUser.isActive());
+            existingUser.setSignedTermOfCommitment(user.isSignedTermOfCommitment() != existingUser.isSignedTermOfCommitment() ? user.isSignedTermOfCommitment() : existingUser.isSignedTermOfCommitment());
+            existingUser.setInterviewed(user.isInterviewed() != existingUser.isInterviewed() ? user.isInterviewed() : existingUser.isInterviewed());
+            existingUser.setDidFirstWorkout(user.isDidFirstWorkout() != existingUser.isDidFirstWorkout() ? user.isDidFirstWorkout() : existingUser.isDidFirstWorkout());
+
 
             saveUser(existingUser);
             return existingUser;

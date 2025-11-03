@@ -1,6 +1,7 @@
 package com.ifrs.movimentaif.movimentaifapi.model;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -13,6 +14,8 @@ public class WorkoutChart {
     private List<String> wednesdayWorkouts;
     private List<String> thursdayWorkouts;
     private List<String> fridayWorkouts;
+    private Date startDate;
+    private Date endDate;
 
     public WorkoutChart(){
         this.chartId = UUID.randomUUID().toString();
@@ -33,7 +36,7 @@ public class WorkoutChart {
         this.fridayWorkouts = new ArrayList<>();
     }
 
-    public WorkoutChart(String chartId, String userId, List<String> mondayWorkouts, List<String> tuesdayWorkouts, List<String> wednesdayWorkouts, List<String> thursdayWorkouts, List<String> fridayWorkouts) {
+    public WorkoutChart(String chartId, String userId, List<String> mondayWorkouts, List<String> tuesdayWorkouts, List<String> wednesdayWorkouts, List<String> thursdayWorkouts, List<String> fridayWorkouts, Date startDate, Date endDate) {
         this.chartId = chartId;
         this.userId = userId;
         this.mondayWorkouts = mondayWorkouts;
@@ -41,6 +44,8 @@ public class WorkoutChart {
         this.wednesdayWorkouts = wednesdayWorkouts;
         this.thursdayWorkouts = thursdayWorkouts;
         this.fridayWorkouts = fridayWorkouts;
+        this.startDate = startDate;
+        this.endDate = endDate;
     }
 
     public String getChartId() {
@@ -70,5 +75,53 @@ public class WorkoutChart {
 
     public void addWorkoutId(String workoutId){
         this.mondayWorkouts.add(workoutId);
+    }
+
+    public List<String> getTuesdayWorkouts() {
+        return tuesdayWorkouts;
+    }
+
+    public void setTuesdayWorkouts(List<String> tuesdayWorkouts) {
+        this.tuesdayWorkouts = tuesdayWorkouts;
+    }
+
+    public List<String> getWednesdayWorkouts() {
+        return wednesdayWorkouts;
+    }
+
+    public void setWednesdayWorkouts(List<String> wednesdayWorkouts) {
+        this.wednesdayWorkouts = wednesdayWorkouts;
+    }
+
+    public List<String> getThursdayWorkouts() {
+        return thursdayWorkouts;
+    }
+
+    public void setThursdayWorkouts(List<String> thursdayWorkouts) {
+        this.thursdayWorkouts = thursdayWorkouts;
+    }
+
+    public List<String> getFridayWorkouts() {
+        return fridayWorkouts;
+    }
+
+    public void setFridayWorkouts(List<String> fridayWorkouts) {
+        this.fridayWorkouts = fridayWorkouts;
+    }
+
+    public Date getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
+    public Date getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
     }
 }

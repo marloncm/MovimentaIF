@@ -21,6 +21,7 @@ public class User {
     private boolean scheduledFirstWorkout;
     private boolean isAppUser;
     private Date firstWorkoutDate;
+    private boolean signedTermOfCommitment;
     private String workoutChartId;
 
     public User(){
@@ -175,6 +176,19 @@ public class User {
         this.firstWorkoutDate = firstWorkoutDate;
     }
 
+    public boolean isSignedTermOfCommitment() {
+        return signedTermOfCommitment;
+    }
 
+    public void setSignedTermOfCommitment(boolean signedTermOfCommitment) {
+        this.signedTermOfCommitment = signedTermOfCommitment;
+    }
 
+    public String getWorkoutChartId() {
+        return workoutChartId;
+    }
+
+    public void setWorkoutChartId(String workoutChartId) {
+        this.workoutChartId = workoutChartId;
+    }
 }

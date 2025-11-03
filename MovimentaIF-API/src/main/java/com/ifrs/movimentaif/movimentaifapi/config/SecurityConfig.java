@@ -15,24 +15,29 @@ import java.util.Arrays;
 @Configuration
 public class SecurityConfig {
 
+    // Removemos a injeção direta do filtro customizado
+    // public SecurityConfig(FirebaseAuthFilter firebaseAuthFilter) {
+    //     this.firebaseAuthFilter = firebaseAuthFilter;
+    // }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .authorizeHttpRequests(auth -> auth
-                        // 1. Rota de Criação de Usuário (Cadastro) é PÚBLICA, pois o usuário ainda não tem um token.
-                        .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
 
-                        // 2. Rotas de Autenticação (se houver)
+                // REMOVEMOS: .addFilterBefore(firebaseAuthFilter, UsernamePasswordAuthenticationFilter.class)
+
+                .authorizeHttpRequests(auth -> auth
+                        // 1. Rota de Criação de Usuário (Cadastro) é PÚBLICA
+                        .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
 
-                        // 3. Todas as outras requisições (GET, PUT, DELETE, /appusers, etc.) exigem Token Válido.
-                        // O GET /api/users/{uid} será validado aqui.
+                        // 2. TODAS as outras rotas exigem autenticação.
                         .anyRequest().authenticated()
                 )
+                // REATIVAMOS: O Resource Server deve fazer a validação do token JWT do Firebase
                 .oauth2ResourceServer(oauth2 -> oauth2
-                        // Habilita a validação do JWT/Bearer Token (Firebase ID Token)
                         .jwt(jwt -> {})
                 );
 
@@ -44,7 +49,7 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Arrays.asList("http://localhost:8000"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setAllowedHeaders(Arrays.asList("*", "Authorization"));
         configuration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
