@@ -1,22 +1,34 @@
 package com.ifrs.movimentaif.movimentaifapi.model;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class WorkoutHistory {
     private String historyId;
     private String userId;
-    private String[] workoutChartIds;
+    private List<WorkoutChart> workoutCharts;
 
-    public WorkoutHistory(){}
-    public WorkoutHistory(String userId, String[] workoutChartIds) {
+    public WorkoutHistory(){
+        this.historyId = UUID.randomUUID().toString();
+        this.workoutCharts = new ArrayList<>();
+    }
+
+    public WorkoutHistory(String userId) {
         this.historyId = UUID.randomUUID().toString();
         this.userId = userId;
-        this.workoutChartIds = workoutChartIds;
+        this.workoutCharts = new ArrayList<>();
     }
-    public WorkoutHistory(int historyId, String userId, String[] workoutChartIds) {
+
+    public WorkoutHistory(String userId, List<WorkoutChart> workoutCharts) {
+        this.historyId = UUID.randomUUID().toString();
+        this.userId = userId;
+        this.workoutCharts = workoutCharts;
+    }
+    public WorkoutHistory(int historyId, String userId, List<WorkoutChart> workoutCharts) {
         this.historyId = String.valueOf(historyId);
         this.userId = userId;
-        this.workoutChartIds = workoutChartIds;
+        this.workoutCharts = workoutCharts;
     }
 
     public String getHistoryId() {
@@ -35,11 +47,15 @@ public class WorkoutHistory {
         this.userId = userId;
     }
 
-    public String[] getWorkoutChartIds() {
-        return workoutChartIds;
+    public List<WorkoutChart> getWorkoutCharts() {
+        return workoutCharts;
     }
 
-    public void setWorkoutChartIds(String[] workoutChartIds) {
-        this.workoutChartIds = workoutChartIds;
+    public void setWorkoutCharts(List<WorkoutChart> workoutCharts) {
+        this.workoutCharts = workoutCharts;
+    }
+
+    public void addWorkoutChartId(WorkoutChart workoutChartId) {
+        this.workoutCharts.add(workoutChartId);
     }
 }

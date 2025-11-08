@@ -24,6 +24,7 @@ public class WorkoutChart {
         this.wednesdayWorkouts = new ArrayList<>();
         this.thursdayWorkouts = new ArrayList<>();
         this.fridayWorkouts = new ArrayList<>();
+        this.startDate = new Date();
     }
 
     public WorkoutChart(String userId){
@@ -34,6 +35,7 @@ public class WorkoutChart {
         this.wednesdayWorkouts = new ArrayList<>();
         this.thursdayWorkouts = new ArrayList<>();
         this.fridayWorkouts = new ArrayList<>();
+        this.startDate = new Date();
     }
 
     public WorkoutChart(String chartId, String userId, List<String> mondayWorkouts, List<String> tuesdayWorkouts, List<String> wednesdayWorkouts, List<String> thursdayWorkouts, List<String> fridayWorkouts, Date startDate, Date endDate) {

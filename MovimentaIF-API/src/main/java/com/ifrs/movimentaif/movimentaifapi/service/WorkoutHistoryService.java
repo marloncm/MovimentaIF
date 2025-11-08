@@ -1,16 +1,21 @@
 package com.ifrs.movimentaif.movimentaifapi.service;
 
+import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.DocumentReference;
+import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.Firestore;
+import com.google.cloud.firestore.WriteResult;
 import com.ifrs.movimentaif.movimentaifapi.model.WorkoutHistory;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
 @Service
 public class WorkoutHistoryService {
     private final Firestore firestore;
+    private static final String COLLECTION_NAME = "workoutHistory";
 
     public WorkoutHistoryService(Firestore firestore) {
         this.firestore = firestore;
@@ -18,11 +23,12 @@ public class WorkoutHistoryService {
 
     public WorkoutHistory saveWorkoutHistory(WorkoutHistory workoutHistory) {
         try{
-            if (workoutHistory.getHistoryId() == null) {
+            if (workoutHistory.getHistoryId() == null || workoutHistory.getHistoryId().isEmpty()) {
                 workoutHistory.setHistoryId(UUID.randomUUID().toString());
             }
-            DocumentReference docRef = firestore.collection("workoutHistory").document(workoutHistory.getHistoryId());
-            docRef.set(workoutHistory).get();
+            DocumentReference docRef = firestore.collection(COLLECTION_NAME).document(workoutHistory.getHistoryId());
+            ApiFuture<WriteResult> future = docRef.set(workoutHistory);
+            future.get();
             return workoutHistory;
         }catch (ExecutionException e){
             System.err.println("Error saving workout history: " + e.getMessage());
@@ -34,61 +40,32 @@ public class WorkoutHistoryService {
         }
     }
 
-    public WorkoutHistory getWorkoutHistoryById(String workoutHistoryId) {
-        try {
-            DocumentReference docRef = firestore.collection("workoutHistory").document(workoutHistoryId);
-            return docRef.get().get().toObject(WorkoutHistory.class);
-        }catch (NullPointerException e){
-            return null;
-        }catch (ExecutionException e){
-            System.err.println("Error getting workout history by ID: " + e.getMessage());
-            return null;
-        }catch (InterruptedException e){
-            System.err.println("Error getting workout history by ID: " + e.getMessage());
-            Thread.currentThread().interrupt();
-            return null;
-        }
-
-    }
-
-    public WorkoutHistory getWorkoutHistoryByUserId(String userId) {
-        try {
-            return firestore.collection("workoutHistory")
-                    .whereEqualTo("userId", userId)
-                    .get()
-                    .get()
-                    .toObjects(WorkoutHistory.class)
-                    .stream()
-                    .findFirst()
-                    .orElse(null);
-        } catch (ExecutionException e) {
-            System.err.println("Error getting workout history by user ID: " + e.getMessage());
-            return null;
-        } catch (InterruptedException e) {
-            System.err.println("Error getting workout history by user ID: " + e.getMessage());
-            Thread.currentThread().interrupt();
+    public WorkoutHistory getWorkoutHistoryById(String id) throws ExecutionException, InterruptedException {
+        DocumentReference docRef = firestore.collection(COLLECTION_NAME).document(id);
+        ApiFuture<DocumentSnapshot> future = docRef.get();
+        DocumentSnapshot document = future.get();
+        if (document.exists()) {
+            return document.toObject(WorkoutHistory.class);
+        } else {
             return null;
         }
     }
 
-    public WorkoutHistory updateWorkoutHistory(WorkoutHistory workoutHistory) {
-        try{
-            DocumentReference docRef = firestore.collection("workoutHistory").document(workoutHistory.getHistoryId());
-            if(docRef.get().get().exists()){
-                docRef.set(workoutHistory).get();
-                return workoutHistory;
-            }else{
-                System.err.println("Workout history with ID " + workoutHistory.getHistoryId() + " does not exist.");
-                return null;
-            }
-        }catch (ExecutionException e){
-            System.err.println("Error updating workout history: " + e.getMessage());
-            return null;
-        }catch (InterruptedException e){
-            System.err.println("Error updating workout history: " + e.getMessage());
-            Thread.currentThread().interrupt();
-            return null;
-        }
+    public WorkoutHistory getWorkoutHistoryByUserId(String userId) throws ExecutionException, InterruptedException {
+        // Usando query WhereEqualTo para ser mais eficiente
+        List<WorkoutHistory> histories = firestore.collection(COLLECTION_NAME)
+                .whereEqualTo("userId", userId)
+                .limit(1) // Assumimos que cada usuário tem apenas um registro de histórico
+                .get()
+                .get()
+                .toObjects(WorkoutHistory.class);
+
+        return histories.isEmpty() ? null : histories.get(0);
+    }
+
+    public WorkoutHistory updateWorkoutHistory(String historyId, WorkoutHistory history) throws ExecutionException, InterruptedException {
+        history.setHistoryId(historyId); // Garante que o ID do path seja usado
+        return saveWorkoutHistory(history);
     }
 
 

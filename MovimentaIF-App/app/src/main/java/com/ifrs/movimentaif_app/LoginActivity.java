@@ -165,7 +165,7 @@ public class LoginActivity extends AppCompatActivity {
                         Log.w(TAG, "signInWithEmail: Falha", task.getException());
                         Toast.makeText(LoginActivity.this, "Credenciais inválidas ou conta não existe.",
                                 Toast.LENGTH_SHORT).show();
-                    }
+                    } 
                 });
     }
 

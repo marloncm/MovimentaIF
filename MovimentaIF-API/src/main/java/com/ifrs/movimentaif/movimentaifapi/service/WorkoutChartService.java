@@ -111,4 +111,9 @@ public class WorkoutChartService {
         }
         return scheduledUsers;
     }
+
+    public void deleteChart(String chartId) throws ExecutionException, InterruptedException {
+        firestore.collection(COLLECTION_NAME).document(chartId).delete().get();
+    }
+
 }

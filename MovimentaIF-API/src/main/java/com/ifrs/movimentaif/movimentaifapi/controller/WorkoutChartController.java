@@ -81,4 +81,10 @@ public class WorkoutChartController {
         WorkoutChart updatedChart = chartService.saveOrUpdateChart(chart);
         return new ResponseEntity<>(updatedChart, HttpStatus.OK);
     }
+
+    @DeleteMapping("/{chartId}")
+    public ResponseEntity<Void> deleteChart(@PathVariable String chartId) throws ExecutionException, InterruptedException {
+        chartService.deleteChart(chartId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }

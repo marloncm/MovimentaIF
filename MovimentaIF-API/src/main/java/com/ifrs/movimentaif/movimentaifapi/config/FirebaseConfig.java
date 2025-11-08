@@ -20,6 +20,10 @@ public class FirebaseConfig {
     @Value("${firebase.admin.credentials}")
     private String serviceAccountJson;
 
+    // Injeta a URL do properties
+    @Value("${firebase.database.url}")
+    private String databaseUrl;
+
     @Bean
     public Firestore firestore() throws IOException {
 
@@ -29,12 +33,22 @@ public class FirebaseConfig {
 
         FirebaseOptions options = FirebaseOptions.builder()
                 .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+                .setDatabaseUrl(databaseUrl) // Adiciona a URL do DB
                 .build();
 
-        if (FirebaseApp.getApps().isEmpty()) {
-            FirebaseApp.initializeApp(options);
+        FirebaseApp firebaseApp;
+
+        // Lógica robusta para Hot Reload
+        try {
+            // Tenta pegar a instância [DEFAULT] que já pode existir
+            firebaseApp = FirebaseApp.getInstance();
+        } catch (IllegalStateException e) {
+            // Se não existir, inicializa
+            firebaseApp = FirebaseApp.initializeApp(options);
         }
 
-        return FirestoreClient.getFirestore();
+        // Retorna o Firestore associado a essa app
+        return FirestoreClient.getFirestore(firebaseApp);
     }
 }
+
