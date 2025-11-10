@@ -1,0 +1,69 @@
+{
+  "project_info": {
+    "project_number": "705983497984",
+    "firebase_url": "https://movimentaif-default-rtdb.firebaseio.com",
+    "project_id": "movimentaif",
+    "storage_bucket": "movimentaif.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:705983497984:android:d3737a62b2718af9a2d5e5",
+        "android_client_info": {
+          "package_name": "com.ifrs.movimentaif"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "705983497984-jd23cufcss5ce72d7c9m00udh3t6m12v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCfd9Lt4x-gz7ag3TphEheZLuGQ6JAyt-8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "705983497984-jd23cufcss5ce72d7c9m00udh3t6m12v.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:705983497984:android:b6ff021a06e6a9d0a2d5e5",
+        "android_client_info": {
+          "package_name": "com.ifrs.movimentaif_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "705983497984-jd23cufcss5ce72d7c9m00udh3t6m12v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCfd9Lt4x-gz7ag3TphEheZLuGQ6JAyt-8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "705983497984-jd23cufcss5ce72d7c9m00udh3t6m12v.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

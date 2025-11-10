@@ -1,10 +1,7 @@
-package com.ifrs.movimentaif.movimentaifapi.model;
+package com.ifrs.movimentaif.model;
 
 import java.util.Date;
-import java.util.List;
 import java.util.UUID;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 public class User {
     private String userId;
@@ -12,9 +9,9 @@ public class User {
     private Date age;
     private String phoneNumber;
     private String email;
-    private String role; //USER, ADMIN
-    private Date createdAt; // Alterado para java.util.Date
-    private boolean isActive; //active or inactive
+    //private String role; //USER, ADMIN
+    private Date createdAt;
+    private boolean isActive;
     private String affiliationType; //STUDENT, PROFESSOR, STAFF TODO transformar em enum
     private boolean interviewed;
     private boolean didFirstWorkout;
@@ -23,6 +20,7 @@ public class User {
     private Date firstWorkoutDate;
     private boolean signedTermOfCommitment;
     private String workoutChartId;
+
     private Boolean isAdmin;
 
     public User(){
@@ -32,13 +30,6 @@ public class User {
         this.interviewed = false;
         this.didFirstWorkout = false;
         this.scheduledFirstWorkout = false;
-    }
-
-    public User(String userId, String email){
-        this.userId = userId;
-        this.email = email;
-        this.createdAt = new Date();
-
     }
 
     public User(String name, String email, Boolean isAdmin){
@@ -53,29 +44,36 @@ public class User {
         this.isAdmin = isAdmin;
     }
 
-    public User(String userId, String userName, String email, String role) {
+    public User(String userId, String email){
         this.userId = userId;
-        this.userName = userName;
         this.email = email;
-        this.role = role;
         this.createdAt = new Date();
+
     }
 
-    public User(String userName, String email, String role) {
-        this.userId = UUID.randomUUID().toString();
-        this.userName = userName;
-        this.email = email;
-        this.role = role;
-        this.createdAt = new Date();
-    }
+//    public User(String userId, String userName, String email, String role) {
+//        this.userId = userId;
+//        this.userName = userName;
+//        this.email = email;
+//        this.role = role;
+//        this.createdAt = new Date();
+//    }
 
-    public User(String uid, String userName, String email, String role, Date createdAt){
-        this.userId = uid;
-        this.userName = userName;
-        this.email = email;
-        this.role = role;
-        this.createdAt = createdAt;
-    }
+//    public User(String userName, String email, String role) {
+//        this.userId = UUID.randomUUID().toString();
+//        this.userName = userName;
+//        this.email = email;
+//        this.role = role;
+//        this.createdAt = new Date();
+//    }
+
+//    public User(String uid, String userName, String email, String role, Date createdAt){
+//        this.userId = uid;
+//        this.userName = userName;
+//        this.email = email;
+//        this.role = role;
+//        this.createdAt = createdAt;
+//    }
 
     public String getUserId() {
         return userId;
@@ -101,13 +99,13 @@ public class User {
         this.email = email;
     }
 
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
+//    public String getRole() {
+//        return role;
+//    }
+//
+//    public void setRole(String role) {
+//        this.role = role;
+//    }
 
     public Date getCreatedAt() {
         return createdAt;
@@ -203,13 +201,5 @@ public class User {
 
     public void setWorkoutChartId(String workoutChartId) {
         this.workoutChartId = workoutChartId;
-    }
-
-    public Boolean getAdmin() {
-        return isAdmin;
-    }
-
-    public void setAdmin(Boolean admin) {
-        isAdmin = admin;
     }
 }

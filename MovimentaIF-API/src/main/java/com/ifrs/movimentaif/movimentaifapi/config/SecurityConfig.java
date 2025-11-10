@@ -29,7 +29,9 @@ public class SecurityConfig {
                 // REMOVEMOS: .addFilterBefore(firebaseAuthFilter, UsernamePasswordAuthenticationFilter.class)
 
                 .authorizeHttpRequests(auth -> auth
-                        // 1. Rota de Criação de Usuário (Cadastro) é PÚBLICA
+                        // 1. Endpoints públicos (sem autenticação)
+                        .requestMatchers("/api/health", "/api/", "/").permitAll()
+                        .requestMatchers("/api/test/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
 
@@ -47,7 +49,15 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:8000"));
+        // Permite origens locais e do domínio em produção
+        configuration.setAllowedOrigins(Arrays.asList(
+                "http://localhost:8000",
+                "http://localhost:5500",
+                "http://127.0.0.1:5500",
+                "https://*.herokuapp.com",
+                "https://movimentaif-admin.pages.dev", // Adicione seu domínio frontend aqui
+                "https://movimentaif-api.herokuapp.com"
+        ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*", "Authorization"));
         configuration.setAllowCredentials(true);
