@@ -18,12 +18,14 @@ public class UserController {
 
 
     @PostMapping
-    public void newUser(@RequestBody User user) throws Exception {
+    public User newUser(@RequestBody User user) throws Exception {
         User existingUser = userService.getUserById(user.getUserId());
         if (existingUser == null) {
             userService.saveUser(user);
+            return user;
         }
-        // Se existir, não faz nada (apenas retorna 200 OK)
+        // Se existir, retorna o usuário existente
+        return existingUser;
     }
 
     @GetMapping("/role/{role}")
