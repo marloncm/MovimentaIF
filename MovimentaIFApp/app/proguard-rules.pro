@@ -19,3 +19,47 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# ===== Regras de Segurança MovimentaIF =====
+
+# Remover todos os logs em produção
+-assumenosideeffects class android.util.Log {
+    public static *** d(...);
+    public static *** v(...);
+    public static *** i(...);
+    public static *** w(...);
+    public static *** e(...);
+}
+
+# Retrofit
+-keepattributes Signature
+-keepattributes Exceptions
+-keepattributes *Annotation*
+-keep class com.squareup.okhttp3.** { *; }
+-keep interface com.squareup.okhttp3.** { *; }
+-dontwarn com.squareup.okhttp3.**
+-dontwarn okio.**
+
+# Retrofit models
+-keep class com.ifrs.movimentaif.model.** { *; }
+-keep class com.ifrs.movimentaif.api.** { *; }
+
+# Gson
+-keepattributes Signature
+-keepattributes *Annotation*
+-dontwarn sun.misc.**
+-keep class com.google.gson.** { *; }
+-keep class * implements com.google.gson.TypeAdapter
+-keep class * implements com.google.gson.TypeAdapterFactory
+-keep class * implements com.google.gson.JsonSerializer
+-keep class * implements com.google.gson.JsonDeserializer
+
+# Firebase
+-keep class com.google.firebase.** { *; }
+-keep class com.google.android.gms.** { *; }
+-dontwarn com.google.firebase.**
+-dontwarn com.google.android.gms.**
+
+# Preservar números de linha para stack traces úteis
+-keepattributes SourceFile,LineNumberTable
+-renamesourcefileattribute SourceFile

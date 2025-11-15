@@ -13,7 +13,8 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
-const API_BASE_URL = 'http://localhost:8080/api/users';
+// ✅ URL de Produção com HTTPS
+const API_BASE_URL = 'https://movimentaif-api-7895a5f0638f.herokuapp.com/api/users';
 const loadingSpinner = document.getElementById('loading-spinner');
 const editFormContainer = document.getElementById('edit-form-container');
 const editUserStatusForm = document.getElementById('editUserStatusForm');

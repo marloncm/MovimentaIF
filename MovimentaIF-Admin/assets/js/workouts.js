@@ -20,7 +20,8 @@ const searchInput = document.getElementById('search-input'); // Seleção do cam
 const addEditWorkoutModal = new bootstrap.Modal(document.getElementById('addEditWorkoutModal'));
 const modalTitle = document.getElementById('addEditWorkoutModalLabel');
 
-const API_BASE_URL = 'http://localhost:8080/api/workouts';
+// ✅ URL de Produção com HTTPS
+const API_BASE_URL = 'https://movimentaif-api-7895a5f0638f.herokuapp.com/api/workouts';
 let allWorkouts = []; // Variável para armazenar todos os treinos
 
 async function getAuthTokenAndFetch(url, options = {}) {

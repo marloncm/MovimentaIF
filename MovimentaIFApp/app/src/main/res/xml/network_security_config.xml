@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <!-- Configuração de segurança para produção -->
+    <base-config cleartextTrafficPermitted="false">
+        <trust-anchors>
+            <!-- Confia apenas em certificados do sistema -->
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+    
+    <!-- Domínio de produção com HTTPS obrigatório -->
+    <domain-config cleartextTrafficPermitted="false">
+        <domain includeSubdomains="true">movimentaif-api-7895a5f0638f.herokuapp.com</domain>
+        <domain includeSubdomains="true">herokuapp.com</domain>
+        <domain includeSubdomains="true">firebaseapp.com</domain>
+        <domain includeSubdomains="true">googleapis.com</domain>
+    </domain-config>
+</network-security-config>

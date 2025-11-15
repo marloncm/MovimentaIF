@@ -15,7 +15,8 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
 const workoutContent = document.getElementById('workout-content');
-const API_BASE_URL = 'http://localhost:8080/api/workouts';
+// ✅ URL de Produção com HTTPS
+const API_BASE_URL = 'https://movimentaif-api-7895a5f0638f.herokuapp.com/api/workouts';
 
 async function getAuthTokenAndFetch(url, options = {}) {
     const user = auth.currentUser;

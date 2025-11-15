@@ -20,11 +20,15 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+        }
+        debug {
+            isMinifyEnabled = false
         }
     }
     compileOptions {
@@ -36,6 +40,7 @@ android {
     }
     buildFeatures {
         viewBinding = true
+        buildConfig = true
     }
 }
 
@@ -62,6 +67,8 @@ dependencies {
     implementation(libs.play.services.auth)
     implementation(libs.retrofit)
     implementation(libs.converter.gson) // Converte JSON
+    implementation(libs.okhttp)
+    implementation(libs.okhttp.logging.interceptor)
 
     // Coroutines (para chamadas de rede assíncronas)
     implementation(libs.androidx.lifecycle.runtime.ktx)
