@@ -13,6 +13,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 
 @Configuration
 public class FirebaseConfig {
@@ -26,9 +27,18 @@ public class FirebaseConfig {
     @Bean
     public Firestore firestore() throws IOException {
 
-        // Converte a string JSON (vinda da Config Var) em um InputStream
+        // Decodifica Base64 se necessário, senão usa direto
+        String jsonContent = serviceAccountJson;
+        
+        // Verifica se está em Base64 (sem { no início)
+        if (!serviceAccountJson.trim().startsWith("{")) {
+            byte[] decodedBytes = Base64.getDecoder().decode(serviceAccountJson);
+            jsonContent = new String(decodedBytes, StandardCharsets.UTF_8);
+        }
+        
+        // Converte a string JSON em um InputStream
         InputStream serviceAccount = new ByteArrayInputStream(
-                serviceAccountJson.getBytes(StandardCharsets.UTF_8)
+                jsonContent.getBytes(StandardCharsets.UTF_8)
         );
 
         FirebaseOptions options = FirebaseOptions.builder()

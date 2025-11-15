@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MovimentaIF - Apresentação TCC</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            overflow-x: hidden;
+        }
+
+        .presentation {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .slide {
+            width: 100%;
+            height: 100%;
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            padding: 60px;
+            background: white;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.5s ease-in-out;
+        }
+
+        .slide.active {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .slide.prev {
+            transform: translateX(-100%);
+        }
+
+        .slide h1 {
+            font-size: 3.5rem;
+            color: #667eea;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .slide h2 {
+            font-size: 2.5rem;
+            color: #764ba2;
+            margin-bottom: 40px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 15px;
+        }
+
+        .slide h3 {
+            font-size: 1.8rem;
+            color: #667eea;
+            margin: 25px 0 15px 0;
+        }
+
+        .slide p,
+        .slide li {
+            font-size: 1.3rem;
+            line-height: 1.8;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .slide ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .slide ul li {
+            padding-left: 40px;
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .slide ul li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .tech-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 25px;
+            border-radius: 15px;
+            color: white;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .tech-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .tech-card h4 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+
+        .tech-card p {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .feature-item {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            border-left: 5px solid #667eea;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .feature-item h4 {
+            color: #764ba2;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 50px;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .stat-number {
+            font-size: 4rem;
+            font-weight: bold;
+            color: #667eea;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 1.2rem;
+            color: #666;
+            margin-top: 10px;
+        }
+
+        .architecture-diagram {
+            background: #f8f9fa;
+            padding: 40px;
+            border-radius: 15px;
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .architecture-layer {
+            background: white;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            border-left: 5px solid #667eea;
+        }
+
+        .controls {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            z-index: 1000;
+        }
+
+        .btn {
+            padding: 15px 35px;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .slide-counter {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px 25px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #667eea;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .logo-text {
+            font-size: 5rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 1.8rem;
+            color: #666;
+            margin-bottom: 50px;
+        }
+
+        .team-info {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 25px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1rem;
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+
+        .highlight {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .slide {
+                padding: 30px 20px;
+            }
+
+            .slide h1 {
+                font-size: 2.5rem;
+            }
+
+            .slide h2 {
+                font-size: 2rem;
+            }
+
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats {
+                flex-direction: column;
+            }
+
+            .controls {
+                bottom: 15px;
+            }
+
+            .btn {
+                padding: 12px 25px;
+                font-size: 1rem;
+            }
+        }
+
+        .timeline {
+            position: relative;
+            margin: 30px 0;
+            padding-left: 40px;
+        }
+
+        .timeline:before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 30px;
+            padding-left: 30px;
+        }
+
+        .timeline-item:before {
+            content: '';
+            position: absolute;
+            left: -44px;
+            top: 0;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #667eea;
+            border: 4px solid white;
+            box-shadow: 0 0 0 2px #667eea;
+        }
+
+        .timeline-item h4 {
+            color: #667eea;
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="presentation">
+        <!-- Slide 1: Capa -->
+        <div class="slide active">
+            <div class="logo">
+                <div class="logo-text">MovimentaIF</div>
+            </div>
+            <h1>Sistema de Gerenciamento de Atividades Físicas</h1>
+            <p class="subtitle">Trabalho de Conclusão de Curso</p>
+            <div class="team-info">
+                <p><strong>Instituto Federal do Rio Grande do Sul</strong></p>
+                <p>Curso: Análise e Desenvolvimento de Sistemas</p>
+                <p>Ano: 2025</p>
+            </div>
+        </div>
+
+        <!-- Slide 2: Problema -->
+        <div class="slide">
+            <h2>🎯 Problema Identificado</h2>
+            <div class="feature-grid">
+                <div class="feature-item">
+                    <h4>Desafio</h4>
+                    <p>Dificuldade de acompanhamento e gestão de treinos para praticantes de atividades físicas e
+                        profissionais de educação física.</p>
+                </div>
+                <div class="feature-item">
+                    <h4>Necessidade</h4>
+                    <p>Sistema integrado que permita o registro, monitoramento e análise de exercícios físicos de forma
+                        eficiente.</p>
+                </div>
+                <div class="feature-item">
+                    <h4>Público-Alvo</h4>
+                    <p>Alunos e profissionais do Instituto Federal do Rio Grande do Sul interessados em acompanhar sua
+                        evolução física.</p>
+                </div>
+                <div class="feature-item">
+                    <h4>Solução</h4>
+                    <p>Plataforma multiplataforma com aplicativo mobile e painel administrativo web para gestão completa
+                        de treinos.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Objetivos -->
+        <div class="slide">
+            <h2>📋 Objetivos do Projeto</h2>
+            <h3>Objetivo Geral</h3>
+            <p>Desenvolver um sistema completo de gerenciamento de atividades físicas, permitindo o cadastro,
+                acompanhamento e análise de treinos através de múltiplas plataformas.</p>
+
+            <h3>Objetivos Específicos</h3>
+            <ul>
+                <li>Implementar autenticação segura com Firebase Authentication e OAuth2/JWT</li>
+                <li>Criar API REST robusta com Spring Boot para gerenciar usuários, treinos e históricos</li>
+                <li>Desenvolver aplicativo mobile nativo em Kotlin para Android</li>
+                <li>Criar painel administrativo web responsivo para gestão de usuários e treinos</li>
+                <li>Implementar sistema de gráficos e relatórios de evolução dos praticantes</li>
+                <li>Garantir escalabilidade através de arquitetura em nuvem</li>
+            </ul>
+        </div>
+
+        <!-- Slide 4: Arquitetura -->
+        <div class="slide">
+            <h2>🏗️ Arquitetura do Sistema</h2>
+            <div class="architecture-diagram">
+                <div class="architecture-layer">
+                    <h4>📱 Camada de Apresentação</h4>
+                    <p><strong>App Mobile:</strong> Android (Kotlin) | <strong>Web Admin:</strong> HTML5, CSS3,
+                        Bootstrap 5, JavaScript</p>
+                </div>
+                <div class="architecture-layer">
+                    <h4>🔌 Camada de API</h4>
+                    <p><strong>Backend:</strong> Spring Boot 3.5.4, Java 17, REST API, OAuth2 Resource Server</p>
+                </div>
+                <div class="architecture-layer">
+                    <h4>🗄️ Camada de Dados</h4>
+                    <p><strong>Banco de Dados:</strong> Firebase Firestore (NoSQL) | <strong>Auth:</strong> Firebase
+                        Authentication</p>
+                </div>
+                <div class="architecture-layer">
+                    <h4>☁️ Camada de Infraestrutura</h4>
+                    <p><strong>Cloud:</strong> Heroku (API) | <strong>CI/CD:</strong> Git, Maven, Gradle</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Tecnologias -->
+        <div class="slide">
+            <h2>💻 Tecnologias Utilizadas</h2>
+            <div class="tech-grid">
+                <div class="tech-card">
+                    <h4>Backend</h4>
+                    <p>Spring Boot 3.5.4<br>Java 17<br>Maven<br>Spring Security</p>
+                </div>
+                <div class="tech-card">
+                    <h4>Mobile</h4>
+                    <p>Kotlin<br>Android SDK<br>Retrofit<br>Navigation Component</p>
+                </div>
+                <div class="tech-card">
+                    <h4>Web Admin</h4>
+                    <p>HTML5 / CSS3<br>Bootstrap 5<br>JavaScript ES6<br>Chart.js</p>
+                </div>
+                <div class="tech-card">
+                    <h4>Database</h4>
+                    <p>Firebase Firestore<br>NoSQL<br>Real-time Sync<br>Cloud Storage</p>
+                </div>
+                <div class="tech-card">
+                    <h4>Autenticação</h4>
+                    <p>Firebase Auth<br>OAuth2<br>JWT Tokens<br>Spring Security</p>
+                </div>
+                <div class="tech-card">
+                    <h4>Cloud & DevOps</h4>
+                    <p>Heroku<br>Git/GitHub<br>CI/CD<br>Environment Vars</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Funcionalidades -->
+        <div class="slide">
+            <h2>⚡ Principais Funcionalidades</h2>
+            <div class="feature-grid">
+                <div class="feature-item">
+                    <h4>👤 Gestão de Usuários</h4>
+                    <p>Cadastro, autenticação, perfis personalizados, histórico de atividades e métricas individuais.
+                    </p>
+                </div>
+                <div class="feature-item">
+                    <h4>🏋️ Gerenciamento de Treinos</h4>
+                    <p>Criação de fichas de treino, categorização por tipo, definição de séries e repetições.</p>
+                </div>
+                <div class="feature-item">
+                    <h4>📊 Acompanhamento de Evolução</h4>
+                    <p>Gráficos interativos, relatórios de progresso, análise de desempenho ao longo do tempo.</p>
+                </div>
+                <div class="feature-item">
+                    <h4>📅 Sistema de Agendamento</h4>
+                    <p>Calendário de treinos, notificações, planejamento semanal/mensal.</p>
+                </div>
+                <div class="feature-item">
+                    <h4>📱 App Mobile Nativo</h4>
+                    <p>Interface intuitiva, sincronização em tempo real, acesso offline aos treinos.</p>
+                </div>
+                <div class="feature-item">
+                    <h4>🖥️ Painel Administrativo</h4>
+                    <p>Dashboard completo, gerenciamento de todos os usuários, estatísticas globais.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Modelo de Dados -->
+        <div class="slide">
+            <h2>📐 Modelo de Dados (Entidades Principais)</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <h4>User (Usuário)</h4>
+                    <p>Armazena dados pessoais, informações de autenticação, perfil e preferências. Relaciona-se com
+                        WorkoutHistory e UserWorkout.</p>
+                </div>
+                <div class="timeline-item">
+                    <h4>Workout (Treino)</h4>
+                    <p>Contém informações sobre exercícios: nome, descrição, tipo, categoria, instruções de execução.
+                    </p>
+                </div>
+                <div class="timeline-item">
+                    <h4>UserWorkout (Treino do Usuário)</h4>
+                    <p>Associa treinos específicos aos usuários, incluindo séries, repetições, carga e status de
+                        conclusão.</p>
+                </div>
+                <div class="timeline-item">
+                    <h4>WorkoutHistory (Histórico)</h4>
+                    <p>Registra cada execução de treino com data, observações, métricas de desempenho.</p>
+                </div>
+                <div class="timeline-item">
+                    <h4>WorkoutChart (Gráfico de Evolução)</h4>
+                    <p>Dados agregados para visualização de progressão, comparativos e análises estatísticas.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: API Endpoints -->
+        <div class="slide">
+            <h2>🔌 Principais Endpoints da API</h2>
+            <div class="code-block">
+                # Autenticação e Saúde
+                GET /api/health - Status da API
+                GET /api/test/public - Endpoint público de teste
+
+                # Gestão de Usuários
+                GET /api/users - Listar todos os usuários
+                GET /api/users/{id} - Buscar usuário específico
+                POST /api/users - Criar novo usuário
+                PUT /api/users/{id} - Atualizar usuário
+                DELETE /api/users/{id} - Remover usuário
+
+                # Gestão de Treinos
+                GET /api/workouts - Listar treinos
+                POST /api/workouts - Criar treino
+                PUT /api/workouts/{id} - Atualizar treino
+                DELETE /api/workouts/{id} - Remover treino
+
+                # Histórico e Evolução
+                GET /api/workout-history/{userId} - Histórico do usuário
+                POST /api/workout-history - Registrar execução
+                GET /api/workout-charts/{userId} - Dados para gráficos
+            </div>
+        </div>
+
+        <!-- Slide 9: Segurança -->
+        <div class="slide">
+            <h2>🔒 Segurança e Autenticação</h2>
+            <h3>Estratégias de Segurança Implementadas</h3>
+            <ul>
+                <li><strong>Firebase Authentication:</strong> Sistema robusto de autenticação com suporte a múltiplos
+                    provedores</li>
+                <li><strong>OAuth2 Resource Server:</strong> Validação de tokens JWT em todas as requisições
+                    autenticadas</li>
+                <li><strong>Spring Security:</strong> Configuração de segurança em camadas com autorização baseada em
+                    roles</li>
+                <li><strong>HTTPS:</strong> Comunicação criptografada em produção através do Heroku</li>
+                <li><strong>Variáveis de Ambiente:</strong> Credenciais sensíveis armazenadas de forma segura</li>
+                <li><strong>CORS Configurado:</strong> Controle de origens permitidas para acesso à API</li>
+            </ul>
+            <div class="feature-item" style="margin-top: 30px;">
+                <h4>🛡️ Fluxo de Autenticação</h4>
+                <p>1. Usuário faz login via Firebase → 2. Firebase retorna JWT Token → 3. App envia token em cada
+                    requisição → 4. API valida token com Firebase → 5. Acesso concedido/negado</p>
+            </div>
+        </div>
+
+        <!-- Slide 10: Deploy e Infraestrutura -->
+        <div class="slide">
+            <h2>🚀 Deploy e Infraestrutura</h2>
+            <div class="feature-grid">
+                <div class="feature-item">
+                    <h4>Heroku Cloud Platform</h4>
+                    <p>API hospedada em: <br><strong>movimentaif-api-7895a5f0638f.herokuapp.com</strong></p>
+                </div>
+                <div class="feature-item">
+                    <h4>Configuração de Ambiente</h4>
+                    <p>Variáveis configuradas: FIREBASE_CREDENTIALS, FIREBASE_DATABASE_URL, JWT_ISSUER_URI</p>
+                </div>
+                <div class="feature-item">
+                    <h4>Build Automatizado</h4>
+                    <p>Maven compila e empacota automaticamente. Java 17 configurado via system.properties.</p>
+                </div>
+                <div class="feature-item">
+                    <h4>Escalabilidade</h4>
+                    <p>Arquitetura preparada para scaling horizontal, banco NoSQL escalável, API stateless.</p>
+                </div>
+            </div>
+            <h3 style="margin-top: 40px;">Pipeline de Deploy</h3>
+            <div class="code-block">
+                # Processo automatizado
+                1. git push heroku main
+                2. Heroku detecta aplicação Java (Maven)
+                3. Build automático: mvn clean install
+                4. Deploy do JAR gerado
+                5. Aplicação disponível em produção
+            </div>
+        </div>
+
+        <!-- Slide 11: Resultados -->
+        <div class="slide">
+            <h2>📈 Resultados Alcançados</h2>
+            <div class="stats">
+                <div class="stat-item">
+                    <span class="stat-number">3</span>
+                    <span class="stat-label">Plataformas</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">5</span>
+                    <span class="stat-label">Entidades</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">15+</span>
+                    <span class="stat-label">Endpoints API</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">100%</span>
+                    <span class="stat-label">Cloud Native</span>
+                </div>
+            </div>
+            <h3 style="margin-top: 50px;">Conquistas Técnicas</h3>
+            <ul>
+                <li>Sistema completo e funcional com arquitetura moderna de microsserviços</li>
+                <li>Aplicação mobile nativa em Kotlin com design patterns modernos</li>
+                <li>API RESTful escalável hospedada em cloud com alta disponibilidade</li>
+                <li>Autenticação robusta com OAuth2 e Firebase Authentication</li>
+                <li>Interface administrativa web responsiva e intuitiva</li>
+                <li>Banco de dados NoSQL com sincronização em tempo real</li>
+                <li>Documentação completa do projeto e infraestrutura</li>
+            </ul>
+        </div>
+
+        <!-- Slide 12: Desafios e Aprendizados -->
+        <div class="slide">
+            <h2>💡 Desafios e Aprendizados</h2>
+            <div class="feature-grid">
+                <div class="feature-item">
+                    <h4>🔧 Desafio Técnico</h4>
+                    <p>Integração entre Firebase, Spring Boot e OAuth2 exigiu compreensão profunda de segurança e tokens
+                        JWT.</p>
+                </div>
+                <div class="feature-item">
+                    <h4>📱 Mobile Development</h4>
+                    <p>Migração de Java para Kotlin no app Android, aplicando arquitetura MVVM e Navigation Component.
+                    </p>
+                </div>
+                <div class="feature-item">
+                    <h4>☁️ Cloud Deployment</h4>
+                    <p>Configuração de ambiente Heroku, gestão de variáveis sensíveis e troubleshooting de deploy.</p>
+                </div>
+                <div class="feature-item">
+                    <h4>🎯 Aprendizado Principal</h4>
+                    <p>Importância de arquitetura bem planejada, testes contínuos e documentação detalhada em projetos
+                        complexos.</p>
+                </div>
+            </div>
+            <h3 style="margin-top: 40px;">Competências Desenvolvidas</h3>
+            <ul>
+                <li>Desenvolvimento full-stack com Java, Kotlin, HTML/CSS/JS</li>
+                <li>Arquitetura de software e design patterns</li>
+                <li>Segurança de aplicações web e mobile</li>
+                <li>DevOps e deployment em cloud</li>
+                <li>Gestão de banco de dados NoSQL</li>
+            </ul>
+        </div>
+
+        <!-- Slide 13: Trabalhos Futuros -->
+        <div class="slide">
+            <h2>🔮 Trabalhos Futuros e Melhorias</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <h4>📱 Versão iOS</h4>
+                    <p>Desenvolver aplicativo nativo para iPhone utilizando Swift, ampliando o alcance da plataforma.
+                    </p>
+                </div>
+                <div class="timeline-item">
+                    <h4>🤖 Inteligência Artificial</h4>
+                    <p>Implementar recomendações personalizadas de treinos baseadas em machine learning e histórico do
+                        usuário.</p>
+                </div>
+                <div class="timeline-item">
+                    <h4>⌚ Integração com Wearables</h4>
+                    <p>Conectar com dispositivos como smartwatches para captura automática de métricas durante treinos.
+                    </p>
+                </div>
+                <div class="timeline-item">
+                    <h4>👥 Funcionalidades Sociais</h4>
+                    <p>Sistema de comunidade, desafios entre usuários, rankings e compartilhamento de conquistas.</p>
+                </div>
+                <div class="timeline-item">
+                    <h4>📊 Analytics Avançado</h4>
+                    <p>Dashboard com insights baseados em big data, previsões de evolução e análises comparativas.</p>
+                </div>
+                <div class="timeline-item">
+                    <h4>🎥 Biblioteca de Vídeos</h4>
+                    <p>Tutoriais em vídeo para execução correta de cada exercício, melhorando a experiência educacional.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 14: Conclusão -->
+        <div class="slide">
+            <h2>✅ Conclusão</h2>
+            <div class="feature-item" style="margin-bottom: 30px;">
+                <h4>Síntese do Projeto</h4>
+                <p>O <span class="highlight">MovimentaIF</span> representa uma solução completa e moderna para
+                    gerenciamento de atividades físicas, integrando tecnologias de ponta em uma arquitetura robusta e
+                    escalável.</p>
+            </div>
+
+            <h3>Principais Contribuições</h3>
+            <ul>
+                <li>Sistema multiplataforma funcional que atende necessidades reais de praticantes e profissionais</li>
+                <li>Arquitetura moderna baseada em cloud, seguindo boas práticas de desenvolvimento</li>
+                <li>Implementação de segurança robusta com Firebase e OAuth2</li>
+                <li>Experiência prática em desenvolvimento full-stack e DevOps</li>
+                <li>Documentação completa facilitando manutenção e evolução do sistema</li>
+            </ul>
+
+            <div class="team-info" style="margin-top: 50px;">
+                <h3>🎓 Considerações Finais</h3>
+                <p>Este TCC demonstra a aplicação prática de conhecimentos adquiridos durante o curso, resultando em um
+                    produto funcional e com potencial real de utilização pela comunidade do IFRS.</p>
+            </div>
+        </div>
+
+        <!-- Slide 15: Agradecimentos -->
+        <div class="slide">
+            <div class="logo">
+                <div class="logo-text">Obrigado!</div>
+            </div>
+            <h1 style="font-size: 2.5rem; margin-top: 40px;">Dúvidas e Discussão</h1>
+            <div class="team-info" style="margin-top: 60px;">
+                <h3>📞 Contato e Repositório</h3>
+                <p style="font-size: 1.4rem; margin: 20px 0;">
+                    <strong>GitHub:</strong> github.com/marloncm/MovimentaIF
+                </p>
+                <p style="font-size: 1.4rem; margin: 20px 0;">
+                    <strong>API Produção:</strong> movimentaif-api-7895a5f0638f.herokuapp.com
+                </p>
+                <p style="font-size: 1.4rem; margin: 20px 0;">
+                    <strong>Instituto Federal do Rio Grande do Sul</strong><br>
+                    Análise e Desenvolvimento de Sistemas - 2025
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide-counter">
+        <span id="current-slide">1</span> / <span id="total-slides">15</span>
+    </div>
+
+    <div class="controls">
+        <button class="btn" id="prev-btn" onclick="prevSlide()">← Anterior</button>
+        <button class="btn" id="next-btn" onclick="nextSlide()">Próximo →</button>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        document.getElementById('total-slides').textContent = totalSlides;
+
+        function showSlide(n) {
+            slides[currentSlide].classList.remove('active');
+            slides[currentSlide].classList.add('prev');
+
+            currentSlide = (n + totalSlides) % totalSlides;
+
+            slides.forEach(slide => slide.classList.remove('prev'));
+            slides[currentSlide].classList.add('active');
+
+            document.getElementById('current-slide').textContent = currentSlide + 1;
+
+            // Update button states
+            document.getElementById('prev-btn').disabled = currentSlide === 0;
+            document.getElementById('next-btn').disabled = currentSlide === totalSlides - 1;
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides - 1) {
+                showSlide(currentSlide + 1);
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                showSlide(currentSlide - 1);
+            }
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                prevSlide();
+            }
+        });
+
+        // Touch navigation for mobile
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        document.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+
+        document.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            if (touchEndX < touchStartX - 50) {
+                nextSlide();
+            }
+            if (touchEndX > touchStartX + 50) {
+                prevSlide();
+            }
+        }
+
+        // Initialize
+        showSlide(0);
+    </script>
+</body>
+
+</html>
