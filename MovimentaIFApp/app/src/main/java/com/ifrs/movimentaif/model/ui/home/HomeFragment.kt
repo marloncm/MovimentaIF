@@ -44,14 +44,17 @@ class HomeFragment : Fragment() {
 
     private fun setupClickListeners() {
         binding.cardMyWorkout.setOnClickListener {
+            com.ifrs.movimentaif.utils.SoundManager.playClickSound()
             findNavController().navigate(R.id.nav_user_workouts)
         }
 
         binding.cardExercises.setOnClickListener {
+            com.ifrs.movimentaif.utils.SoundManager.playClickSound()
             findNavController().navigate(R.id.nav_workout_list)
         }
 
         binding.cardProfile.setOnClickListener {
+            com.ifrs.movimentaif.utils.SoundManager.playClickSound()
             findNavController().navigate(R.id.nav_profile)
         }
     }

@@ -62,10 +62,12 @@ class ProfileFragment : Fragment() {
         }
 
         cardParQ.setOnClickListener {
+            com.ifrs.movimentaif.utils.SoundManager.playClickSound()
             Toast.makeText(context, "Par-Q em desenvolvimento", Toast.LENGTH_SHORT).show()
         }
 
         cardAnamnese.setOnClickListener {
+            com.ifrs.movimentaif.utils.SoundManager.playClickSound()
             Toast.makeText(context, "Anamnese em desenvolvimento", Toast.LENGTH_SHORT).show()
         }
     }

@@ -73,18 +73,32 @@ class LoginActivity : AppCompatActivity() {
         // 3. Aplicar gradiente
         applyLogoGradient(logoTextView)
 
-        // 4. Verificar se biometria está habilitada
+        // 4. Verificar se biometria está habilitada e se há credenciais salvas
+        val savedEmail = securePreferences.getUserEmail()
+        val savedUserId = securePreferences.getUserId()
+        
         if (securePreferences.isBiometricEnabled() && 
-            BiometricManager.isBiometricAvailable(this)) {
+            BiometricManager.isBiometricAvailable(this) &&
+            !savedEmail.isNullOrEmpty() && 
+            !savedUserId.isNullOrEmpty()) {
             btnBiometric.visibility = android.view.View.VISIBLE
-            btnBiometric.setOnClickListener { authenticateWithBiometric() }
+            btnBiometric.setOnClickListener { 
+                com.ifrs.movimentaif.utils.SoundManager.playClickSound()
+                authenticateWithBiometric() 
+            }
         } else {
             btnBiometric.visibility = android.view.View.GONE
         }
 
         // 5. Configurar Listeners
-        registerButton.setOnClickListener { goToRegister() }
-        loginButton.setOnClickListener { performLogin() }
+        registerButton.setOnClickListener { 
+            com.ifrs.movimentaif.utils.SoundManager.playClickSound()
+            goToRegister() 
+        }
+        loginButton.setOnClickListener { 
+            com.ifrs.movimentaif.utils.SoundManager.playClickSound()
+            performLogin() 
+        }
 
         // --- ❗️ NOVO: Configuração do Google Login ---
 

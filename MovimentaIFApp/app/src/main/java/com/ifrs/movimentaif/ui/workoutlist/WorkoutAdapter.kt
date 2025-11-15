@@ -29,6 +29,7 @@ class WorkoutAdapter : ListAdapter<Workout, WorkoutAdapter.WorkoutViewHolder>(Wo
             if (workout.workoutVideoLink.isNotEmpty()) {
                 binding.btnWatchVideo.visibility = android.view.View.VISIBLE
                 binding.btnWatchVideo.setOnClickListener {
+                    com.ifrs.movimentaif.utils.SoundManager.playClickSound()
                     val intent = Intent(Intent.ACTION_VIEW, Uri.parse(workout.workoutVideoLink))
                     binding.root.context.startActivity(intent)
                 }

@@ -228,6 +228,7 @@ class UserWorkoutsFragment : Fragment() {
         if (!workout.workoutVideoLink.isNullOrEmpty()) {
             btnVideo?.visibility = View.VISIBLE
             btnVideo?.setOnClickListener {
+                com.ifrs.movimentaif.utils.SoundManager.playClickSound()
                 openVideo(workout.workoutVideoLink)
             }
             
@@ -235,6 +236,7 @@ class UserWorkoutsFragment : Fragment() {
             val btnShare = itemView.findViewById<com.google.android.material.button.MaterialButton>(com.ifrs.movimentaif.R.id.btnShareVideo)
             btnShare?.visibility = View.VISIBLE
             btnShare?.setOnClickListener {
+                com.ifrs.movimentaif.utils.SoundManager.playClickSound()
                 shareVideo(workout.workoutVideoLink, workout.workoutName ?: "Exercício")
             }
         } else {

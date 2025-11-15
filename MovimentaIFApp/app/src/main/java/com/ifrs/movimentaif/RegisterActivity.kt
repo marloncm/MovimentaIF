@@ -52,10 +52,12 @@ class RegisterActivity : AppCompatActivity() {
         applyLogoGradient(logoTextView)
 
         cancelButton.setOnClickListener {
+            com.ifrs.movimentaif.utils.SoundManager.playClickSound()
             cancelRegistration()
         }
 
         registerButton.setOnClickListener {
+            com.ifrs.movimentaif.utils.SoundManager.playClickSound()
             val username = nameInputField.text.toString()
             val email = emailInputField.text.toString()
             val password = passwordInputField.text.toString()
