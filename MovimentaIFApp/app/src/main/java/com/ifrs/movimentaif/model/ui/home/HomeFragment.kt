@@ -5,10 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.FirebaseAuth
 import com.ifrs.movimentaif.R
+import com.ifrs.movimentaif.api.RetrofitInstance
 import com.ifrs.movimentaif.databinding.FragmentHomeBinding
+import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment() {
 
@@ -30,6 +33,37 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupUserInfo()
         setupClickListeners()
+        loadStatistics()
+    }
+
+    private fun loadStatistics() {
+        val userId = auth.currentUser?.uid ?: return
+        
+        lifecycleScope.launch {
+            try {
+                // Carregar total de treinos completados
+                val totalResponse = RetrofitInstance.api.getTotalWorkoutsCompleted(userId)
+                if (totalResponse.isSuccessful) {
+                    val total = totalResponse.body() ?: 0
+                    binding.textWorkoutCount.text = total.toString()
+                }
+                
+                // Carregar dias ativos
+                val activeDaysResponse = RetrofitInstance.api.getActiveDaysCount(userId)
+                if (activeDaysResponse.isSuccessful) {
+                    val activeDays = activeDaysResponse.body() ?: 0
+                    binding.textActiveDays.text = activeDays.toString()
+                }
+            } catch (e: Exception) {
+                // Silenciosamente mantém valores padrão em caso de erro
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Recarregar estatísticas quando o fragment volta a ficar visível
+        loadStatistics()
     }
 
     private fun setupUserInfo() {

@@ -12,6 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import com.google.firebase.auth.FirebaseAuth
 import com.ifrs.movimentaif.api.RetrofitInstance
 import com.ifrs.movimentaif.databinding.FragmentUserWorkoutsBinding
+import com.ifrs.movimentaif.model.DailyWorkoutCompletion
 import com.ifrs.movimentaif.model.UserWorkout
 import com.ifrs.movimentaif.model.Workout
 import com.ifrs.movimentaif.model.WorkoutChart
@@ -38,7 +39,121 @@ class UserWorkoutsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupFinishButtons()
         loadWorkoutChart()
+    }
+
+    private fun setupFinishButtons() {
+        binding.btnFinishMonday.setOnClickListener {
+            com.ifrs.movimentaif.utils.SoundManager.playClickSound()
+            finishWorkoutDay("monday", "Segunda-feira")
+        }
+        
+        binding.btnFinishTuesday.setOnClickListener {
+            com.ifrs.movimentaif.utils.SoundManager.playClickSound()
+            finishWorkoutDay("tuesday", "Terça-feira")
+        }
+        
+        binding.btnFinishWednesday.setOnClickListener {
+            com.ifrs.movimentaif.utils.SoundManager.playClickSound()
+            finishWorkoutDay("wednesday", "Quarta-feira")
+        }
+        
+        binding.btnFinishThursday.setOnClickListener {
+            com.ifrs.movimentaif.utils.SoundManager.playClickSound()
+            finishWorkoutDay("thursday", "Quinta-feira")
+        }
+        
+        binding.btnFinishFriday.setOnClickListener {
+            com.ifrs.movimentaif.utils.SoundManager.playClickSound()
+            finishWorkoutDay("friday", "Sexta-feira")
+        }
+    }
+
+    private fun finishWorkoutDay(dayOfWeek: String, dayName: String) {
+        val userId = auth.currentUser?.uid
+        val chartId = workoutChart?.chartId
+        
+        if (userId == null || chartId == null) {
+            Toast.makeText(context, "Erro: usuário ou ficha não encontrada", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        lifecycleScope.launch {
+            try {
+                val completion = DailyWorkoutCompletion(
+                    userId = userId,
+                    dayOfWeek = dayOfWeek,
+                    workoutChartId = chartId
+                )
+                
+                val response = RetrofitInstance.api.createWorkoutCompletion(completion)
+                
+                if (response.isSuccessful) {
+                    Toast.makeText(
+                        context,
+                        "Parabéns! Treino de $dayName finalizado! 💪",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    updateButtonState(dayOfWeek, true)
+                } else {
+                    Toast.makeText(
+                        context,
+                        "Erro ao finalizar treino",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            } catch (e: Exception) {
+                Toast.makeText(
+                    context,
+                    "Erro de conexão: ${e.message}",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+    }
+
+    private fun updateButtonState(dayOfWeek: String, completed: Boolean) {
+        val button = when(dayOfWeek) {
+            "monday" -> binding.btnFinishMonday
+            "tuesday" -> binding.btnFinishTuesday
+            "wednesday" -> binding.btnFinishWednesday
+            "thursday" -> binding.btnFinishThursday
+            "friday" -> binding.btnFinishFriday
+            else -> null
+        }
+        
+        button?.let {
+            if (completed) {
+                it.text = "✓ Treino Finalizado Hoje"
+                it.isEnabled = false
+                it.alpha = 0.6f
+            } else {
+                it.text = "✓ Finalizar Treino do Dia"
+                it.isEnabled = true
+                it.alpha = 1.0f
+            }
+        }
+    }
+
+    private fun checkCompletionStatus() {
+        val userId = auth.currentUser?.uid ?: return
+        
+        lifecycleScope.launch {
+            try {
+                val days = listOf("monday", "tuesday", "wednesday", "thursday", "friday")
+                
+                for (day in days) {
+                    val response = RetrofitInstance.api.isCompletedToday(userId, day)
+                    if (response.isSuccessful) {
+                        val isCompleted = response.body() ?: false
+                        updateButtonState(day, isCompleted)
+                    }
+                }
+            } catch (e: Exception) {
+                // Silenciosamente ignora erros ao verificar status
+            }
+        }
     }
 
     private fun loadWorkoutChart() {
@@ -174,6 +289,9 @@ class UserWorkoutsFragment : Fragment() {
             binding.fridayCard,
             binding.fridayWorkoutsContainer
         )
+        
+        // Verificar status de conclusão dos treinos
+        checkCompletionStatus()
     }
 
     private fun displayDayWorkouts(

@@ -68,6 +68,38 @@ class HomeActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
         
+        // Adicionar listener para garantir que nav_home sempre funcione
+        navView.setNavigationItemSelectedListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.nav_home -> {
+                    navController.navigate(R.id.nav_home)
+                    drawerLayout.closeDrawers()
+                    true
+                }
+                R.id.nav_profile -> {
+                    navController.navigate(R.id.nav_profile)
+                    drawerLayout.closeDrawers()
+                    true
+                }
+                R.id.nav_user_workouts -> {
+                    navController.navigate(R.id.nav_user_workouts)
+                    drawerLayout.closeDrawers()
+                    true
+                }
+                R.id.nav_workout_list -> {
+                    navController.navigate(R.id.nav_workout_list)
+                    drawerLayout.closeDrawers()
+                    true
+                }
+                R.id.nav_about -> {
+                    navController.navigate(R.id.nav_about)
+                    drawerLayout.closeDrawers()
+                    true
+                }
+                else -> false
+            }
+        }
+        
         // Carregar dados do usuário no header
         updateNavigationHeader(navView)
 
@@ -146,8 +178,7 @@ class HomeActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             android.R.id.home -> {
-                val navController = findNavController(R.id.nav_host_fragment_content_home)
-                navController.navigate(R.id.nav_home)
+                onSupportNavigateUp()
                 true
             }
             else -> super.onOptionsItemSelected(item)

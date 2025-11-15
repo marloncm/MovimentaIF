@@ -9,6 +9,7 @@ object SoundManager {
     private var soundPool: SoundPool? = null
     private var clickSoundId: Int = 0
     private var isInitialized = false
+    private var isLoaded = false
 
     fun init(context: Context) {
         if (isInitialized) return
@@ -23,13 +24,19 @@ object SoundManager {
             .setAudioAttributes(audioAttributes)
             .build()
 
-        clickSoundId = soundPool?.load(context, R.raw.click_sound, 1) ?: 0
+        soundPool?.setOnLoadCompleteListener { _, _, status ->
+            if (status == 0) {
+                isLoaded = true
+            }
+        }
+
+        clickSoundId = soundPool?.load(context, R.raw.som, 1) ?: 0
         isInitialized = true
     }
 
     fun playClickSound() {
-        if (isInitialized && clickSoundId != 0) {
-            soundPool?.play(clickSoundId, 0.5f, 0.5f, 1, 0, 1.0f)
+        if (isInitialized && isLoaded && clickSoundId != 0) {
+            soundPool?.play(clickSoundId, 1.0f, 1.0f, 1, 0, 1.0f)
         }
     }
 

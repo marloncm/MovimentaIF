@@ -1,6 +1,7 @@
 package com.ifrs.movimentaif.api
 
 import com.ifrs.movimentaif.model.Anamnese
+import com.ifrs.movimentaif.model.DailyWorkoutCompletion
 import com.ifrs.movimentaif.model.ParQ
 import com.ifrs.movimentaif.model.User
 import com.ifrs.movimentaif.model.Workout
@@ -8,6 +9,7 @@ import com.ifrs.movimentaif.model.WorkoutChart
 import com.ifrs.movimentaif.model.UserWorkout
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.PUT
@@ -55,4 +57,32 @@ interface ApiService {
     
     @PUT("api/anamnese/{anamneseId}")
     suspend fun updateAnamnese(@Path("anamneseId") anamneseId: String, @Body anamnese: Anamnese): Response<Anamnese>
+    
+    // Daily Workout Completion endpoints
+    @POST("api/workout-completions")
+    suspend fun createWorkoutCompletion(@Body completion: DailyWorkoutCompletion): Response<DailyWorkoutCompletion>
+    
+    @GET("api/workout-completions/user/{userId}")
+    suspend fun getWorkoutCompletionsByUserId(@Path("userId") userId: String): Response<List<DailyWorkoutCompletion>>
+    
+    @GET("api/workout-completions/user/{userId}/day/{dayOfWeek}")
+    suspend fun getWorkoutCompletionsByUserIdAndDay(
+        @Path("userId") userId: String,
+        @Path("dayOfWeek") dayOfWeek: String
+    ): Response<List<DailyWorkoutCompletion>>
+    
+    @GET("api/workout-completions/user/{userId}/day/{dayOfWeek}/today")
+    suspend fun isCompletedToday(
+        @Path("userId") userId: String,
+        @Path("dayOfWeek") dayOfWeek: String
+    ): Response<Boolean>
+    
+    @GET("api/workout-completions/user/{userId}/total")
+    suspend fun getTotalWorkoutsCompleted(@Path("userId") userId: String): Response<Int>
+    
+    @GET("api/workout-completions/user/{userId}/active-days")
+    suspend fun getActiveDaysCount(@Path("userId") userId: String): Response<Int>
+    
+    @DELETE("api/workout-completions/{completionId}")
+    suspend fun deleteWorkoutCompletion(@Path("completionId") completionId: String): Response<Void>
 }

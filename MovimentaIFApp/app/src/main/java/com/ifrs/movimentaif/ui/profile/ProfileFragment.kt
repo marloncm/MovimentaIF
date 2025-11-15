@@ -16,6 +16,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.ifrs.movimentaif.R
 import com.ifrs.movimentaif.api.RetrofitInstance
 import com.ifrs.movimentaif.utils.setOnClickListenerWithSound
+import com.ifrs.movimentaif.ui.parq.ParQActivity
+import com.ifrs.movimentaif.ui.anamnese.AnamneseActivity
 import kotlinx.coroutines.launch
 
 class ProfileFragment : Fragment() {
@@ -63,12 +65,14 @@ class ProfileFragment : Fragment() {
 
         cardParQ.setOnClickListener {
             com.ifrs.movimentaif.utils.SoundManager.playClickSound()
-            Toast.makeText(context, "Par-Q em desenvolvimento", Toast.LENGTH_SHORT).show()
+            val intent = Intent(requireContext(), ParQActivity::class.java)
+            startActivity(intent)
         }
 
         cardAnamnese.setOnClickListener {
             com.ifrs.movimentaif.utils.SoundManager.playClickSound()
-            Toast.makeText(context, "Anamnese em desenvolvimento", Toast.LENGTH_SHORT).show()
+            val intent = Intent(requireContext(), AnamneseActivity::class.java)
+            startActivity(intent)
         }
     }
 

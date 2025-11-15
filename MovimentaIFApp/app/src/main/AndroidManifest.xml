@@ -63,6 +63,16 @@
             android:exported="false"
             android:label="Editar Perfil"
             android:parentActivityName=".HomeActivity" />
+        <activity
+            android:name=".ui.parq.ParQActivity"
+            android:exported="false"
+            android:label="PAR-Q"
+            android:parentActivityName=".HomeActivity" />
+        <activity
+            android:name=".ui.anamnese.AnamneseActivity"
+            android:exported="false"
+            android:label="Anamnese"
+            android:parentActivityName=".HomeActivity" />
     </application>
 
 </manifest>
