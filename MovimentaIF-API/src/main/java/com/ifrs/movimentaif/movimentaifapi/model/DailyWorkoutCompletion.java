@@ -3,27 +3,27 @@ package com.ifrs.movimentaif.movimentaifapi.model;
 import java.util.Date;
 import java.util.UUID;
 
-public class WorkoutCompletion {
+public class DailyWorkoutCompletion {
     private String completionId;
     private String userId;
+    private String dayOfWeek; // "monday", "tuesday", "wednesday", "thursday", "friday"
     private Date completedDate;
-    private String dayOfWeek; // MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY
-    private int totalExercises;
-    private String notes;
+    private String workoutChartId; // Referência para qual ficha de treino foi completada
 
-    public WorkoutCompletion() {
+    public DailyWorkoutCompletion() {
         this.completionId = UUID.randomUUID().toString();
         this.completedDate = new Date();
     }
 
-    public WorkoutCompletion(String userId, String dayOfWeek, int totalExercises) {
+    public DailyWorkoutCompletion(String userId, String dayOfWeek, String workoutChartId) {
         this.completionId = UUID.randomUUID().toString();
         this.userId = userId;
         this.dayOfWeek = dayOfWeek;
-        this.totalExercises = totalExercises;
+        this.workoutChartId = workoutChartId;
         this.completedDate = new Date();
     }
 
+    // Getters and Setters
     public String getCompletionId() {
         return completionId;
     }
@@ -40,14 +40,6 @@ public class WorkoutCompletion {
         this.userId = userId;
     }
 
-    public Date getCompletedDate() {
-        return completedDate;
-    }
-
-    public void setCompletedDate(Date completedDate) {
-        this.completedDate = completedDate;
-    }
-
     public String getDayOfWeek() {
         return dayOfWeek;
     }
@@ -56,19 +48,19 @@ public class WorkoutCompletion {
         this.dayOfWeek = dayOfWeek;
     }
 
-    public int getTotalExercises() {
-        return totalExercises;
+    public Date getCompletedDate() {
+        return completedDate;
     }
 
-    public void setTotalExercises(int totalExercises) {
-        this.totalExercises = totalExercises;
+    public void setCompletedDate(Date completedDate) {
+        this.completedDate = completedDate;
     }
 
-    public String getNotes() {
-        return notes;
+    public String getWorkoutChartId() {
+        return workoutChartId;
     }
 
-    public void setNotes(String notes) {
-        this.notes = notes;
+    public void setWorkoutChartId(String workoutChartId) {
+        this.workoutChartId = workoutChartId;
     }
 }
