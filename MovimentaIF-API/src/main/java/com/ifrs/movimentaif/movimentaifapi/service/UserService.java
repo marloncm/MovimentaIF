@@ -86,6 +86,7 @@ public class UserService {
             existingUser.setPhoneNumber(user.getPhoneNumber() != null && !user.getPhoneNumber().isEmpty() ? user.getPhoneNumber() : existingUser.getPhoneNumber());
             existingUser.setEmail(user.getEmail() != null && !user.getEmail().isEmpty() ? user.getEmail() : existingUser.getEmail());
             existingUser.setRole(user.getRole() != null && !user.getRole().isEmpty() ? user.getRole() : existingUser.getRole());
+            existingUser.setAffiliationType(user.getAffiliationType() != null && !user.getAffiliationType().isEmpty() ? user.getAffiliationType() : existingUser.getAffiliationType());
             existingUser.setActive(user.isActive() != existingUser.isActive() ? user.isActive() : existingUser.isActive());
             existingUser.setSignedTermOfCommitment(user.isSignedTermOfCommitment() != existingUser.isSignedTermOfCommitment() ? user.isSignedTermOfCommitment() : existingUser.isSignedTermOfCommitment());
             existingUser.setInterviewed(user.isInterviewed() != existingUser.isInterviewed() ? user.isInterviewed() : existingUser.isInterviewed());

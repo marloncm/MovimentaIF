@@ -20,6 +20,9 @@ interface ApiService {
     @GET("api/users/{uid}")
     suspend fun getUserById(@Path("uid") uid: String): Response<User>
     
+    @PUT("api/users/{uid}")
+    suspend fun updateUser(@Path("uid") uid: String, @Body user: User): Response<User>
+    
     @GET("api/workouts")
     suspend fun getAllWorkouts(): Response<List<Workout>>
     

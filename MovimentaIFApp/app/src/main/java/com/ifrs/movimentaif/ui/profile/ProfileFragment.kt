@@ -15,6 +15,7 @@ import com.google.android.material.card.MaterialCardView
 import com.google.firebase.auth.FirebaseAuth
 import com.ifrs.movimentaif.R
 import com.ifrs.movimentaif.api.RetrofitInstance
+import com.ifrs.movimentaif.utils.setOnClickListenerWithSound
 import kotlinx.coroutines.launch
 
 class ProfileFragment : Fragment() {
@@ -55,8 +56,9 @@ class ProfileFragment : Fragment() {
 
         loadUserData()
 
-        btnEditProfile.setOnClickListener {
-            Toast.makeText(context, "Edição de perfil em desenvolvimento", Toast.LENGTH_SHORT).show()
+        btnEditProfile.setOnClickListenerWithSound {
+            val intent = Intent(requireContext(), ProfileEditActivity::class.java)
+            startActivity(intent)
         }
 
         cardParQ.setOnClickListener {
@@ -66,6 +68,11 @@ class ProfileFragment : Fragment() {
         cardAnamnese.setOnClickListener {
             Toast.makeText(context, "Anamnese em desenvolvimento", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        loadUserData()
     }
 
     private fun loadUserData() {

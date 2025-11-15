@@ -230,8 +230,17 @@ class UserWorkoutsFragment : Fragment() {
             btnVideo?.setOnClickListener {
                 openVideo(workout.workoutVideoLink)
             }
+            
+            // Adicionar botão de compartilhar
+            val btnShare = itemView.findViewById<com.google.android.material.button.MaterialButton>(com.ifrs.movimentaif.R.id.btnShareVideo)
+            btnShare?.visibility = View.VISIBLE
+            btnShare?.setOnClickListener {
+                shareVideo(workout.workoutVideoLink, workout.workoutName ?: "Exercício")
+            }
         } else {
             btnVideo?.visibility = View.GONE
+            val btnShare = itemView.findViewById<com.google.android.material.button.MaterialButton>(com.ifrs.movimentaif.R.id.btnShareVideo)
+            btnShare?.visibility = View.GONE
         }
 
         return itemView
@@ -243,6 +252,20 @@ class UserWorkoutsFragment : Fragment() {
             startActivity(intent)
         } catch (e: Exception) {
             Toast.makeText(context, "Erro ao abrir vídeo", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun shareVideo(videoUrl: String, workoutName: String) {
+        try {
+            val shareIntent = Intent().apply {
+                action = Intent.ACTION_SEND
+                type = "text/plain"
+                putExtra(Intent.EXTRA_SUBJECT, "Confira este treino: $workoutName")
+                putExtra(Intent.EXTRA_TEXT, "Olha que treino legal do MovimentaIF!\n\n$workoutName\n\n$videoUrl\n\n#MaisMovimento #IFRS")
+            }
+            startActivity(Intent.createChooser(shareIntent, "Compartilhar treino via"))
+        } catch (e: Exception) {
+            Toast.makeText(context, "Erro ao compartilhar vídeo", Toast.LENGTH_SHORT).show()
         }
     }
 

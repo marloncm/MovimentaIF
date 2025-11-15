@@ -58,6 +58,11 @@
         <activity
             android:name=".MainActivity"
             android:exported="false" />
+        <activity
+            android:name=".ui.profile.ProfileEditActivity"
+            android:exported="false"
+            android:label="Editar Perfil"
+            android:parentActivityName=".HomeActivity" />
     </application>
 
 </manifest>

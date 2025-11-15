@@ -21,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.messaging.FirebaseMessaging
 import com.ifrs.movimentaif.databinding.ActivityHomeBinding
+import com.ifrs.movimentaif.utils.SoundManager
 
 class HomeActivity : AppCompatActivity() {
 
@@ -33,6 +34,9 @@ class HomeActivity : AppCompatActivity() {
 
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        
+        // Inicializar SoundManager
+        SoundManager.init(applicationContext)
 
         setSupportActionBar(binding.appBarHome.toolbar)
 
@@ -55,7 +59,8 @@ class HomeActivity : AppCompatActivity() {
                 R.id.nav_home, 
                 R.id.nav_profile,
                 R.id.nav_user_workouts,
-                R.id.nav_workout_list
+                R.id.nav_workout_list,
+                R.id.nav_about
             ), drawerLayout
         )
         
@@ -141,5 +146,10 @@ class HomeActivity : AppCompatActivity() {
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment_content_home)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        SoundManager.release()
     }
 }
