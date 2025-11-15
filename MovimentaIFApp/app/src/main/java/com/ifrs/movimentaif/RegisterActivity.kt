@@ -1,5 +1,6 @@
 package com.ifrs.movimentaif
 
+import android.content.Intent
 import android.graphics.LinearGradient
 import android.graphics.Shader
 import android.os.Bundle
@@ -99,7 +100,7 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     fun registerAccount(username: String, email: String, password: String){
-// Desabilita o botão para evitar cliques duplos
+        // Desabilita o botão para evitar cliques duplos
         registerButton.isEnabled = false
         Toast.makeText(this, "Registrando...", Toast.LENGTH_SHORT).show()
 
@@ -109,8 +110,21 @@ class RegisterActivity : AppCompatActivity() {
                     // SUCESSO NO FIREBASE
                     Log.d("Firebase", "createUserWithEmail:success")
 
-                    // Crie o objeto User para enviar à sua API
-                    val newUser = User(username, email, false)
+                    // Pegar o UID do usuário criado no Firebase
+                    val firebaseUser = auth.currentUser
+                    val userId = firebaseUser?.uid ?: ""
+                    
+                    Log.d("Firebase", "UID criado: $userId")
+                    Log.d("Firebase", "Email: $email")
+                    Log.d("Firebase", "Nome: $username")
+
+                    // Crie o objeto User com o UID do Firebase
+                    val newUser = User(userId, email)
+                    newUser.userName = username
+                    newUser.isAppUser = true
+                    newUser.setActive(true)
+                    
+                    Log.d("RegisterActivity", "User object criado - UID: ${newUser.userId}, Email: ${newUser.email}, Nome: ${newUser.userName}, isAppUser: ${newUser.isAppUser}, isActive: ${newUser.isActive}")
 
                     // Etapa 2: Chamar sua API interna
                     registerUserInInternalApi(newUser)
@@ -135,30 +149,69 @@ class RegisterActivity : AppCompatActivity() {
         // Use Coroutines para a chamada de rede
         lifecycleScope.launch {
             try {
+                Log.d("API", "Enviando usuário para API: userId=${user.userId}, email=${user.email}, userName=${user.userName}")
+                Log.d("API", "isActive=${user.isActive}, isAppUser=${user.isAppUser}")
+                Log.d("API", "interviewed=${user.isInterviewed}, didFirstWorkout=${user.isDidFirstWorkout}")
+                Log.d("API", "scheduledFirstWorkout=${user.isScheduledFirstWorkout}")
+                Log.d("API", "createdAt=${user.createdAt}")
+                
                 val response = RetrofitInstance.api.registerUser(user)
 
+                Log.d("API", "Response code: ${response.code()}")
+                Log.d("API", "Response message: ${response.message()}")
+                Log.d("API", "Response headers: ${response.headers()}")
+                
                 if (response.isSuccessful) {
                     // SUCESSO NA API INTERNA
-                    Log.d("API", "Usuário registrado na API interna: ${response.body()}")
+                    val responseBody = response.body()
+                    Log.d("API", "Usuário registrado na API interna: $responseBody")
                     Toast.makeText(baseContext, "Cadastro realizado com sucesso!", Toast.LENGTH_SHORT).show()
 
-                    // Envia o usuário de volta para a tela de Login
+                    // Login automático após cadastro - redireciona para HomeActivity
+                    val intent = Intent(this@RegisterActivity, HomeActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    startActivity(intent)
                     finish()
 
                 } else {
-                    // FALHA NA API INTERNA (Ex: email já existe no seu DB)
-                    Log.e("API", "Erro ao registrar na API: ${response.errorBody()?.string()}")
-                    Toast.makeText(baseContext, "Erro ao salvar dados (API).", Toast.LENGTH_LONG).show()
+                    // FALHA NA API INTERNA
+                    val errorBody = response.errorBody()?.string()
+                    Log.e("API", "Erro ao registrar na API - Code: ${response.code()}, Error: $errorBody")
+                    
+                    // Mostrar erro mais detalhado ao usuário
+                    val errorMessage = when(response.code()) {
+                        400 -> "Dados inválidos: $errorBody"
+                        401 -> "Não autorizado. Faça login novamente."
+                        409 -> "Este email já está cadastrado."
+                        500 -> "Erro no servidor. Tente novamente."
+                        else -> "Erro ${response.code()}: $errorBody"
+                    }
+                    
+                    Toast.makeText(baseContext, errorMessage, Toast.LENGTH_LONG).show()
                     registerButton.isEnabled = true
-
-                    // (Opcional avançado): Se a API falhar, você deveria deletar
-                    // o usuário recém-criado no Firebase para evitar inconsistência.
                 }
 
+            } catch (e: com.google.gson.JsonSyntaxException) {
+                // Erro de parsing JSON (resposta vazia ou inválida)
+                Log.e("API", "JsonSyntaxException - Resposta vazia ou JSON inválido", e)
+                e.printStackTrace()
+                Toast.makeText(baseContext, "Erro: Resposta vazia do servidor. Verifique sua conexão.", Toast.LENGTH_LONG).show()
+                registerButton.isEnabled = true
+            } catch (e: java.net.UnknownHostException) {
+                // Sem conexão com internet
+                Log.e("API", "UnknownHostException - Sem conexão", e)
+                Toast.makeText(baseContext, "Sem conexão com a internet", Toast.LENGTH_LONG).show()
+                registerButton.isEnabled = true
+            } catch (e: java.net.SocketTimeoutException) {
+                // Timeout
+                Log.e("API", "SocketTimeoutException - Timeout", e)
+                Toast.makeText(baseContext, "Tempo de espera esgotado. Tente novamente.", Toast.LENGTH_LONG).show()
+                registerButton.isEnabled = true
             } catch (e: Exception) {
-                // FALHA DE CONEXÃO (Ex: API offline ou IP errado)
-                Log.e("API", "Falha de conexão: ${e.message}")
-                Toast.makeText(baseContext, "Falha de conexão com o servidor.", Toast.LENGTH_LONG).show()
+                // FALHA DE CONEXÃO ou outro erro
+                Log.e("API", "Falha de conexão: ${e.javaClass.simpleName} - ${e.message}", e)
+                e.printStackTrace()
+                Toast.makeText(baseContext, "Erro: ${e.javaClass.simpleName}: ${e.message}", Toast.LENGTH_LONG).show()
                 registerButton.isEnabled = true
             }
         }

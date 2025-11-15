@@ -1,6 +1,7 @@
 package com.ifrs.movimentaif.api
 
 import com.google.firebase.auth.FirebaseAuth
+import com.google.gson.GsonBuilder
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -12,6 +13,12 @@ object RetrofitInstance {
 
     // ✅ URL de Produção com HTTPS
     private const val BASE_URL = "https://movimentaif-api-7895a5f0638f.herokuapp.com/"
+    
+    // Gson com configuração de datas
+    private val gson = GsonBuilder()
+        .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
+        .setLenient()
+        .create()
     
     // Interceptor para adicionar o token JWT automaticamente em todas as requisições
     private val authInterceptor = Interceptor { chain ->
@@ -51,7 +58,7 @@ object RetrofitInstance {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
             .client(httpClient)
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
             .create(ApiService::class.java)
     }

@@ -1,7 +1,45 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
+    <!-- Tema Dark - MovimentaIF -->
     <style name="Base.Theme.MovimentaIFApp" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+        <!-- Cores Primárias -->
+        <item name="colorPrimary">@color/maisMovimentoPrimary</item>
+        <item name="colorPrimaryVariant">@color/maisMovimentoSecondary</item>
+        <item name="colorOnPrimary">@color/background_dark</item>
+        
+        <!-- Cores Secundárias -->
+        <item name="colorSecondary">@color/maisMovimentoSecondary</item>
+        <item name="colorSecondaryVariant">@color/maisMovimentoPrimary</item>
+        <item name="colorOnSecondary">@color/background_dark</item>
+        
+        <!-- Background e Surface -->
+        <item name="android:colorBackground">@color/background_dark</item>
+        <item name="colorSurface">@color/surface_dark</item>
+        <item name="colorOnSurface">@color/text_primary_dark</item>
+        <item name="colorOnBackground">@color/text_primary_dark</item>
+        
+        <!-- Status Bar e Navigation Bar -->
+        <item name="android:statusBarColor">@color/background_dark</item>
+        <item name="android:navigationBarColor">@color/background_dark</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
+        
+        <!-- Cards -->
+        <item name="cardViewStyle">@style/Widget.MaterialComponents.CardView</item>
+        
+        <!-- Text -->
+        <item name="android:textColorPrimary">@color/text_primary_dark</item>
+        <item name="android:textColorSecondary">@color/text_secondary_dark</item>
     </style>
+
+    <style name="Theme.MovimentaIFApp" parent="Base.Theme.MovimentaIFApp" />
+
+    <style name="Theme.MovimentaIFApp.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="Theme.MovimentaIFApp.AppBarOverlay" parent="ThemeOverlay.Material3.Dark.ActionBar">
+        <item name="colorControlNormal">@color/text_primary_dark</item>
+    </style>
+
+    <style name="Theme.MovimentaIFApp.PopupOverlay" parent="ThemeOverlay.Material3.Dark" />
 </resources>

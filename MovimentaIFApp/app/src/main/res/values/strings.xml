@@ -3,16 +3,24 @@
     <string name="title_activity_home">HomeActivity</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
-    <string name="nav_header_desc">Navigation header</string>
+    <string name="nav_header_title">MovimentaIF</string>
+    <string name="nav_header_subtitle">Bem-vindo(a)</string>
+    <string name="nav_header_desc">Menu de navegação</string>
     <string name="action_about">Sobre</string>
+    <string name="action_settings">Configurações</string>
+    <string name="action_help">Ajuda</string>
 
-    <string name="menu_home">Inicio</string>
-    <string name="menu_profile">Perfil</string>
-    <string name="menu_user_workouts">Ficha de Treino</string>
-    <string name="menu_workout_list">Lista de Exercícios</string>
+    <!-- Menu Principal -->
+    <string name="menu_home">Início</string>
+    <string name="menu_profile">Meu Perfil</string>
+    <string name="menu_user_workouts">Minha Ficha</string>
+    <string name="menu_workout_list">Exercícios</string>
     <string name="menu_logout">Sair</string>
+    
+    <!-- Descrições -->
+    <string name="desc_profile_icon">Ícone de perfil do usuário</string>
+    <string name="desc_home_icon">Ícone da página inicial</string>
+    <string name="desc_workout_icon">Ícone de treinos</string>
     <string name="menu_gallery">Galeria</string>
     <string name="menu_slideshow">Apresentação de Slides</string>
     

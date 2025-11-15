@@ -1,0 +1,120 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="200dp"
+    android:height="200dp"
+    android:viewportWidth="200"
+    android:viewportHeight="200">
+    
+    <!-- Haltere Moderno e Detalhado -->
+    
+    <!-- Peso Esquerdo - Parte Externa -->
+    <path
+        android:fillColor="#E0E0E0"
+        android:pathData="M25,65 L55,65 L55,135 L25,135 Z" />
+    
+    <!-- Peso Esquerdo - Parte Interna (disco) -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M30,70 L50,70 L50,130 L30,130 Z" />
+    
+    <!-- Peso Esquerdo - Lateral -->
+    <path
+        android:fillColor="#B0B0B0"
+        android:pathData="M15,75 L25,75 L25,125 L15,125 Z" />
+    
+    <!-- Conectores Esquerdo -->
+    <path
+        android:fillColor="#757575"
+        android:pathData="M55,88 L65,88 L65,112 L55,112 Z" />
+    
+    <path
+        android:fillColor="#616161"
+        android:pathData="M60,92 L65,92 L65,108 L60,108 Z" />
+    
+    <!-- Barra Esquerda -->
+    <path
+        android:fillColor="#9E9E9E"
+        android:pathData="M65,92 L85,92 L85,108 L65,108 Z" />
+    
+    <!-- Centro (Pegada) com textura -->
+    <path
+        android:fillColor="#424242"
+        android:pathData="M85,87 L115,87 L115,113 L85,113 Z" />
+    
+    <!-- Linhas de Grip -->
+    <path
+        android:strokeColor="#212121"
+        android:strokeWidth="2"
+        android:pathData="M88,92 L88,108 M92,92 L92,108 M96,92 L96,108 M100,92 L100,108 M104,92 L104,108 M108,92 L108,108 M112,92 L112,108" />
+    
+    <!-- Destaques na pegada -->
+    <path
+        android:fillColor="#616161"
+        android:pathData="M85,87 L88,87 L88,113 L85,113 Z"
+        android:fillAlpha="0.5" />
+    
+    <!-- Barra Direita -->
+    <path
+        android:fillColor="#9E9E9E"
+        android:pathData="M115,92 L135,92 L135,108 L115,108 Z" />
+    
+    <!-- Conectores Direito -->
+    <path
+        android:fillColor="#757575"
+        android:pathData="M135,88 L145,88 L145,112 L135,112 Z" />
+    
+    <path
+        android:fillColor="#616161"
+        android:pathData="M135,92 L140,92 L140,108 L135,108 Z" />
+    
+    <!-- Peso Direito - Parte Interna (disco) -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M150,70 L170,70 L170,130 L150,130 Z" />
+    
+    <!-- Peso Direito - Parte Externa -->
+    <path
+        android:fillColor="#E0E0E0"
+        android:pathData="M145,65 L175,65 L175,135 L145,135 Z" />
+    
+    <!-- Peso Direito - Lateral -->
+    <path
+        android:fillColor="#B0B0B0"
+        android:pathData="M175,75 L185,75 L185,125 L175,125 Z" />
+    
+    <!-- Sombras para profundidade -->
+    <path
+        android:fillColor="#000000"
+        android:pathData="M25,65 L30,65 L30,135 L25,135 Z"
+        android:fillAlpha="0.3" />
+    
+    <path
+        android:fillColor="#000000"
+        android:pathData="M145,65 L150,65 L150,135 L145,135 Z"
+        android:fillAlpha="0.3" />
+    
+    <!-- Brilhos nos discos -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M32,75 L45,75 L45,80 L32,80 Z"
+        android:fillAlpha="0.6" />
+    
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M155,75 L168,75 L168,80 L155,80 Z"
+        android:fillAlpha="0.6" />
+    
+    <!-- Centro do disco esquerdo -->
+    <circle
+        android:fillColor="#757575"
+        cx="40"
+        cy="100"
+        r="8" />
+    
+    <!-- Centro do disco direito -->
+    <circle
+        android:fillColor="#757575"
+        cx="160"
+        cy="100"
+        r="8" />
+    
+</vector>

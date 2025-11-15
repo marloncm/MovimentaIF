@@ -72,4 +72,13 @@ dependencies {
 
     // Coroutines (para chamadas de rede assíncronas)
     implementation(libs.androidx.lifecycle.runtime.ktx)
+    
+    // Biometria
+    implementation("androidx.biometric:biometric:1.2.0-alpha05")
+    
+    // Firebase Messaging para notificações
+    implementation("com.google.firebase:firebase-messaging:23.4.0")
+    
+    // SharedPreferences seguras
+    implementation("androidx.security:security-crypto:1.1.0-alpha06")
 }

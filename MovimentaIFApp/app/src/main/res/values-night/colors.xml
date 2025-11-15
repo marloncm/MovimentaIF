@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Cores do Tema Escuro -->
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    
+    <!-- Cores Primárias - Mais suaves para dark mode -->
+    <color name="maisMovimentoPrimary">#FFB347</color> <!-- Laranja mais suave -->
+    <color name="maisMovimentoSecondary">#E95B8A</color> <!-- Rosa mais suave -->
+    
+    <!-- Cores de Background -->
+    <color name="background_dark">#121212</color>
+    <color name="surface_dark">#1E1E1E</color>
+    <color name="card_dark">#2C2C2C</color>
+    
+    <!-- Cores de Texto -->
+    <color name="text_primary_dark">#E1E1E1</color>
+    <color name="text_secondary_dark">#B0B0B0</color>
+    
+    <!-- Cores de Acento -->
+    <color name="accent_dark">#FFB347</color>
+    <color name="error_dark">#CF6679</color>
+</resources>

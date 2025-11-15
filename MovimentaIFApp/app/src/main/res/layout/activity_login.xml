@@ -106,6 +106,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/inputPassword" />
 
+    <Button
+        android:id="@+id/btnBiometric"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="🔒 Login Biométrico"
+        android:visibility="gone"
+        style="@style/Widget.Material3.Button.TonalButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnEmailLogin" />
+
     <TextView
         android:id="@+id/textView5"
         android:layout_width="wrap_content"
@@ -130,11 +142,11 @@
         android:id="@+id/textView6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="64dp"
+        android:layout_marginTop="32dp"
         android:text="Não possui uma conta?"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnEmailLogin" />
+        app:layout_constraintTop_toBottomOf="@+id/btnBiometric" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

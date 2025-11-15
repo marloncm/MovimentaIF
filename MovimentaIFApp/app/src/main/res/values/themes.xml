@@ -1,8 +1,24 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
+    <!-- Tema Light - MovimentaIF -->
     <style name="Base.Theme.MovimentaIFApp" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <!-- Cores Primárias -->
+        <item name="colorPrimary">@color/maisMovimentoPrimary</item>
+        <item name="colorPrimaryVariant">@color/maisMovimentoSecondary</item>
+        <item name="colorOnPrimary">@color/white</item>
+        
+        <!-- Cores Secundárias -->
+        <item name="colorSecondary">@color/maisMovimentoSecondary</item>
+        <item name="colorSecondaryVariant">@color/maisMovimentoPrimary</item>
+        <item name="colorOnSecondary">@color/white</item>
+        
+        <!-- Background e Surface -->
+        <item name="android:colorBackground">@color/white</item>
+        <item name="colorSurface">@color/white</item>
+        
+        <!-- Status Bar -->
+        <item name="android:statusBarColor">@color/maisMovimentoPrimary</item>
+        <item name="android:navigationBarColor">@color/white</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
     </style>
 
     <style name="Theme.MovimentaIFApp" parent="Base.Theme.MovimentaIFApp" />

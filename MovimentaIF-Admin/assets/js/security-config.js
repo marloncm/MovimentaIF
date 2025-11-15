@@ -7,7 +7,7 @@
 
 // Detecta se está em produção (GitHub Pages, Netlify, Vercel, etc.)
 const isProduction = () => {
-    return window.location.hostname !== 'localhost' 
+    return window.location.hostname !== 'localhost'
         && window.location.hostname !== '127.0.0.1'
         && !window.location.hostname.includes('192.168')
         && !window.location.hostname.includes('10.0.2.2');
@@ -43,7 +43,7 @@ export const logger = {
 // Configuração de ambiente
 export const config = {
     isProduction: isProduction(),
-    
+
     // Headers de segurança recomendados
     securityHeaders: {
         'X-Content-Type-Options': 'nosniff',
@@ -51,10 +51,10 @@ export const config = {
         'X-XSS-Protection': '1; mode=block',
         'Referrer-Policy': 'strict-origin-when-cross-origin'
     },
-    
+
     // Timeout para requisições (30 segundos)
     requestTimeout: 30000,
-    
+
     // Validação de dados
     validation: {
         maxNameLength: 100,
@@ -67,7 +67,7 @@ export const config = {
 export async function fetchWithTimeout(url, options = {}, timeout = config.requestTimeout) {
     const controller = new AbortController();
     const id = setTimeout(() => controller.abort(), timeout);
-    
+
     try {
         const response = await fetch(url, {
             ...options,
@@ -87,7 +87,7 @@ export async function fetchWithTimeout(url, options = {}, timeout = config.reque
 // Sanitização básica de inputs (previne XSS)
 export function sanitizeInput(input) {
     if (typeof input !== 'string') return input;
-    
+
     const div = document.createElement('div');
     div.textContent = input;
     return div.innerHTML;
@@ -121,9 +121,9 @@ export function requireAuth(auth) {
 
 // Desabilita console.log em produção globalmente
 if (isProduction()) {
-    console.log = () => {};
-    console.info = () => {};
-    console.warn = () => {};
+    console.log = () => { };
+    console.info = () => { };
+    console.warn = () => { };
     // Mantém console.error mas sanitiza a mensagem
     const originalError = console.error;
     console.error = (...args) => {

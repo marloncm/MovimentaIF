@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardElevation="2dp"
+    app:cardCornerRadius="12dp"
+    app:strokeWidth="0dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <!-- Ícone do Exercício -->
+        <ImageView
+            android:id="@+id/iconWorkout"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@android:drawable/ic_menu_agenda"
+            android:tint="@color/maisMovimentoPrimary"
+            android:contentDescription="Ícone do exercício"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Nome do Exercício -->
+        <TextView
+            android:id="@+id/textWorkoutName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="8dp"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="?android:attr/textColorPrimary"
+            android:maxLines="2"
+            android:ellipsize="end"
+            tools:text="Supino Reto"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/iconWorkout"
+            app:layout_constraintTop_toTopOf="@id/iconWorkout" />
+
+        <!-- Descrição do Exercício -->
+        <TextView
+            android:id="@+id/textWorkoutDescription"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="8dp"
+            android:textSize="14sp"
+            android:textColor="?android:attr/textColorSecondary"
+            android:maxLines="3"
+            android:ellipsize="end"
+            tools:text="Exercício para trabalhar peitoral, tríceps e ombros. Realizado deitado no banco reto."
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/iconWorkout"
+            app:layout_constraintTop_toBottomOf="@id/textWorkoutName" />
+
+        <!-- Botão Assistir Vídeo -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnWatchVideo"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Assistir Vídeo"
+            android:textColor="@color/maisMovimentoPrimary"
+            app:icon="@android:drawable/ic_media_play"
+            app:iconTint="@color/maisMovimentoPrimary"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textWorkoutDescription" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>

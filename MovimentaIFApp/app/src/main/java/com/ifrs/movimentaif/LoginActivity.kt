@@ -12,6 +12,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -23,6 +24,8 @@ import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.auth
+import com.ifrs.movimentaif.utils.BiometricManager
+import com.ifrs.movimentaif.utils.SecurePreferences
 
 
 class LoginActivity : AppCompatActivity() {
@@ -30,9 +33,13 @@ class LoginActivity : AppCompatActivity() {
     // --- Firebase ---
     private lateinit var auth: FirebaseAuth
 
-    // --- ❗️ NOVO: Google Sign-In ---
+    // --- Google Sign-In ---
     private lateinit var googleSignInClient: GoogleSignInClient
     private lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
+
+    // --- Biometria ---
+    private lateinit var biometricManager: BiometricManager
+    private lateinit var securePreferences: SecurePreferences
 
     // --- Elementos de UI ---
     private lateinit var logoTextView: TextView
@@ -40,7 +47,8 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var emailInputField: EditText
     private lateinit var passwordInputField: EditText
     private lateinit var loginButton: Button
-    private lateinit var googleLoginButton: SignInButton // ❗️ NOVO
+    private lateinit var googleLoginButton: SignInButton
+    private lateinit var btnBiometric: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,27 +57,41 @@ class LoginActivity : AppCompatActivity() {
         // 1. Inicializar o Firebase Auth
         auth = Firebase.auth
 
+        // Inicializar biometria e preferências
+        biometricManager = BiometricManager(this)
+        securePreferences = SecurePreferences(this)
+
         // 2. Carregar elementos da tela
         logoTextView = findViewById(R.id.logoTxt)
         registerButton = findViewById(R.id.btnRegister)
         emailInputField = findViewById(R.id.inputEmail)
         passwordInputField = findViewById(R.id.inputPassword)
         loginButton = findViewById(R.id.btnEmailLogin)
-        googleLoginButton = findViewById(R.id.btnGoogleLogin) // ❗️ NOVO
+        googleLoginButton = findViewById(R.id.btnGoogleLogin)
+        btnBiometric = findViewById(R.id.btnBiometric)
 
         // 3. Aplicar gradiente
         applyLogoGradient(logoTextView)
 
-        // 4. Configurar Listeners
+        // 4. Verificar se biometria está habilitada
+        if (securePreferences.isBiometricEnabled() && 
+            BiometricManager.isBiometricAvailable(this)) {
+            btnBiometric.visibility = android.view.View.VISIBLE
+            btnBiometric.setOnClickListener { authenticateWithBiometric() }
+        } else {
+            btnBiometric.visibility = android.view.View.GONE
+        }
+
+        // 5. Configurar Listeners
         registerButton.setOnClickListener { goToRegister() }
         loginButton.setOnClickListener { performLogin() }
 
         // --- ❗️ NOVO: Configuração do Google Login ---
 
-        // 5. Criar o cliente de login do Google
+        // 6. Criar o cliente de login do Google
         createGoogleSignInClient()
 
-        // 6. Registrar o "ouvinte" para o resultado da tela de login do Google
+        // 7. Registrar o "ouvinte" para o resultado da tela de login do Google
         activityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
@@ -88,10 +110,63 @@ class LoginActivity : AppCompatActivity() {
             }
         }
 
-        // 7. Configurar o clique do botão do Google
+        // 8. Configurar o clique do botão do Google
         googleLoginButton.setOnClickListener {
             googleSignIn()
         }
+    }
+
+    private fun authenticateWithBiometric() {
+        biometricManager.authenticate(
+            title = "Login MovimentaIF",
+            subtitle = "Use sua biometria para entrar",
+            negativeButtonText = "Usar senha",
+            onSuccess = {
+                // Autenticação bem-sucedida, fazer login automático
+                val userId = securePreferences.getUserId()
+                val email = securePreferences.getUserEmail()
+                
+                if (userId != null && email != null) {
+                    Log.d("BiometricLogin", "Login via biometria - userId: $userId")
+                    goToHome()
+                } else {
+                    Toast.makeText(this, "Erro ao recuperar dados do usuário", Toast.LENGTH_SHORT).show()
+                }
+            },
+            onError = { error ->
+                Toast.makeText(this, "Erro: $error", Toast.LENGTH_SHORT).show()
+            },
+            onFailed = {
+                Toast.makeText(this, "Biometria não reconhecida", Toast.LENGTH_SHORT).show()
+            }
+        )
+    }
+
+    private fun showBiometricDialog() {
+        if (!BiometricManager.isBiometricAvailable(this)) {
+            goToHome()
+            return
+        }
+
+        AlertDialog.Builder(this)
+            .setTitle("Habilitar Login Biométrico")
+            .setMessage("Deseja usar sua biometria (impressão digital/reconhecimento facial) para fazer login mais rapidamente nas próximas vezes?")
+            .setPositiveButton("Sim") { dialog, _ ->
+                val user = auth.currentUser
+                if (user != null) {
+                    securePreferences.saveBiometricEnabled(true)
+                    securePreferences.saveUserId(user.uid)
+                    securePreferences.saveUserEmail(user.email ?: "")
+                    Toast.makeText(this, "Login biométrico ativado!", Toast.LENGTH_SHORT).show()
+                }
+                dialog.dismiss()
+                goToHome()
+            }
+            .setNegativeButton("Não") { dialog, _ ->
+                dialog.dismiss()
+                goToHome()
+            }
+            .show()
     }
 
     /**
@@ -128,7 +203,13 @@ class LoginActivity : AppCompatActivity() {
                     // Sucesso no login do Firebase
                     Log.d("FirebaseGoogle", "signInWithCredential:success")
                     Toast.makeText(baseContext, "Login com Google bem-sucedido!", Toast.LENGTH_SHORT).show()
-                    goToHome() // Redireciona para a tela principal
+                    
+                    // Verificar se já tem biometria configurada
+                    if (!securePreferences.isBiometricEnabled()) {
+                        showBiometricDialog()
+                    } else {
+                        goToHome()
+                    }
                 } else {
                     // Falha no login do Firebase
                     Log.w("FirebaseGoogle", "signInWithCredential:failure", task.exception)
@@ -158,7 +239,13 @@ class LoginActivity : AppCompatActivity() {
                 if (task.isSuccessful) {
                     Log.d("FirebaseLogin", "signInWithEmail:success")
                     Toast.makeText(baseContext, "Login bem-sucedido!", Toast.LENGTH_SHORT).show()
-                    goToHome()
+                    
+                    // Verificar se já tem biometria configurada
+                    if (!securePreferences.isBiometricEnabled()) {
+                        showBiometricDialog()
+                    } else {
+                        goToHome()
+                    }
                 } else {
                     Log.w("FirebaseLogin", "signInWithEmail:failure", task.exception)
                     Toast.makeText(baseContext, "Falha na autenticação: ${task.exception?.message}", Toast.LENGTH_LONG).show()

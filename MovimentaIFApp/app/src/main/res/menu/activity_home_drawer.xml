@@ -3,27 +3,35 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
+    <!-- Navegação Principal -->
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_home"
-            android:icon="@drawable/ic_menu_camera"
+            android:icon="@android:drawable/ic_menu_compass"
             android:title="@string/menu_home" />
         <item
             android:id="@+id/nav_profile"
-            android:icon="@drawable/ic_menu_gallery"
+            android:icon="@android:drawable/ic_menu_myplaces"
             android:title="@string/menu_profile" />
+    </group>
+
+    <!-- Treinos -->
+    <group android:id="@+id/group_workouts">
         <item
             android:id="@+id/nav_user_workouts"
-            android:icon="@drawable/ic_menu_slideshow"
+            android:icon="@android:drawable/ic_menu_agenda"
             android:title="@string/menu_user_workouts" />
         <item
             android:id="@+id/nav_workout_list"
-            android:icon="@drawable/ic_menu_slideshow"
+            android:icon="@android:drawable/ic_menu_search"
             android:title="@string/menu_workout_list" />
+    </group>
+
+    <!-- Configurações e Sair -->
+    <group android:id="@+id/group_settings">
         <item
             android:id="@+id/nav_logout"
-            android:icon="@drawable/ic_menu_slideshow"
+            android:icon="@android:drawable/ic_lock_power_off"
             android:title="@string/menu_logout" />
-
     </group>
 </menu>

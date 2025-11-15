@@ -5,20 +5,37 @@
     android:id="@+id/mobile_navigation"
     app:startDestination="@+id/nav_home">
 
+    <!-- Página Inicial -->
     <fragment
         android:id="@+id/nav_home"
         android:name="com.ifrs.movimentaif.model.ui.home.HomeFragment"
         android:label="@string/menu_home"
         tools:layout="@layout/fragment_home" />
 
+    <!-- Perfil do Usuário -->
     <fragment
-        android:id="@+id/nav_gallery"
+        android:id="@+id/nav_profile"
         android:name="com.ifrs.movimentaif.ui.profile.ProfileFragment"
         android:label="@string/menu_profile"
-        tools:layout="@layout/fragment_gallery" />
+        tools:layout="@layout/fragment_profile" />
 
+    <!-- Ficha de Treino do Usuário -->
     <fragment
-        android:id="@+id/nav_slideshow"
+        android:id="@+id/nav_user_workouts"
+        android:name="com.ifrs.movimentaif.ui.userworkouts.UserWorkoutsFragment"
+        android:label="@string/menu_user_workouts"
+        tools:layout="@layout/fragment_user_workouts" />
+
+    <!-- Lista de Exercícios -->
+    <fragment
+        android:id="@+id/nav_workout_list"
+        android:name="com.ifrs.movimentaif.ui.workoutlist.WorkoutListFragment"
+        android:label="@string/menu_workout_list"
+        tools:layout="@layout/fragment_workout_list" />
+
+    <!-- Logout -->
+    <fragment
+        android:id="@+id/nav_logout"
         android:name="com.ifrs.movimentaif.ui.logout.LogoutFragment"
         android:label="@string/menu_logout"
         tools:layout="@layout/fragment_logout" />

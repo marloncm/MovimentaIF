@@ -1,5 +1,7 @@
 package com.ifrs.movimentaif.model;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.Date;
 import java.util.UUID;
 
@@ -9,19 +11,38 @@ public class User {
     private Date age;
     private String phoneNumber;
     private String email;
-    //private String role; //USER, ADMIN
+    private String role; //USER, ADMIN
     private Date createdAt;
+    
+    @SerializedName("isActive")
     private boolean isActive;
+    
     private String affiliationType; //STUDENT, PROFESSOR, STAFF TODO transformar em enum
+    
+    @SerializedName("interviewed")
     private boolean interviewed;
+    
+    @SerializedName("didFirstWorkout")
     private boolean didFirstWorkout;
+    
+    @SerializedName("scheduledFirstWorkout")
     private boolean scheduledFirstWorkout;
+    
+    @SerializedName("isAppUser")
     private boolean isAppUser;
+    
     private Date firstWorkoutDate;
+    
+    @SerializedName("signedTermOfCommitment")
     private boolean signedTermOfCommitment;
+    
     private String workoutChartId;
-
+    
+    @SerializedName("isAdmin")
     private Boolean isAdmin;
+    
+    private String parqId;
+    private String anamneseId;
 
     public User(){
         this.userId = UUID.randomUUID().toString();
@@ -48,32 +69,12 @@ public class User {
         this.userId = userId;
         this.email = email;
         this.createdAt = new Date();
-
+        this.isActive = false;
+        this.interviewed = false;
+        this.didFirstWorkout = false;
+        this.scheduledFirstWorkout = false;
+        this.isAppUser = true;
     }
-
-//    public User(String userId, String userName, String email, String role) {
-//        this.userId = userId;
-//        this.userName = userName;
-//        this.email = email;
-//        this.role = role;
-//        this.createdAt = new Date();
-//    }
-
-//    public User(String userName, String email, String role) {
-//        this.userId = UUID.randomUUID().toString();
-//        this.userName = userName;
-//        this.email = email;
-//        this.role = role;
-//        this.createdAt = new Date();
-//    }
-
-//    public User(String uid, String userName, String email, String role, Date createdAt){
-//        this.userId = uid;
-//        this.userName = userName;
-//        this.email = email;
-//        this.role = role;
-//        this.createdAt = createdAt;
-//    }
 
     public String getUserId() {
         return userId;
@@ -99,13 +100,13 @@ public class User {
         this.email = email;
     }
 
-//    public String getRole() {
-//        return role;
-//    }
-//
-//    public void setRole(String role) {
-//        this.role = role;
-//    }
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
 
     public Date getCreatedAt() {
         return createdAt;
@@ -201,5 +202,29 @@ public class User {
 
     public void setWorkoutChartId(String workoutChartId) {
         this.workoutChartId = workoutChartId;
+    }
+
+    public Boolean getAdmin() {
+        return isAdmin;
+    }
+
+    public void setAdmin(Boolean admin) {
+        isAdmin = admin;
+    }
+
+    public String getParqId() {
+        return parqId;
+    }
+
+    public void setParqId(String parqId) {
+        this.parqId = parqId;
+    }
+
+    public String getAnamneseId() {
+        return anamneseId;
+    }
+
+    public void setAnamneseId(String anamneseId) {
+        this.anamneseId = anamneseId;
     }
 }

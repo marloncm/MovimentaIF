@@ -4,35 +4,56 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
+import com.google.firebase.auth.FirebaseAuth
+import com.ifrs.movimentaif.R
 import com.ifrs.movimentaif.databinding.FragmentHomeBinding
 
 class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     private val binding get() = _binding!!
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val homeViewModel =
-            ViewModelProvider(this).get(HomeViewModel::class.java)
-
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
-        val root: View = binding.root
+        auth = FirebaseAuth.getInstance()
+        return binding.root
+    }
 
-        val textView: TextView = binding.textHome
-        homeViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupUserInfo()
+        setupClickListeners()
+    }
+
+    private fun setupUserInfo() {
+        val currentUser = auth.currentUser
+        if (currentUser != null) {
+            val userName = currentUser.displayName 
+                ?: currentUser.email?.substringBefore('@') 
+                ?: "Usuário"
+            binding.textUserName.text = userName
         }
-        return root
+    }
+
+    private fun setupClickListeners() {
+        binding.cardMyWorkout.setOnClickListener {
+            findNavController().navigate(R.id.nav_user_workouts)
+        }
+
+        binding.cardExercises.setOnClickListener {
+            findNavController().navigate(R.id.nav_workout_list)
+        }
+
+        binding.cardProfile.setOnClickListener {
+            findNavController().navigate(R.id.nav_profile)
+        }
     }
 
     override fun onDestroyView() {

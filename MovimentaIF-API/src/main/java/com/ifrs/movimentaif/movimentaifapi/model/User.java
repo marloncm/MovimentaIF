@@ -24,6 +24,8 @@ public class User {
     private boolean signedTermOfCommitment;
     private String workoutChartId;
     private Boolean isAdmin;
+    private String parqId;
+    private String anamneseId;
 
     public User(){
         this.userId = UUID.randomUUID().toString();
@@ -211,5 +213,21 @@ public class User {
 
     public void setAdmin(Boolean admin) {
         isAdmin = admin;
+    }
+
+    public String getParqId() {
+        return parqId;
+    }
+
+    public void setParqId(String parqId) {
+        this.parqId = parqId;
+    }
+
+    public String getAnamneseId() {
+        return anamneseId;
+    }
+
+    public void setAnamneseId(String anamneseId) {
+        this.anamneseId = anamneseId;
     }
 }
