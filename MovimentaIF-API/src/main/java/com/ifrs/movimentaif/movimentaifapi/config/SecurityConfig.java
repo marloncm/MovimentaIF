@@ -38,10 +38,12 @@ public class SecurityConfig {
                         // 2. TODAS as outras rotas exigem autenticação.
                         .anyRequest().authenticated()
                 )
-                // REATIVAMOS: O Resource Server deve fazer a validação do token JWT do Firebase
+                // OAuth2 Resource Server para validação de JWT do Firebase
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwt -> {})
-                );
+                )
+                // Desabilitar autenticação para endpoints públicos
+                .anonymous(anonymous -> {});
 
         return http.build();
     }
