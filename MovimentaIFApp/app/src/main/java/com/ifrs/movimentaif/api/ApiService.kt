@@ -1,5 +1,6 @@
 package com.ifrs.movimentaif.api
 
+import com.ifrs.movimentaif.model.AcademyInfo
 import com.ifrs.movimentaif.model.Anamnese
 import com.ifrs.movimentaif.model.DailyWorkoutCompletion
 import com.ifrs.movimentaif.model.ExerciseCompletion
@@ -105,4 +106,17 @@ interface ApiService {
     
     @GET("api/exercise-completions/user/{userId}/total")
     suspend fun getTotalExercisesCompleted(@Path("userId") userId: String): Response<Int>
+    
+    // Academy Info endpoints
+    @GET("api/academy-info")
+    suspend fun getAcademyInfo(): Response<AcademyInfo>
+    
+    @POST("api/academy-info")
+    suspend fun createAcademyInfo(@Body academyInfo: AcademyInfo): Response<AcademyInfo>
+    
+    @PUT("api/academy-info")
+    suspend fun updateAcademyInfo(@Body academyInfo: AcademyInfo): Response<AcademyInfo>
+    
+    @DELETE("api/academy-info")
+    suspend fun deleteAcademyInfo(): Response<Void>
 }

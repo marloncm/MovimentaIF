@@ -33,37 +33,35 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupUserInfo()
         setupClickListeners()
-        loadStatistics()
+        loadAcademyInfo()
     }
 
-    private fun loadStatistics() {
-        val userId = auth.currentUser?.uid ?: return
-        
+    private fun loadAcademyInfo() {
         lifecycleScope.launch {
             try {
-                // Carregar total de exercícios completados
-                val exercisesResponse = RetrofitInstance.api.getTotalExercisesCompleted(userId)
-                if (exercisesResponse.isSuccessful) {
-                    val total = exercisesResponse.body() ?: 0
-                    binding.textWorkoutCount.text = total.toString()
-                }
-                
-                // Carregar treinos finalizados (dias completos)
-                val workoutsResponse = RetrofitInstance.api.getTotalWorkoutsCompleted(userId)
-                if (workoutsResponse.isSuccessful) {
-                    val workouts = workoutsResponse.body() ?: 0
-                    binding.textActiveDays.text = workouts.toString()
+                val response = RetrofitInstance.api.getAcademyInfo()
+                if (response.isSuccessful) {
+                    val academyInfo = response.body()
+                    academyInfo?.let {
+                        // Formatar datas
+                        val dateFormat = java.text.SimpleDateFormat("dd/MM/yyyy", java.util.Locale.getDefault())
+                        val startDateStr = dateFormat.format(it.startDate)
+                        val endDateStr = dateFormat.format(it.endDate)
+                        
+                        binding.textAcademyPeriod.text = "$startDateStr - $endDateStr"
+                        binding.textAcademyHours.text = "${it.openHour} - ${it.closeHour}"
+                        binding.textAcademyAdditionalInfo.text = it.additionalInfo
+                    }
                 }
             } catch (e: Exception) {
-                // Silenciosamente mantém valores padrão em caso de erro
+                // Mantém valores padrão em caso de erro
             }
         }
     }
 
     override fun onResume() {
         super.onResume()
-        // Recarregar estatísticas quando o fragment volta a ficar visível
-        loadStatistics()
+        loadAcademyInfo()
     }
 
     private fun setupUserInfo() {

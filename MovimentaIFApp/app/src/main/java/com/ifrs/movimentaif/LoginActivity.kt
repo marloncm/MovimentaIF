@@ -37,10 +37,6 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var googleSignInClient: GoogleSignInClient
     private lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
 
-    // --- Biometria ---
-    private lateinit var biometricManager: BiometricManager
-    private lateinit var securePreferences: SecurePreferences
-
     // --- Elementos de UI ---
     private lateinit var logoTextView: TextView
     private lateinit var registerButton: Button
@@ -48,7 +44,6 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var passwordInputField: EditText
     private lateinit var loginButton: Button
     private lateinit var googleLoginButton: SignInButton
-    private lateinit var btnBiometric: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,10 +52,6 @@ class LoginActivity : AppCompatActivity() {
         // 1. Inicializar o Firebase Auth
         auth = Firebase.auth
 
-        // Inicializar biometria e preferências
-        biometricManager = BiometricManager(this)
-        securePreferences = SecurePreferences(this)
-
         // 2. Carregar elementos da tela
         logoTextView = findViewById(R.id.logoTxt)
         registerButton = findViewById(R.id.btnRegister)
@@ -68,29 +59,11 @@ class LoginActivity : AppCompatActivity() {
         passwordInputField = findViewById(R.id.inputPassword)
         loginButton = findViewById(R.id.btnEmailLogin)
         googleLoginButton = findViewById(R.id.btnGoogleLogin)
-        btnBiometric = findViewById(R.id.btnBiometric)
 
         // 3. Aplicar gradiente
         applyLogoGradient(logoTextView)
 
-        // 4. Verificar se biometria está habilitada e se há credenciais salvas
-        val savedEmail = securePreferences.getUserEmail()
-        val savedUserId = securePreferences.getUserId()
-        
-        if (securePreferences.isBiometricEnabled() && 
-            BiometricManager.isBiometricAvailable(this) &&
-            !savedEmail.isNullOrEmpty() && 
-            !savedUserId.isNullOrEmpty()) {
-            btnBiometric.visibility = android.view.View.VISIBLE
-            btnBiometric.setOnClickListener { 
-                com.ifrs.movimentaif.utils.SoundManager.playClickSound()
-                authenticateWithBiometric() 
-            }
-        } else {
-            btnBiometric.visibility = android.view.View.GONE
-        }
-
-        // 5. Configurar Listeners
+        // 4. Configurar Listeners
         registerButton.setOnClickListener { 
             com.ifrs.movimentaif.utils.SoundManager.playClickSound()
             goToRegister() 
@@ -130,59 +103,6 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private fun authenticateWithBiometric() {
-        biometricManager.authenticate(
-            title = "Login MovimentaIF",
-            subtitle = "Use sua biometria para entrar",
-            negativeButtonText = "Usar senha",
-            onSuccess = {
-                // Autenticação bem-sucedida, fazer login automático
-                val userId = securePreferences.getUserId()
-                val email = securePreferences.getUserEmail()
-                
-                if (userId != null && email != null) {
-                    Log.d("BiometricLogin", "Login via biometria - userId: $userId")
-                    goToHome()
-                } else {
-                    Toast.makeText(this, "Erro ao recuperar dados do usuário", Toast.LENGTH_SHORT).show()
-                }
-            },
-            onError = { error ->
-                Toast.makeText(this, "Erro: $error", Toast.LENGTH_SHORT).show()
-            },
-            onFailed = {
-                Toast.makeText(this, "Biometria não reconhecida", Toast.LENGTH_SHORT).show()
-            }
-        )
-    }
-
-    private fun showBiometricDialog() {
-        if (!BiometricManager.isBiometricAvailable(this)) {
-            goToHome()
-            return
-        }
-
-        AlertDialog.Builder(this)
-            .setTitle("Habilitar Login Biométrico")
-            .setMessage("Deseja usar sua biometria (impressão digital/reconhecimento facial) para fazer login mais rapidamente nas próximas vezes?")
-            .setPositiveButton("Sim") { dialog, _ ->
-                val user = auth.currentUser
-                if (user != null) {
-                    securePreferences.saveBiometricEnabled(true)
-                    securePreferences.saveUserId(user.uid)
-                    securePreferences.saveUserEmail(user.email ?: "")
-                    Toast.makeText(this, "Login biométrico ativado!", Toast.LENGTH_SHORT).show()
-                }
-                dialog.dismiss()
-                goToHome()
-            }
-            .setNegativeButton("Não") { dialog, _ ->
-                dialog.dismiss()
-                goToHome()
-            }
-            .show()
-    }
-
     /**
      * ❗️ NOVA FUNÇÃO: Inicia a tela de seleção de conta do Google
      */
@@ -217,13 +137,7 @@ class LoginActivity : AppCompatActivity() {
                     // Sucesso no login do Firebase
                     Log.d("FirebaseGoogle", "signInWithCredential:success")
                     Toast.makeText(baseContext, "Login com Google bem-sucedido!", Toast.LENGTH_SHORT).show()
-                    
-                    // Verificar se já tem biometria configurada
-                    if (!securePreferences.isBiometricEnabled()) {
-                        showBiometricDialog()
-                    } else {
-                        goToHome()
-                    }
+                    goToHome()
                 } else {
                     // Falha no login do Firebase
                     Log.w("FirebaseGoogle", "signInWithCredential:failure", task.exception)
@@ -253,13 +167,7 @@ class LoginActivity : AppCompatActivity() {
                 if (task.isSuccessful) {
                     Log.d("FirebaseLogin", "signInWithEmail:success")
                     Toast.makeText(baseContext, "Login bem-sucedido!", Toast.LENGTH_SHORT).show()
-                    
-                    // Verificar se já tem biometria configurada
-                    if (!securePreferences.isBiometricEnabled()) {
-                        showBiometricDialog()
-                    } else {
-                        goToHome()
-                    }
+                    goToHome()
                 } else {
                     Log.w("FirebaseLogin", "signInWithEmail:failure", task.exception)
                     Toast.makeText(baseContext, "Falha na autenticação: ${task.exception?.message}", Toast.LENGTH_LONG).show()

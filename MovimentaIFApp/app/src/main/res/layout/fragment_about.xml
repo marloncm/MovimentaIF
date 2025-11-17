@@ -18,7 +18,7 @@
             android:layout_height="120dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="24dp"
-            android:src="@drawable/ic_dumbbell"
+            android:src="@drawable/mais_movimento_logo_completo"
             android:contentDescription="@string/app_name" />
 
         <!-- Título -->
