@@ -19,7 +19,6 @@ class ParQActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
     private val checkBoxes = mutableMapOf<String, CheckBox>()
-    private lateinit var etObservacoes: TextInputEditText
     private lateinit var btnSave: MaterialButton
     private lateinit var btnCancel: MaterialButton
     private lateinit var progressBar: View
@@ -56,7 +55,6 @@ class ParQActivity : AppCompatActivity() {
         checkBoxes["pergunta6"] = findViewById(R.id.cbPergunta6)
         checkBoxes["pergunta7"] = findViewById(R.id.cbPergunta7)
         
-        etObservacoes = findViewById(R.id.etObservacoes)
         btnSave = findViewById(R.id.btnSave)
         btnCancel = findViewById(R.id.btnCancel)
         progressBar = findViewById(R.id.progressBar)
@@ -77,8 +75,6 @@ class ParQActivity : AppCompatActivity() {
                         parq.respostas?.forEach { (pergunta, resposta) ->
                             checkBoxes[pergunta]?.isChecked = resposta
                         }
-                        // Preencher observações
-                        etObservacoes.setText(parq.observacoes ?: "")
                     }
                 }
                 // Se não encontrar dados (404), apenas deixa o formulário em branco para novo preenchimento
@@ -98,8 +94,6 @@ class ParQActivity : AppCompatActivity() {
             respostas[key] = checkBox.isChecked
         }
 
-        val observacoes = etObservacoes.text.toString().trim()
-
         progressBar.visibility = View.VISIBLE
 
         lifecycleScope.launch {
@@ -109,7 +103,6 @@ class ParQActivity : AppCompatActivity() {
                 }
                 
                 parq.respostas = respostas
-                parq.observacoes = observacoes
 
                 val response = if (existingParQ != null) {
                     RetrofitInstance.api.updateParQ(parq.parqId, parq)

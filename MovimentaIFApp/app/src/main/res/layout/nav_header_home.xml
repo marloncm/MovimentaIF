@@ -16,7 +16,7 @@
         android:layout_height="72dp"
         android:layout_marginBottom="16dp"
         android:contentDescription="@string/app_name"
-        android:src="@mipmap/ic_launcher_round"
+        android:src="@drawable/mais_movimento_logo"
         android:elevation="4dp" />
 
     <!-- Nome do Usuário -->

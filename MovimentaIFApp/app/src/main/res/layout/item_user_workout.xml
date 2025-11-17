@@ -39,9 +39,20 @@
             android:gravity="end">
 
             <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnFinishExercise"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="✓ Concluir"
+                android:textSize="12sp"
+                style="@style/Widget.Material3.Button.TonalButton"
+                app:icon="@android:drawable/ic_menu_save"
+                app:iconGravity="start" />
+
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnWatchVideo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
                 android:text="Assistir"
                 android:textSize="12sp"
                 style="@style/Widget.Material3.Button.TonalButton"

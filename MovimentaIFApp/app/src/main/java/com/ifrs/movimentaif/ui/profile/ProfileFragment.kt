@@ -25,8 +25,7 @@ class ProfileFragment : Fragment() {
     private lateinit var auth: FirebaseAuth
     private lateinit var tvUserName: TextView
     private lateinit var tvUserEmail: TextView
-    private lateinit var tvUserPhone: TextView
-    private lateinit var tvUserAffiliation: TextView
+    private lateinit var tvUserStatus: TextView
     private lateinit var btnEditProfile: Button
     private lateinit var cardParQ: MaterialCardView
     private lateinit var cardAnamnese: MaterialCardView
@@ -48,8 +47,7 @@ class ProfileFragment : Fragment() {
 
         tvUserName = view.findViewById(R.id.tvUserName)
         tvUserEmail = view.findViewById(R.id.tvUserEmail)
-        tvUserPhone = view.findViewById(R.id.tvUserPhone)
-        tvUserAffiliation = view.findViewById(R.id.tvUserAffiliation)
+        tvUserStatus = view.findViewById(R.id.tvUserStatus)
         btnEditProfile = view.findViewById(R.id.btnEditProfile)
         cardParQ = view.findViewById(R.id.cardParQ)
         cardAnamnese = view.findViewById(R.id.cardAnamnese)
@@ -92,12 +90,14 @@ class ProfileFragment : Fragment() {
                         if (user != null) {
                             tvUserName.text = user.userName ?: "Nome não informado"
                             tvUserEmail.text = user.email ?: currentUser.email
-                            tvUserPhone.text = user.phoneNumber ?: "Telefone não informado"
-                            tvUserAffiliation.text = when(user.affiliationType) {
-                                "STUDENT" -> "Aluno"
-                                "PROFESSOR" -> "Professor"
-                                "STAFF" -> "Servidor"
-                                else -> "Não informado"
+                            
+                            // Exibir status baseado em isActive
+                            if (user.isActive) {
+                                tvUserStatus.text = "Usuário Ativo"
+                                tvUserStatus.setTextColor(resources.getColor(android.R.color.holo_green_dark, null))
+                            } else {
+                                tvUserStatus.text = "Aguardando aprovação da academia"
+                                tvUserStatus.setTextColor(resources.getColor(android.R.color.holo_orange_dark, null))
                             }
 
                             if (user.parqId != null && user.parqId.isNotEmpty()) {

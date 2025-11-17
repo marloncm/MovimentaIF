@@ -105,7 +105,7 @@ graph TB
 ### 1. Clone o Repositório
 
 ```bash
-git clone https://github.com/marloncm/MovimentaIF.git
+git clone https://github.com/seu-usuario/MovimentaIF.git
 cd MovimentaIF/MovimentaIF-API
 ```
 
@@ -428,18 +428,16 @@ Este projeto foi desenvolvido como Trabalho de Conclusão de Curso do IFRS Campu
 
 ## 👥 Autores
 
-**Desenvolvedor**: Marlon C. Mariano  
-**Orientador**: [Nome do Orientador]  
 **Instituição**: IFRS - Campus Porto Alegre  
+**Tipo**: Trabalho de Conclusão de Curso (TCC)  
 **Ano**: 2024/2025
 
 ---
 
 ## 📞 Suporte
 
-- **Issues**: [GitHub Issues](https://github.com/marloncm/MovimentaIF/issues)
-- **Email**: marlon.cmariano93@gmail.com
-- **Documentação**: [Wiki do Projeto](https://github.com/marloncm/MovimentaIF/wiki)
+- **Issues**: [GitHub Issues](https://github.com/seu-usuario/MovimentaIF/issues)
+- **Documentação**: [Wiki do Projeto](https://github.com/seu-usuario/MovimentaIF/wiki)
 
 ---
 

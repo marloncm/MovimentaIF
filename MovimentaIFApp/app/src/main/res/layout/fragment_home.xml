@@ -123,8 +123,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:text="Treinos"
+                        android:text="Exercícios Realizados"
                         android:textSize="12sp"
+                        android:textAlignment="center"
                         android:alpha="0.7" />
 
                 </LinearLayout>
@@ -168,8 +169,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:text="Dias Ativos"
+                        android:text="Treinos Finalizados"
                         android:textSize="12sp"
+                        android:textAlignment="center"
                         android:alpha="0.7" />
 
                 </LinearLayout>

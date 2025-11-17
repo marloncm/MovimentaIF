@@ -21,6 +21,7 @@ class ProfileEditActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var etUserName: TextInputEditText
     private lateinit var etPhoneNumber: TextInputEditText
+    private lateinit var etAge: TextInputEditText
     private lateinit var actvAffiliationType: MaterialAutoCompleteTextView
     private lateinit var btnSave: MaterialButton
     private lateinit var btnCancel: MaterialButton
@@ -34,6 +35,7 @@ class ProfileEditActivity : AppCompatActivity() {
 
         etUserName = findViewById(R.id.etUserName)
         etPhoneNumber = findViewById(R.id.etPhoneNumber)
+        etAge = findViewById(R.id.etAge)
         actvAffiliationType = findViewById(R.id.actvAffiliationType)
         btnSave = findViewById(R.id.btnSave)
         btnCancel = findViewById(R.id.btnCancel)
@@ -52,7 +54,7 @@ class ProfileEditActivity : AppCompatActivity() {
     }
 
     private fun setupAffiliationTypeDropdown() {
-        val affiliationTypes = arrayOf("STUDENT", "PROFESSOR", "STAFF")
+        val affiliationTypes = arrayOf("Aluno", "Docente", "Comunidade")
         val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, affiliationTypes)
         actvAffiliationType.setAdapter(adapter)
     }
@@ -70,7 +72,11 @@ class ProfileEditActivity : AppCompatActivity() {
                     user?.let {
                         etUserName.setText(it.userName)
                         etPhoneNumber.setText(it.phoneNumber)
-                        actvAffiliationType.setText(it.affiliationType ?: "STUDENT", false)
+                        it.age?.let { date ->
+                            val dateFormat = java.text.SimpleDateFormat("dd/MM/yyyy", java.util.Locale.getDefault())
+                            etAge.setText(dateFormat.format(date))
+                        }
+                        actvAffiliationType.setText(it.affiliationType ?: "Aluno", false)
                     }
                 } else {
                     Toast.makeText(this@ProfileEditActivity, "Erro ao carregar dados", Toast.LENGTH_SHORT).show()
@@ -88,11 +94,23 @@ class ProfileEditActivity : AppCompatActivity() {
 
         val userName = etUserName.text.toString().trim()
         val phoneNumber = etPhoneNumber.text.toString().trim()
+        val ageText = etAge.text.toString().trim()
         val affiliationType = actvAffiliationType.text.toString()
 
         if (userName.isEmpty()) {
             etUserName.error = "Nome é obrigatório"
             return
+        }
+        
+        var ageDate: java.util.Date? = null
+        if (ageText.isNotEmpty()) {
+            try {
+                val dateFormat = java.text.SimpleDateFormat("dd/MM/yyyy", java.util.Locale.getDefault())
+                ageDate = dateFormat.parse(ageText)
+            } catch (e: Exception) {
+                etAge.error = "Data inválida. Use DD/MM/AAAA"
+                return
+            }
         }
 
         progressBar.visibility = View.VISIBLE
@@ -105,6 +123,7 @@ class ProfileEditActivity : AppCompatActivity() {
 
                     user.userName = userName
                     user.phoneNumber = phoneNumber
+                    user.age = ageDate
                     user.affiliationType = affiliationType
 
                     val updateResponse = RetrofitInstance.api.updateUser(currentUser.uid, user)

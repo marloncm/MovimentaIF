@@ -96,6 +96,11 @@ class HomeActivity : AppCompatActivity() {
                     drawerLayout.closeDrawers()
                     true
                 }
+                R.id.nav_logout -> {
+                    navController.navigate(R.id.nav_logout)
+                    drawerLayout.closeDrawers()
+                    true
+                }
                 else -> false
             }
         }

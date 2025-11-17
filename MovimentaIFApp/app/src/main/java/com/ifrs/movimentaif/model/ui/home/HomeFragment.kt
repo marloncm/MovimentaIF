@@ -41,18 +41,18 @@ class HomeFragment : Fragment() {
         
         lifecycleScope.launch {
             try {
-                // Carregar total de treinos completados
-                val totalResponse = RetrofitInstance.api.getTotalWorkoutsCompleted(userId)
-                if (totalResponse.isSuccessful) {
-                    val total = totalResponse.body() ?: 0
+                // Carregar total de exercícios completados
+                val exercisesResponse = RetrofitInstance.api.getTotalExercisesCompleted(userId)
+                if (exercisesResponse.isSuccessful) {
+                    val total = exercisesResponse.body() ?: 0
                     binding.textWorkoutCount.text = total.toString()
                 }
                 
-                // Carregar dias ativos
-                val activeDaysResponse = RetrofitInstance.api.getActiveDaysCount(userId)
-                if (activeDaysResponse.isSuccessful) {
-                    val activeDays = activeDaysResponse.body() ?: 0
-                    binding.textActiveDays.text = activeDays.toString()
+                // Carregar treinos finalizados (dias completos)
+                val workoutsResponse = RetrofitInstance.api.getTotalWorkoutsCompleted(userId)
+                if (workoutsResponse.isSuccessful) {
+                    val workouts = workoutsResponse.body() ?: 0
+                    binding.textActiveDays.text = workouts.toString()
                 }
             } catch (e: Exception) {
                 // Silenciosamente mantém valores padrão em caso de erro

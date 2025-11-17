@@ -54,19 +54,12 @@
                     android:layout_marginBottom="8dp" />
 
                 <TextView
-                    android:id="@+id/tvUserPhone"
+                    android:id="@+id/tvUserStatus"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Telefone: Não informado"
+                    android:text="Status: Aguardando aprovação"
                     android:textSize="14sp"
-                    android:layout_marginBottom="8dp" />
-
-                <TextView
-                    android:id="@+id/tvUserAffiliation"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Vínculo: Não informado"
-                    android:textSize="14sp"
+                    android:textStyle="bold"
                     android:layout_marginBottom="16dp" />
 
                 <com.google.android.material.button.MaterialButton

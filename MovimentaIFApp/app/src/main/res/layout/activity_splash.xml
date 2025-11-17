@@ -5,12 +5,12 @@
     android:layout_height="match_parent"
     android:background="@drawable/splash_background">
 
-    <!-- Ícone do Haltere -->
+    <!-- Logo Mais Movimento -->
     <ImageView
         android:id="@+id/splashIcon"
         android:layout_width="200dp"
         android:layout_height="200dp"
-        android:src="@drawable/ic_dumbbell"
+        android:src="@drawable/mais_movimento_logo"
         android:contentDescription="Logo MovimentaIF"
         android:scaleType="centerInside"
         app:layout_constraintBottom_toBottomOf="parent"

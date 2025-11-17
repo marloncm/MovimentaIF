@@ -2,6 +2,7 @@ package com.ifrs.movimentaif.api
 
 import com.ifrs.movimentaif.model.Anamnese
 import com.ifrs.movimentaif.model.DailyWorkoutCompletion
+import com.ifrs.movimentaif.model.ExerciseCompletion
 import com.ifrs.movimentaif.model.ParQ
 import com.ifrs.movimentaif.model.User
 import com.ifrs.movimentaif.model.Workout
@@ -85,4 +86,23 @@ interface ApiService {
     
     @DELETE("api/workout-completions/{completionId}")
     suspend fun deleteWorkoutCompletion(@Path("completionId") completionId: String): Response<Void>
+    
+    // Exercise Completion endpoints
+    @POST("api/exercise-completions")
+    suspend fun createExerciseCompletion(@Body completion: ExerciseCompletion): Response<ExerciseCompletion>
+    
+    @GET("api/exercise-completions/user/{userId}/exercise/{userWorkoutId}/today")
+    suspend fun isExerciseCompletedToday(
+        @Path("userId") userId: String,
+        @Path("userWorkoutId") userWorkoutId: String
+    ): Response<Boolean>
+    
+    @GET("api/exercise-completions/user/{userId}/day/{dayOfWeek}/today")
+    suspend fun getCompletedExercisesCountToday(
+        @Path("userId") userId: String,
+        @Path("dayOfWeek") dayOfWeek: String
+    ): Response<Int>
+    
+    @GET("api/exercise-completions/user/{userId}/total")
+    suspend fun getTotalExercisesCompleted(@Path("userId") userId: String): Response<Int>
 }
