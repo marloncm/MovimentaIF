@@ -15,7 +15,7 @@ public class User {
     private String role; //USER, ADMIN
     private Date createdAt; // Alterado para java.util.Date
     private boolean isActive; //active or inactive
-    private String affiliationType; //STUDENT, PROFESSOR, STAFF TODO transformar em enum
+    private String affiliationType;
     private boolean interviewed;
     private boolean didFirstWorkout;
     private boolean scheduledFirstWorkout;
