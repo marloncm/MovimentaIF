@@ -7,6 +7,7 @@ const editUserStatusForm = document.getElementById('editUserStatusForm');
 const statusMessageEl = document.getElementById('status-message');
 
 let currentUserId = null;
+let currentUserData = null; // Armazena todos os dados do usuário
 
 function showMessage(message, isError = true) {
     statusMessageEl.textContent = message;
@@ -57,6 +58,7 @@ async function loadEditForm() {
         if (!response.ok) throw new Error("Falha ao carregar dados do usuário.");
 
         const user = await response.json();
+        currentUserData = user; // Armazena todos os dados
 
         document.getElementById('user-name-title').textContent = user.userName || user.email;
         document.getElementById('user-id-field').value = currentUserId;
@@ -85,12 +87,32 @@ editUserStatusForm.addEventListener('submit', async (e) => {
     const firstWorkoutStatus = document.getElementById('edit-did-first-workout').checked;
     const activeStatus = document.getElementById('edit-is-active').checked;
 
+    // CRÍTICO: Envia TODOS os campos preservando os valores existentes
     const updatedData = {
-        interviewed: interviewStatus,
-        didFirstWorkout: firstWorkoutStatus,
-        isActive: activeStatus
-        // Note: Outros campos como userName, email, etc., devem ser preservados pelo backend
+        userId: currentUserData.userId,
+        userName: currentUserData.userName,
+        email: currentUserData.email,
+        age: currentUserData.age,
+        phoneNumber: currentUserData.phoneNumber,
+        role: currentUserData.role,
+        createdAt: currentUserData.createdAt,
+        isActive: Boolean(activeStatus),
+        affiliationType: currentUserData.affiliationType,
+        interviewed: Boolean(interviewStatus),
+        didFirstWorkout: Boolean(firstWorkoutStatus),
+        scheduledFirstWorkout: Boolean(currentUserData.scheduledFirstWorkout),
+        isAppUser: Boolean(currentUserData.isAppUser),
+        firstWorkoutDate: currentUserData.firstWorkoutDate, // Preserva a data
+        interviewDate: currentUserData.interviewDate, // Preserva a data
+        signedTermOfCommitment: Boolean(currentUserData.signedTermOfCommitment),
+        workoutChartId: currentUserData.workoutChartId,
+        isAdmin: currentUserData.isAdmin,
+        parqId: currentUserData.parqId,
+        anamneseId: currentUserData.anamneseId,
+        userObs: currentUserData.userObs
     };
+
+    console.log('Enviando atualização de status:', updatedData);
 
     try {
         const response = await getAuthTokenAndFetch(`${USERS_API_URL}/${userId}`, {
