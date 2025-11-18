@@ -250,7 +250,7 @@ function renderGeneralInfoContent(user, isEditingMode) {
     const ageDate = user.age ? new Date(user.age).toLocaleDateString('pt-BR') : 'N/A';
     const firstWorkoutDate = formatDateTime(user.firstWorkoutDate);
     const interviewDateFormatted = formatDateTime(user.interviewDate);
-    
+
     console.log('Datas do usuário:', {
         firstWorkoutDate: user.firstWorkoutDate,
         firstWorkoutDateFormatted: firstWorkoutDate,
@@ -490,7 +490,7 @@ document.getElementById('save-interview-btn').addEventListener('click', async ()
 
         const updatedUser = await response.json();
         currentUserData = updatedUser;
-        
+
         console.log('Dados atualizados após salvar entrevista:', {
             interviewDate: currentUserData.interviewDate,
             firstWorkoutDate: currentUserData.firstWorkoutDate
@@ -594,7 +594,7 @@ document.getElementById('save-workout-btn').addEventListener('click', async () =
 
         const updatedUser = await response.json();
         currentUserData = updatedUser;
-        
+
         console.log('Dados atualizados após salvar primeiro treino:', {
             interviewDate: currentUserData.interviewDate,
             firstWorkoutDate: currentUserData.firstWorkoutDate
