@@ -58,7 +58,8 @@ public class SecurityConfig {
                 "http://127.0.0.1:5500",
                 "https://*.herokuapp.com",
                 "https://movimentaif-admin.pages.dev", // Adicione seu domínio frontend aqui
-                "https://movimentaif-api.herokuapp.com"
+                "https://movimentaif-api.herokuapp.com",
+                "https://marloncm.github.io" // GitHub Pages
         ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*", "Authorization"));
