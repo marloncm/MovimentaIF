@@ -89,7 +89,7 @@ workoutForm.addEventListener('submit', async (e) => {
     const workoutData = { workoutName, workoutDescription, workoutVideoLink };
 
     try {
-        const url = workoutId ? `${API_BASE_URL}/${workoutId}` : API_BASE_URL;
+        const url = workoutId ? `${WORKOUTS_API_URL}/${workoutId}` : WORKOUTS_API_URL;
         const method = workoutId ? 'PUT' : 'POST';
 
         const response = await getAuthTokenAndFetch(url, {
@@ -116,7 +116,7 @@ workoutsList.addEventListener('click', async (e) => {
     if (e.target.classList.contains('btn-outline-danger')) {
         if (confirm('Tem certeza que deseja excluir este treino?')) {
             try {
-                const response = await getAuthTokenAndFetch(`${API_BASE_URL}/${id}`, {
+                const response = await getAuthTokenAndFetch(`${WORKOUTS_API_URL}/${id}`, {
                     method: 'DELETE',
                 });
                 if (!response.ok) {
@@ -129,7 +129,7 @@ workoutsList.addEventListener('click', async (e) => {
             }
         }
     } else if (e.target.classList.contains('btn-outline-secondary')) { // Botão Editar
-        const response = await getAuthTokenAndFetch(`${API_BASE_URL}/${id}`);
+        const response = await getAuthTokenAndFetch(`${WORKOUTS_API_URL}/${id}`);
         const workout = await response.json();
         document.getElementById('workoutId').value = workout.workoutId;
         document.getElementById('workoutName').value = workout.workoutName;
