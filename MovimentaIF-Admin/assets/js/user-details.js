@@ -429,7 +429,18 @@ document.getElementById('save-interview-btn').addEventListener('click', async ()
         return;
     }
 
-    const interviewDate = new Date(dateInput.value);
+    // Converter datetime-local para Date usando horário local
+    const dateTimeValue = dateInput.value; // formato: YYYY-MM-DDTHH:mm
+    const [datePart, timePart] = dateTimeValue.split('T');
+    const [year, month, day] = datePart.split('-');
+    const [hour, minute] = timePart.split(':');
+    const interviewDate = new Date(
+        parseInt(year),
+        parseInt(month) - 1,
+        parseInt(day),
+        parseInt(hour),
+        parseInt(minute)
+    );
 
     try {
         const updatedData = {
@@ -522,7 +533,18 @@ document.getElementById('save-workout-btn').addEventListener('click', async () =
         return;
     }
 
-    const workoutDate = new Date(dateInput.value);
+    // Converter datetime-local para Date usando horário local
+    const dateTimeValue = dateInput.value; // formato: YYYY-MM-DDTHH:mm
+    const [datePart, timePart] = dateTimeValue.split('T');
+    const [year, month, day] = datePart.split('-');
+    const [hour, minute] = timePart.split(':');
+    const workoutDate = new Date(
+        parseInt(year),
+        parseInt(month) - 1,
+        parseInt(day),
+        parseInt(hour),
+        parseInt(minute)
+    );
 
     try {
         const updatedData = {
@@ -685,9 +707,9 @@ async function renderParQContent() {
     try {
         const response = await getAuthTokenAndFetch(`${API_BASE_URL}/parq/${currentUserData.parqId}`);
         if (!response.ok) throw new Error('Falha ao carregar PAR-Q');
-        
+
         const parq = await response.json();
-        
+
         const questions = {
             'q1': 'Algum médico já disse que você possui algum problema de coração e que só deveria realizar atividade física supervisionado por profissionais de saúde?',
             'q2': 'Você sente dores no peito quando pratica atividade física?',
@@ -701,10 +723,10 @@ async function renderParQContent() {
         let questionsHTML = '';
         for (const [key, question] of Object.entries(questions)) {
             const answer = parq.respostas && parq.respostas[key];
-            const answerBadge = answer 
-                ? '<span class="badge bg-danger">SIM</span>' 
+            const answerBadge = answer
+                ? '<span class="badge bg-danger">SIM</span>'
                 : '<span class="badge bg-success">NÃO</span>';
-            
+
             questionsHTML += `
                 <div class="card mb-3 border-0 shadow-sm">
                     <div class="card-body">
@@ -795,7 +817,7 @@ async function saveParQObservations(parq) {
         document.getElementById('parq-obs-display').textContent = newObs || 'Nenhuma observação registrada.';
         document.getElementById('parq-obs-edit-mode').classList.add('d-none');
         document.getElementById('parq-obs-view-mode').classList.remove('d-none');
-        
+
         showMessage('Observações do PAR-Q salvas com sucesso!', false);
 
     } catch (error) {
@@ -822,9 +844,9 @@ async function renderAnamneseContent() {
     try {
         const response = await getAuthTokenAndFetch(`${API_BASE_URL}/anamnese/${currentUserData.anamneseId}`);
         if (!response.ok) throw new Error('Falha ao carregar Anamnese');
-        
+
         const anamnese = await response.json();
-        
+
         const questions = {
             'q1': 'Você possui ou teve alguma doença cardiovascular?',
             'q2': 'Você possui diabetes?',
@@ -841,10 +863,10 @@ async function renderAnamneseContent() {
         let questionsHTML = '';
         for (const [key, question] of Object.entries(questions)) {
             const answer = anamnese.respostas && anamnese.respostas[key];
-            const answerBadge = answer 
-                ? '<span class="badge bg-warning text-dark">SIM</span>' 
+            const answerBadge = answer
+                ? '<span class="badge bg-warning text-dark">SIM</span>'
                 : '<span class="badge bg-success">NÃO</span>';
-            
+
             questionsHTML += `
                 <div class="card mb-3 border-0 shadow-sm">
                     <div class="card-body">
@@ -935,7 +957,7 @@ async function saveAnamneseObservations(anamnese) {
         document.getElementById('anamnese-obs-display').textContent = newObs || 'Nenhuma observação registrada.';
         document.getElementById('anamnese-obs-edit-mode').classList.add('d-none');
         document.getElementById('anamnese-obs-view-mode').classList.remove('d-none');
-        
+
         showMessage('Observações da Anamnese salvas com sucesso!', false);
 
     } catch (error) {
