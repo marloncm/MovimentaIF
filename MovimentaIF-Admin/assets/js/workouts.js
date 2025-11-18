@@ -65,8 +65,6 @@ function renderWorkouts(workouts) {
                         <button class="btn btn-outline-danger btn-sm rounded-pill" data-id="${workout.workoutId}"><i class="fa-solid fa-trash-alt me-1"></i> Excluir</button>
                     </div>
                 `;
-                    </div>
-                `;
         workoutsList.appendChild(workoutCard);
     });
 }

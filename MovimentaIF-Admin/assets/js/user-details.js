@@ -490,6 +490,11 @@ document.getElementById('save-interview-btn').addEventListener('click', async ()
 
         const updatedUser = await response.json();
         currentUserData = updatedUser;
+        
+        console.log('Dados atualizados após salvar entrevista:', {
+            interviewDate: currentUserData.interviewDate,
+            firstWorkoutDate: currentUserData.firstWorkoutDate
+        });
 
         modalStatusMessage.textContent = 'Entrevista agendada com sucesso!';
         modalStatusMessage.classList.remove('d-none', 'alert-danger');
@@ -589,6 +594,11 @@ document.getElementById('save-workout-btn').addEventListener('click', async () =
 
         const updatedUser = await response.json();
         currentUserData = updatedUser;
+        
+        console.log('Dados atualizados após salvar primeiro treino:', {
+            interviewDate: currentUserData.interviewDate,
+            firstWorkoutDate: currentUserData.firstWorkoutDate
+        });
 
         modalStatusMessage.textContent = 'Primeiro treino agendado com sucesso!';
         modalStatusMessage.classList.remove('d-none', 'alert-danger');
