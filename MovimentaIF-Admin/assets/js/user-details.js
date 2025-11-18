@@ -250,6 +250,13 @@ function renderGeneralInfoContent(user, isEditingMode) {
     const ageDate = user.age ? new Date(user.age).toLocaleDateString('pt-BR') : 'N/A';
     const firstWorkoutDate = formatDateTime(user.firstWorkoutDate);
     const interviewDateFormatted = formatDateTime(user.interviewDate);
+    
+    console.log('Datas do usuário:', {
+        firstWorkoutDate: user.firstWorkoutDate,
+        firstWorkoutDateFormatted: firstWorkoutDate,
+        interviewDate: user.interviewDate,
+        interviewDateFormatted: interviewDateFormatted
+    });
 
     return `
                 <div class="row">

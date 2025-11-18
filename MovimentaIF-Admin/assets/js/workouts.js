@@ -48,7 +48,7 @@ async function fetchWorkouts() {
 function renderWorkouts(workouts) {
     workoutsList.innerHTML = '';
     if (workouts.length === 0) {
-        workoutsList.innerHTML = `<div class="alert alert-info text-center mt-4" role="alert">Nenhum treino cadastrado.</div>`;
+        workoutsList.innerHTML = '<div class="alert alert-info text-center mt-4" role="alert">Nenhum treino cadastrado.</div>';
         return;
     }
     workouts.forEach(workout => {
@@ -63,6 +63,8 @@ function renderWorkouts(workouts) {
                         <a href="workout-details.html?id=${workout.workoutId}" class="btn btn-outline-primary btn-sm rounded-pill"><i class="fa-solid fa-info-circle me-1"></i> Detalhes</a>
                         <button class="btn btn-outline-secondary btn-sm rounded-pill" data-bs-toggle="modal" data-bs-target="#addEditWorkoutModal" data-id="${workout.workoutId}"><i class="fa-solid fa-edit me-1"></i> Editar</button>
                         <button class="btn btn-outline-danger btn-sm rounded-pill" data-id="${workout.workoutId}"><i class="fa-solid fa-trash-alt me-1"></i> Excluir</button>
+                    </div>
+                `;
                     </div>
                 `;
         workoutsList.appendChild(workoutCard);
