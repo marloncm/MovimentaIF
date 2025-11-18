@@ -1,5 +1,5 @@
-import { 
-    auth, 
+import {
+    auth,
     API_BASE_URL,
     signInWithEmailAndPassword,
     createUserWithEmailAndPassword,

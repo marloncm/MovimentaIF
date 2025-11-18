@@ -32,6 +32,9 @@
                 <a href="workouts.html" class="nav-link text-custom-slate-700 rounded-pill mt-2">
                     <i class="fa-solid fa-dumbbell me-2"></i> Treinos
                 </a>
+                <a href="academy-info.html" class="nav-link text-custom-slate-700 rounded-pill mt-2">
+                    <i class="fa-solid fa-building me-2"></i> Informações da Academia
+                </a>
             </nav>
         </aside>
 
@@ -69,6 +72,9 @@
                             <button id="view-workout-btn" class="btn btn-sm btn-primary rounded-pill">
                                 <i class="fa-solid fa-chart-bar me-1"></i> Ficha de Treinos
                             </button>
+                            <button id="schedule-interview-btn" class="btn btn-sm btn-info rounded-pill text-white">
+                                <i class="fa-solid fa-calendar-check me-1"></i> Agendar Entrevista
+                            </button>
                         </div>
                     </div>
 
@@ -97,6 +103,34 @@
                     </div>
                 </div>
             </main>
+        </div>
+    </div>
+
+    <!-- Modal de Agendamento de Entrevista -->
+    <div class="modal fade" id="scheduleInterviewModal" tabindex="-1" aria-labelledby="scheduleInterviewModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="scheduleInterviewModalLabel">
+                        <i class="fa-solid fa-calendar-check me-2"></i>Agendar Entrevista
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="interview-date-input" class="form-label">Data e Hora da Entrevista</label>
+                        <input type="datetime-local" class="form-control" id="interview-date-input" required>
+                        <div class="form-text">Selecione a data e hora para a entrevista do usuário.</div>
+                    </div>
+                    <div id="modal-status-message" class="alert d-none"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="save-interview-btn">
+                        <i class="fa-solid fa-save me-1"></i>Salvar
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 

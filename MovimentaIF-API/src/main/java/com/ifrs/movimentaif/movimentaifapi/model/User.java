@@ -21,6 +21,7 @@ public class User {
     private boolean scheduledFirstWorkout;
     private boolean isAppUser;
     private Date firstWorkoutDate;
+    private Date interviewDate;
     private boolean signedTermOfCommitment;
     private String workoutChartId;
     private Boolean isAdmin;
@@ -229,5 +230,13 @@ public class User {
 
     public void setAnamneseId(String anamneseId) {
         this.anamneseId = anamneseId;
+    }
+
+    public Date getInterviewDate() {
+        return interviewDate;
+    }
+
+    public void setInterviewDate(Date interviewDate) {
+        this.interviewDate = interviewDate;
     }
 }

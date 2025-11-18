@@ -129,21 +129,20 @@ async function saveUserStatus() {
 
         // CRÍTICO: Força a saída do modo de edição em caso de sucesso
         isEditing = false;
+        
+        // Atualiza a UI para modo de visualização
+        toggleEditBtn.innerHTML = '<i class="fa-solid fa-edit me-1"></i> Editar';
+        toggleEditBtn.classList.remove('btn-success');
+        toggleEditBtn.classList.add('btn-warning');
+        cancelEditBtn.classList.add('d-none');
+        document.getElementById('view-workout-btn').disabled = false;
+        
+        // Re-renderiza sem entrar no loop
+        renderUserTabs(currentTab);
 
     } catch (error) {
         showMessage(`Erro ao salvar: ${error.message}`, true);
-        isEditing = true; // Mantém no modo de edição para o usuário corrigir
-    } finally {
-        // Se houve sucesso, isEditing=false (Sai da Edição).
-        // Se houve erro, isEditing=true (Mantém Edição).
-
-        // Garante que a tela renderize no estado final (visualização ou edição-erro)
-        renderUserTabs(currentTab);
-
-        // Chama o toggle para reverter os botões se o salvamento foi bem-sucedido.
-        if (!isEditing) {
-            toggleEditMode();
-        }
+        // Mantém no modo de edição para o usuário corrigir
     }
 }
 
@@ -156,19 +155,21 @@ toggleEditBtn.addEventListener('click', () => {
     }
 });
 
-// NOVO LISTENER: Cancelar Edição (desfaz as alterações visuais e recarrega o estado do servidor)
-cancelEditBtn.addEventListener('click', async () => {
+// NOVO LISTENER: Cancelar Edição (desfaz as alterações visuais sem recarregar)
+cancelEditBtn.addEventListener('click', () => {
     if (isEditing) {
-        showMessage("Edição cancelada. Restaurando botões...", false);
         isEditing = false;
-
-        // 1. Recarrega os dados originais do servidor (que desfaz as alterações não salvas)
-        await fetchUserDetails();
-
-        // 2. Garante que os botões voltem ao estado 'Editar'
-        // NOTA: O fetchUserDetails chama renderUserTabs, que por sua vez chama toggleEditMode
-        // O problema é que o fetchUserDetails não é assíncrono. Vamos forçar a mudança de estado aqui.
-        toggleEditMode();
+        
+        // Atualiza a UI para modo de visualização
+        toggleEditBtn.innerHTML = '<i class="fa-solid fa-edit me-1"></i> Editar';
+        toggleEditBtn.classList.remove('btn-success');
+        toggleEditBtn.classList.add('btn-warning');
+        cancelEditBtn.classList.add('d-none');
+        document.getElementById('view-workout-btn').disabled = false;
+        
+        // Re-renderiza com os dados originais
+        renderUserTabs(currentTab);
+        showMessage("Edição cancelada.", false);
     }
 });
 
@@ -229,6 +230,7 @@ function renderGeneralInfoContent(user, isEditingMode) {
     // Formatação da data de nascimento (Age) e a nova formatação de data/hora
     const ageDate = user.age ? new Date(user.age).toLocaleDateString('pt-BR') : 'N/A';
     const firstWorkoutDate = formatDateTime(user.firstWorkoutDate);
+    const interviewDateFormatted = formatDateTime(user.interviewDate);
 
     return `
                 <div class="row">
@@ -239,10 +241,14 @@ function renderGeneralInfoContent(user, isEditingMode) {
                             ${!isEditingMode ? `
                             <hr class="my-4">
                             <div>
-                                <h5 class="fw-bold text-custom-slate-800">Dados do Primeiro Treino</h5>
+                                <h5 class="fw-bold text-custom-slate-800">Datas Importantes</h5>
+                                <p class="text-muted mt-2">
+                                    <i class="fa-solid fa-calendar-check me-2"></i>
+                                    Entrevista agendada: <span class="fw-semibold">${interviewDateFormatted}</span>
+                                </p>
                                 <p class="text-muted mt-2">
                                     <i class="fa-solid fa-calendar-alt me-2"></i>
-                                    Data do primeiro treino: <span class="fw-semibold">${firstWorkoutDate}</span>
+                                    Primeiro treino: <span class="fw-semibold">${firstWorkoutDate}</span>
                                 </p>
                             </div>
                             ` : ''}
@@ -365,5 +371,80 @@ document.getElementById('view-workout-btn').addEventListener('click', () => {
         window.location.href = `user-workout-chart.html?uid=${currentUserId}`;
     } else {
         showMessage("Erro: ID do usuário não encontrado.", true);
+    }
+});
+
+// --- Lógica de Agendamento de Entrevista ---
+
+let scheduleInterviewModal;
+
+document.getElementById('schedule-interview-btn').addEventListener('click', () => {
+    if (!scheduleInterviewModal) {
+        scheduleInterviewModal = new bootstrap.Modal(document.getElementById('scheduleInterviewModal'));
+    }
+    
+    // Pré-preenche com a data atual se houver
+    const dateInput = document.getElementById('interview-date-input');
+    if (currentUserData && currentUserData.interviewDate) {
+        const date = new Date(currentUserData.interviewDate);
+        dateInput.value = date.toISOString().slice(0, 16);
+    } else {
+        dateInput.value = '';
+    }
+    
+    scheduleInterviewModal.show();
+});
+
+document.getElementById('save-interview-btn').addEventListener('click', async () => {
+    const dateInput = document.getElementById('interview-date-input');
+    const modalStatusMessage = document.getElementById('modal-status-message');
+    
+    if (!dateInput.value) {
+        modalStatusMessage.textContent = 'Por favor, selecione uma data e hora.';
+        modalStatusMessage.classList.remove('d-none', 'alert-success');
+        modalStatusMessage.classList.add('alert-danger');
+        return;
+    }
+    
+    const interviewDate = new Date(dateInput.value);
+    
+    try {
+        const updatedData = {
+            ...currentUserData,
+            interviewDate: interviewDate.toISOString(),
+            scheduledFirstWorkout: true
+        };
+        
+        delete updatedData.toJSON;
+        
+        const response = await getAuthTokenAndFetch(`${USERS_API_URL}/${currentUserId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(updatedData)
+        });
+        
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`Falha ao agendar entrevista. ${errorText}`);
+        }
+        
+        const updatedUser = await response.json();
+        currentUserData = updatedUser;
+        
+        modalStatusMessage.textContent = 'Entrevista agendada com sucesso!';
+        modalStatusMessage.classList.remove('d-none', 'alert-danger');
+        modalStatusMessage.classList.add('alert-success');
+        
+        setTimeout(() => {
+            scheduleInterviewModal.hide();
+            modalStatusMessage.classList.add('d-none');
+            renderUserTabs(currentTab);
+            showMessage('Entrevista agendada com sucesso!', false);
+        }, 1500);
+        
+    } catch (error) {
+        modalStatusMessage.textContent = `Erro: ${error.message}`;
+        modalStatusMessage.classList.remove('d-none', 'alert-success');
+        modalStatusMessage.classList.add('alert-danger');
     }
 });
