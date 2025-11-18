@@ -17,10 +17,26 @@ function showMessage(message, isError = true) {
     setTimeout(() => statusMessageEl.classList.add('d-none'), 4000);
 }
 
-function formatDateForInput(dateString) {
-    if (!dateString) return '';
-    const date = new Date(dateString);
-    return date.toISOString().split('T')[0];
+function formatDateForInput(dateValue) {
+    if (!dateValue) return '';
+    
+    let date;
+    
+    // Trata timestamp ou string
+    if (typeof dateValue === 'number' || (typeof dateValue === 'string' && /^\d+$/.test(dateValue))) {
+        date = new Date(Number(dateValue));
+    } else if (typeof dateValue === 'string') {
+        date = new Date(dateValue);
+    }
+    
+    if (!date || isNaN(date.getTime())) return '';
+    
+    // Retorna no formato YYYY-MM-DD para input type="date"
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    
+    return `${year}-${month}-${day}`;
 }
 
 function formatTimeForInput(timeString) {
@@ -29,9 +45,20 @@ function formatTimeForInput(timeString) {
     return timeString.substring(0, 5);
 }
 
-function formatDateForDisplay(dateString) {
-    if (!dateString) return '-';
-    const date = new Date(dateString);
+function formatDateForDisplay(dateValue) {
+    if (!dateValue) return '-';
+    
+    let date;
+    
+    // Trata timestamp ou string
+    if (typeof dateValue === 'number' || (typeof dateValue === 'string' && /^\d+$/.test(dateValue))) {
+        date = new Date(Number(dateValue));
+    } else if (typeof dateValue === 'string') {
+        date = new Date(dateValue);
+    }
+    
+    if (!date || isNaN(date.getTime())) return '-';
+    
     return date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
 }
 
@@ -42,13 +69,13 @@ function updatePreview() {
     const closeHour = document.getElementById('close-hour').value;
     const additionalInfo = document.getElementById('additional-info').value;
 
-    document.getElementById('preview-period').textContent = 
-        startDate && endDate 
+    document.getElementById('preview-period').textContent =
+        startDate && endDate
             ? `${formatDateForDisplay(startDate)} até ${formatDateForDisplay(endDate)}`
             : '-';
 
-    document.getElementById('preview-hours').textContent = 
-        openHour && closeHour 
+    document.getElementById('preview-hours').textContent =
+        openHour && closeHour
             ? `${openHour} às ${closeHour}`
             : '-';
 
@@ -116,7 +143,7 @@ function populateForm(data) {
     document.getElementById('open-hour').value = formatTimeForInput(data.openHour);
     document.getElementById('close-hour').value = formatTimeForInput(data.closeHour);
     document.getElementById('additional-info').value = data.additionalInfo || '';
-    
+
     // Salva os dados originais para comparação
     originalFormData = {
         startDate: formatDateForInput(data.startDate),
@@ -125,7 +152,7 @@ function populateForm(data) {
         closeHour: formatTimeForInput(data.closeHour),
         additionalInfo: data.additionalInfo || ''
     };
-    
+
     updatePreview();
 }
 
@@ -155,18 +182,24 @@ document.getElementById('cancel-btn').addEventListener('click', () => {
 form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
+    // Converte as datas para ISO string (compatível com java.util.Date)
+    const startDateValue = document.getElementById('start-date').value;
+    const endDateValue = document.getElementById('end-date').value;
+    
     const formData = {
-        startDate: document.getElementById('start-date').value,
-        endDate: document.getElementById('end-date').value,
+        startDate: startDateValue ? new Date(startDateValue + 'T00:00:00').toISOString() : null,
+        endDate: endDateValue ? new Date(endDateValue + 'T23:59:59').toISOString() : null,
         openHour: document.getElementById('open-hour').value + ':00', // Adiciona segundos
         closeHour: document.getElementById('close-hour').value + ':00',
         additionalInfo: document.getElementById('additional-info').value
     };
 
+    console.log('Enviando dados da academia:', formData);
+
     try {
         const method = currentAcademyInfo ? 'PUT' : 'POST';
-        const url = currentAcademyInfo 
-            ? `${ACADEMY_INFO_API_URL}/${currentAcademyInfo.id}` 
+        const url = currentAcademyInfo
+            ? `${ACADEMY_INFO_API_URL}/${currentAcademyInfo.id}`
             : ACADEMY_INFO_API_URL;
 
         const response = await getAuthTokenAndFetch(url, {
