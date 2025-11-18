@@ -30,8 +30,7 @@ async function fetchWorkouts() {
                     <div class="spinner-border text-primary" role="status">
                         <span class="visually-hidden">Carregando...</span>
                     </div>
-                </div>
-            ;
+                </div>`;
     try {
         const response = await getAuthTokenAndFetch(WORKOUTS_API_URL);
         if (!response.ok) {
@@ -54,8 +53,8 @@ function renderWorkouts(workouts) {
     workouts.forEach(workout => {
         const workoutCard = document.createElement('div');
         workoutCard.className = 'list-group-item list-group-item-action d-flex justify-content-between align-items-center my-2 rounded-3 shadow-sm';
-        workoutCard.innerHTML = `
-                    <div class="d-flex flex-column">
+        workoutCard.innerHTML =
+            `<div class="d-flex flex-column">
                         <h6 class="mb-1 fw-bold">${workout.workoutName}</h6>
                         <small class="text-muted text-truncate" style="max-width: 400px;">${workout.workoutDescription}</small>
                     </div>
