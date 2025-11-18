@@ -196,13 +196,13 @@ form.addEventListener('submit', async (e) => {
         startDateISO = startDate.toISOString();
         console.log('Data início:', { original: startDateValue, convertida: startDateISO, objeto: startDate });
     }
-    
+
     if (endDateValue) {
         const [year, month, day] = endDateValue.split('-');
         const endDate = new Date(parseInt(year), parseInt(month) - 1, parseInt(day), 23, 59, 59);
         endDateISO = endDate.toISOString();
         console.log('Data fim:', { original: endDateValue, convertida: endDateISO, objeto: endDate });
-    }    const formData = {
+    } const formData = {
         startDate: startDateISO,
         endDate: endDateISO,
         openHour: document.getElementById('open-hour').value + ':00', // Adiciona segundos

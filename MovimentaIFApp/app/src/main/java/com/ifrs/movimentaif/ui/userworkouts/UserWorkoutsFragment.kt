@@ -333,7 +333,6 @@ class UserWorkoutsFragment : Fragment() {
         val workoutName = itemView.findViewById<android.widget.TextView>(com.ifrs.movimentaif.R.id.textWorkoutName)
         val workoutDetails = itemView.findViewById<android.widget.TextView>(com.ifrs.movimentaif.R.id.textWorkoutDetails)
         val btnVideo = itemView.findViewById<com.google.android.material.button.MaterialButton>(com.ifrs.movimentaif.R.id.btnWatchVideo)
-        val btnFinishExercise = itemView.findViewById<com.google.android.material.button.MaterialButton>(com.ifrs.movimentaif.R.id.btnFinishExercise)
 
         workoutName?.text = workout.workoutName ?: "Exercício"
         
@@ -348,16 +347,6 @@ class UserWorkoutsFragment : Fragment() {
             }
         }
         workoutDetails?.text = detailsText
-
-        // Verificar se exercício já foi completado
-        val isCompleted = completedExercises.contains(userWorkout.userWorkoutId)
-        updateExerciseButtonState(btnFinishExercise, isCompleted)
-
-        // Botão de finalizar exercício
-        btnFinishExercise?.setOnClickListener {
-            com.ifrs.movimentaif.utils.SoundManager.playClickSound()
-            finishExercise(userWorkout, btnFinishExercise)
-        }
 
         if (!workout.workoutVideoLink.isNullOrEmpty()) {
             btnVideo?.visibility = View.VISIBLE
@@ -380,65 +369,6 @@ class UserWorkoutsFragment : Fragment() {
         }
 
         return itemView
-    }
-
-    private fun updateExerciseButtonState(button: com.google.android.material.button.MaterialButton?, completed: Boolean) {
-        button?.let {
-            if (completed) {
-                it.text = "✓ Concluído"
-                it.isEnabled = false
-                it.alpha = 0.6f
-            } else {
-                it.text = "✓ Concluir"
-                it.isEnabled = true
-                it.alpha = 1.0f
-            }
-        }
-    }
-
-    private fun finishExercise(userWorkout: UserWorkout, button: com.google.android.material.button.MaterialButton?) {
-        val userId = auth.currentUser?.uid ?: return
-        
-        // Determinar qual dia da semana este exercício pertence
-        val dayOfWeek = getDayOfWeekForExercise(userWorkout.userWorkoutId) ?: return
-        
-        lifecycleScope.launch {
-            try {
-                val exerciseCompletion = ExerciseCompletion().apply {
-                    this.userId = userId
-                    this.userWorkoutId = userWorkout.userWorkoutId
-                    this.dayOfWeek = dayOfWeek
-                }
-                
-                val response = RetrofitInstance.api.createExerciseCompletion(exerciseCompletion)
-                
-                if (response.isSuccessful) {
-                    completedExercises.add(userWorkout.userWorkoutId)
-                    updateExerciseButtonState(button, true)
-                    Toast.makeText(context, "Exercício concluído!", Toast.LENGTH_SHORT).show()
-                    
-                    // Verificar se todos os exercícios do dia foram completados
-                    checkAndFinishDayIfComplete(dayOfWeek)
-                } else {
-                    Toast.makeText(context, "Erro ao concluir exercício", Toast.LENGTH_SHORT).show()
-                }
-            } catch (e: Exception) {
-                Toast.makeText(context, "Erro de conexão: ${e.message}", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
-
-    private fun getDayOfWeekForExercise(userWorkoutId: String): String? {
-        val chart = workoutChart ?: return null
-        
-        return when {
-            chart.mondayWorkouts.contains(userWorkoutId) -> "monday"
-            chart.tuesdayWorkouts.contains(userWorkoutId) -> "tuesday"
-            chart.wednesdayWorkouts.contains(userWorkoutId) -> "wednesday"
-            chart.thursdayWorkouts.contains(userWorkoutId) -> "thursday"
-            chart.fridayWorkouts.contains(userWorkoutId) -> "friday"
-            else -> null
-        }
     }
 
     private suspend fun checkAndFinishDayIfComplete(dayOfWeek: String) {

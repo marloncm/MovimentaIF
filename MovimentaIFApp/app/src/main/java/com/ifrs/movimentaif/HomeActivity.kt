@@ -195,6 +195,18 @@ class HomeActivity : AppCompatActivity() {
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 
+    override fun onResume() {
+        super.onResume()
+        // Verificar se o usuário ainda está autenticado
+        if (auth.currentUser == null) {
+            // Usuário não está mais logado, redirecionar para LoginActivity
+            val intent = android.content.Intent(this, LoginActivity::class.java)
+            intent.flags = android.content.Intent.FLAG_ACTIVITY_NEW_TASK or android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
+            finish()
+        }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         SoundManager.release()

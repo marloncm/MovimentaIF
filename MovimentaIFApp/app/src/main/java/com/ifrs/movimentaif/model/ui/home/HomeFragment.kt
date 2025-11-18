@@ -34,6 +34,7 @@ class HomeFragment : Fragment() {
         setupUserInfo()
         setupClickListeners()
         loadAcademyInfo()
+        loadUserStatus()
     }
 
     private fun loadAcademyInfo() {
@@ -62,6 +63,37 @@ class HomeFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         loadAcademyInfo()
+        loadUserStatus()
+    }
+
+    private fun loadUserStatus() {
+        val currentUser = auth.currentUser
+        if (currentUser != null) {
+            lifecycleScope.launch {
+                try {
+                    val response = RetrofitInstance.api.getUserById(currentUser.uid)
+                    if (response.isSuccessful) {
+                        val user = response.body()
+                        user?.let {
+                            binding.textUserStatus.visibility = android.view.View.VISIBLE
+                            if (it.active == true) {
+                                binding.textUserStatus.text = "✓ Ativo"
+                                binding.textUserStatus.setTextColor(
+                                    resources.getColor(android.R.color.holo_green_light, null)
+                                )
+                            } else {
+                                binding.textUserStatus.text = "⏳ Aguardando ativação da academia"
+                                binding.textUserStatus.setTextColor(
+                                    resources.getColor(android.R.color.holo_orange_light, null)
+                                )
+                            }
+                        }
+                    }
+                } catch (e: Exception) {
+                    binding.textUserStatus.visibility = android.view.View.GONE
+                }
+            }
+        }
     }
 
     private fun setupUserInfo() {

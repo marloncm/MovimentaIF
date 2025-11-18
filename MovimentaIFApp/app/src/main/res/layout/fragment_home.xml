@@ -50,6 +50,17 @@
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/textUserStatus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text=""
+                    android:textColor="@android:color/white"
+                    android:textSize="12sp"
+                    android:alpha="0.9"
+                    android:visibility="gone" />
+
+                <TextView
                     android:id="@+id/textMotivation"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
