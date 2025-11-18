@@ -1,34 +1,7 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-
-const firebaseConfig = {
-    apiKey: "AIzaSyAnET6gJ175qHFbHcKm40tynj7s9x4sXqU",
-    authDomain: "movimentaif.firebaseapp.com",
-    databaseURL: "https://movimentaif-default-rtdb.firebaseio.com",
-    projectId: "movimentaif",
-    storageBucket: "movimentaif.firebasestorage.app",
-    messagingSenderId: "705983497984",
-    appId: "1:705983497984:web:f16672db437ce21aa2d5e5",
-    measurementId: "G-5K2CYJ742W"
-};
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+import { auth, API_BASE_URL, getAuthTokenAndFetch, onAuthStateChanged, signOut } from "./firebaseConfig.js";
 
 const workoutContent = document.getElementById('workout-content');
-// ✅ URL de Produção com HTTPS
-const API_BASE_URL = 'https://movimentaif-api-7895a5f0638f.herokuapp.com/api/workouts';
-
-async function getAuthTokenAndFetch(url, options = {}) {
-    const user = auth.currentUser;
-    if (!user) {
-        console.error("No authenticated user to get token for.");
-        window.location.replace('index.html');
-        return Promise.reject(new Error("No user authenticated."));
-    }
-    const token = await user.getIdToken();
-    const headers = { ...options.headers, 'Authorization': `Bearer ${token}` };
-    return fetch(url, { ...options, headers });
-}
+const WORKOUTS_API_URL = `${API_BASE_URL}/workouts`;
 
 onAuthStateChanged(auth, user => {
     if (user) {
@@ -58,7 +31,7 @@ document.getElementById('back-btn').addEventListener('click', () => {
 async function fetchWorkoutDetails(id) {
     try {
         // O spinner é exibido por padrão no HTML.
-        const response = await getAuthTokenAndFetch(`${API_BASE_URL}/${id}`);
+        const response = await getAuthTokenAndFetch(`${WORKOUTS_API_URL}/${id}`);
         if (!response.ok) {
             const errorText = await response.text();
             throw new Error(errorText || 'Erro ao buscar detalhes do treino.');

@@ -1,19 +1,6 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+import { auth, API_BASE_URL, getAuthTokenAndFetch, onAuthStateChanged, signOut } from "./firebaseConfig.js";
 
-const firebaseConfig = {
-    apiKey: "AIzaSyAnET6gJ175qHFbHcKm40tynj7s9x4sXqU",
-    authDomain: "movimentaif.firebaseapp.com",
-    projectId: "movimentaif",
-    storageBucket: "movimentaif.firebasestorage.app",
-    messagingSenderId: "705983497984",
-    appId: "1:705983497984:web:f16672db437ce21aa2d5e5",
-    measurementId: "G-5K2CYJ742W"
-};
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-
-const API_BASE_URL = 'http://localhost:8080/api/users';
+const USERS_API_URL = `${API_BASE_URL}/users`;
 const loadingSpinner = document.getElementById('loading-spinner');
 const userDetailsContainer = document.getElementById('user-details-container');
 const contentView = document.getElementById('content-view');
@@ -57,18 +44,6 @@ function formatDateTime(dateValue) {
     const formattedTime = date.toLocaleTimeString('pt-BR', timeOptions);
 
     return `${formattedDate} às ${formattedTime}`;
-}
-
-async function getAuthTokenAndFetch(url, options = {}) {
-    const user = auth.currentUser;
-    if (!user) {
-        console.error("No authenticated user to get token for.");
-        window.location.replace('index.html');
-        return Promise.reject(new Error("No user authenticated."));
-    }
-    const token = await user.getIdToken();
-    const headers = { ...options.headers, 'Authorization': `Bearer ${token}` };
-    return fetch(url, { ...options, headers });
 }
 
 // --- Lógica de Autenticação e Carregamento Inicial ---
@@ -135,7 +110,7 @@ async function saveUserStatus() {
 
     try {
         // Requisição PUT para o endpoint de atualização
-        const response = await getAuthTokenAndFetch(`${API_BASE_URL}/${currentUserId}`, {
+        const response = await getAuthTokenAndFetch(`${USERS_API_URL}/${currentUserId}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(updatedData)
@@ -353,7 +328,7 @@ async function fetchUserDetails() {
     }
 
     try {
-        const response = await getAuthTokenAndFetch(`${API_BASE_URL}/${userId}`);
+        const response = await getAuthTokenAndFetch(`${USERS_API_URL}/${userId}`);
 
         if (response.status === 404) {
             throw new Error('Usuário não encontrado.');

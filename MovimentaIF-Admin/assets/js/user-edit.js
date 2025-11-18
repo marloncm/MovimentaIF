@@ -1,20 +1,6 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+import { auth, API_BASE_URL, getAuthTokenAndFetch, onAuthStateChanged, signOut } from "./firebaseConfig.js";
 
-const firebaseConfig = {
-    apiKey: "AIzaSyAnET6gJ175qHFbHcKm40tynj7s9x4sXqU",
-    authDomain: "movimentaif.firebaseapp.com",
-    projectId: "movimentaif",
-    storageBucket: "movimentaif.firebasestorage.app",
-    messagingSenderId: "705983497984",
-    appId: "1:705983497984:web:f16672db437ce21aa2d5e5",
-    measurementId: "G-5K2CYJ742W"
-};
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-
-// ✅ URL de Produção com HTTPS
-const API_BASE_URL = 'https://movimentaif-api-7895a5f0638f.herokuapp.com/api/users';
+const USERS_API_URL = `${API_BASE_URL}/users`;
 const loadingSpinner = document.getElementById('loading-spinner');
 const editFormContainer = document.getElementById('edit-form-container');
 const editUserStatusForm = document.getElementById('editUserStatusForm');
@@ -26,17 +12,6 @@ function showMessage(message, isError = true) {
     statusMessageEl.textContent = message;
     statusMessageEl.classList.remove('d-none', 'alert-success', 'alert-danger');
     statusMessageEl.classList.add(isError ? 'alert-danger' : 'alert-success');
-}
-
-async function getAuthTokenAndFetch(url, options = {}) {
-    const user = auth.currentUser;
-    if (!user) {
-        window.location.replace('index.html');
-        return Promise.reject(new Error("No user authenticated."));
-    }
-    const token = await user.getIdToken();
-    const headers = { ...options.headers, 'Authorization': `Bearer ${token}` };
-    return fetch(url, { ...options, headers });
 }
 
 onAuthStateChanged(auth, user => {
@@ -78,7 +53,7 @@ async function loadEditForm() {
     }
 
     try {
-        const response = await getAuthTokenAndFetch(`${API_BASE_URL}/${currentUserId}`);
+        const response = await getAuthTokenAndFetch(`${USERS_API_URL}/${currentUserId}`);
         if (!response.ok) throw new Error("Falha ao carregar dados do usuário.");
 
         const user = await response.json();
@@ -118,7 +93,7 @@ editUserStatusForm.addEventListener('submit', async (e) => {
     };
 
     try {
-        const response = await getAuthTokenAndFetch(`${API_BASE_URL}/${userId}`, {
+        const response = await getAuthTokenAndFetch(`${USERS_API_URL}/${userId}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(updatedData)

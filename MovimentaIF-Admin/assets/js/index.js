@@ -1,18 +1,12 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, updateProfile } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-
-const firebaseConfig = {
-    apiKey: "AIzaSyAnET6gJ175qHFbHcKm40tynj7s9x4sXqU",
-    authDomain: "movimentaif.firebaseapp.com",
-    databaseURL: "https://movimentaif-default-rtdb.firebaseio.com",
-    projectId: "movimentaif",
-    storageBucket: "movimentaif.firebasestorage.app",
-    messagingSenderId: "705983497984",
-    appId: "1:705983497984:web:f16672db437ce21aa2d5e5",
-    measurementId: "G-5K2CYJ742W"
-};
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+import { 
+    auth, 
+    API_BASE_URL,
+    signInWithEmailAndPassword,
+    createUserWithEmailAndPassword,
+    GoogleAuthProvider,
+    signInWithPopup,
+    updateProfile
+} from "./firebaseConfig.js";
 
 const loginForm = document.getElementById('login-form');
 const registerForm = document.getElementById('register-form');
@@ -37,7 +31,7 @@ function showMessage(message, isError = true) {
 async function sendUserDataToBackend(user, name, email) {
     try {
         const idToken = await user.getIdToken();
-        const backendUrl = "http://localhost:8080/api/users";
+        const backendUrl = `${API_BASE_URL}/users`;
 
         const userData = {
             userId: user.uid,
@@ -75,7 +69,7 @@ async function handleSocialLogin(result) {
     const user = result.user;
     // 1. Tenta buscar o usuário no backend (Assumindo que você tem uma rota GET /api/users/{uid})
     try {
-        const checkUrl = `http://localhost:8080/api/users/${user.uid}`;
+        const checkUrl = `${API_BASE_URL}/users/${user.uid}`;
         // Obtém o token, mesmo que o usuário seja novo, para autenticar a requisição GET
         const token = await user.getIdToken();
 

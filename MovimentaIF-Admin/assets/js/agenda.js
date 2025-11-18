@@ -1,22 +1,5 @@
+import { auth, API_BASE_URL, getAuthTokenAndFetch, onAuthStateChanged, signOut } from "./firebaseConfig.js";
 
-
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-
-const firebaseConfig = {
-    apiKey: "AIzaSyAnET6gJ175qHFbHcKm40tynj7s9x4sXqU",
-    authDomain: "movimentaif.firebaseapp.com",
-    databaseURL: "https://movimentaif-default-rtdb.firebaseio.com",
-    projectId: "movimentaif",
-    storageBucket: "movimentaif.firebasestorage.app",
-    messagingSenderId: "705983497984",
-    appId: "1:705983497984:web:f16672db437ce21aa2d5e5",
-    measurementId: "G-5K2CYJ742W"
-};
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-
-const API_BASE_URL = 'http://localhost:8080/api';
 const DAY_SCHEDULE_API = `${API_BASE_URL}/charts/day`;
 const WORKOUTS_API = `${API_BASE_URL}/workouts`;
 
@@ -31,19 +14,6 @@ const calendarDaysEl = document.getElementById('calendar-days');
 const monthYearEl = document.getElementById('month-year');
 const scheduleListContentEl = document.getElementById('schedule-list-content');
 const selectedDayNameEl = document.getElementById('selected-day-name');
-
-async function getAuthTokenAndFetch(url, options = {}) {
-    const user = auth.currentUser;
-    if (!user) {
-        // Redireciona se não houver usuário autenticado
-        window.location.replace('index.html');
-        return Promise.reject(new Error("No user authenticated."));
-    }
-    // Adiciona o token de autenticação para as requisições do backend
-    const token = await user.getIdToken();
-    const headers = { ...options.headers, 'Authorization': `Bearer ${token}` };
-    return fetch(url, { ...options, headers });
-}
 
 onAuthStateChanged(auth, user => {
     if (user) {

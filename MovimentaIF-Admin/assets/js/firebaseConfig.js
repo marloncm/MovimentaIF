@@ -1,10 +1,20 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+import { 
+    getAuth, 
+    onAuthStateChanged, 
+    signOut,
+    signInWithEmailAndPassword,
+    createUserWithEmailAndPassword,
+    GoogleAuthProvider,
+    signInWithPopup,
+    updateProfile
+} from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 import { fetchWithTimeout, logger } from "./security-config.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyAnET6gJ175qHFbHcKm40tynj7s9x4sXqU",
     authDomain: "movimentaif.firebaseapp.com",
+    databaseURL: "https://movimentaif-default-rtdb.firebaseio.com",
     projectId: "movimentaif",
     storageBucket: "movimentaif.firebasestorage.app",
     messagingSenderId: "705983497984",
@@ -13,6 +23,17 @@ const firebaseConfig = {
 };
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
+
+// ✅ Exportar funções de autenticação
+export { 
+    onAuthStateChanged, 
+    signOut,
+    signInWithEmailAndPassword,
+    createUserWithEmailAndPassword,
+    GoogleAuthProvider,
+    signInWithPopup,
+    updateProfile
+};
 
 // ✅ URL de Produção com HTTPS
 export const API_BASE_URL = 'https://movimentaif-api-7895a5f0638f.herokuapp.com/api';
