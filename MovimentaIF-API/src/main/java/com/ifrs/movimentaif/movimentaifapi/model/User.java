@@ -27,6 +27,7 @@ public class User {
     private Boolean isAdmin;
     private String parqId;
     private String anamneseId;
+    private String userObs;
 
     public User(){
         this.userId = UUID.randomUUID().toString();
@@ -238,5 +239,13 @@ public class User {
 
     public void setInterviewDate(Date interviewDate) {
         this.interviewDate = interviewDate;
+    }
+
+    public String getUserObs() {
+        return userObs;
+    }
+
+    public void setUserObs(String userObs) {
+        this.userObs = userObs;
     }
 }

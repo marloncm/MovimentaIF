@@ -75,6 +75,9 @@
                             <button id="schedule-interview-btn" class="btn btn-sm btn-info rounded-pill text-white">
                                 <i class="fa-solid fa-calendar-check me-1"></i> Agendar Entrevista
                             </button>
+                            <button id="schedule-workout-btn" class="btn btn-sm btn-success rounded-pill text-white">
+                                <i class="fa-solid fa-calendar-plus me-1"></i> Agendar Primeiro Treino
+                            </button>
                         </div>
                     </div>
 
@@ -127,6 +130,34 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                     <button type="button" class="btn btn-primary" id="save-interview-btn">
+                        <i class="fa-solid fa-save me-1"></i>Salvar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Agendamento de Primeiro Treino -->
+    <div class="modal fade" id="scheduleWorkoutModal" tabindex="-1" aria-labelledby="scheduleWorkoutModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="scheduleWorkoutModalLabel">
+                        <i class="fa-solid fa-calendar-plus me-2"></i>Agendar Primeiro Treino
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="workout-date-input" class="form-label">Data e Hora do Primeiro Treino</label>
+                        <input type="datetime-local" class="form-control" id="workout-date-input" required>
+                        <div class="form-text">Selecione a data e hora para o primeiro treino do usuário.</div>
+                    </div>
+                    <div id="modal-workout-status-message" class="alert d-none"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="save-workout-btn">
                         <i class="fa-solid fa-save me-1"></i>Salvar
                     </button>
                 </div>

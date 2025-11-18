@@ -129,14 +129,14 @@ async function saveUserStatus() {
 
         // CRÍTICO: Força a saída do modo de edição em caso de sucesso
         isEditing = false;
-        
+
         // Atualiza a UI para modo de visualização
         toggleEditBtn.innerHTML = '<i class="fa-solid fa-edit me-1"></i> Editar';
         toggleEditBtn.classList.remove('btn-success');
         toggleEditBtn.classList.add('btn-warning');
         cancelEditBtn.classList.add('d-none');
         document.getElementById('view-workout-btn').disabled = false;
-        
+
         // Re-renderiza sem entrar no loop
         renderUserTabs(currentTab);
 
@@ -159,14 +159,14 @@ toggleEditBtn.addEventListener('click', () => {
 cancelEditBtn.addEventListener('click', () => {
     if (isEditing) {
         isEditing = false;
-        
+
         // Atualiza a UI para modo de visualização
         toggleEditBtn.innerHTML = '<i class="fa-solid fa-edit me-1"></i> Editar';
         toggleEditBtn.classList.remove('btn-success');
         toggleEditBtn.classList.add('btn-warning');
         cancelEditBtn.classList.add('d-none');
         document.getElementById('view-workout-btn').disabled = false;
-        
+
         // Re-renderiza com os dados originais
         renderUserTabs(currentTab);
         showMessage("Edição cancelada.", false);
@@ -268,10 +268,26 @@ function renderGeneralInfoContent(user, isEditingMode) {
                     </div>
                 </div>
                 <div class="card shadow-sm mt-4 p-4 rounded-3 bg-white">
-                    <h5 class="fw-bold text-custom-slate-800">Observações do Professor</h5>
-                    <div class="form-floating mt-3">
-                        <textarea class="form-control" placeholder="Deixe um comentário aqui" id="floatingTextarea2" style="height: 100px"></textarea>
-                        <label for="floatingTextarea2" class="text-muted">Adicione suas observações...</label>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="fw-bold text-custom-slate-800 mb-0">Observações do Professor</h5>
+                        <button type="button" class="btn btn-sm btn-outline-primary" id="edit-obs-btn">
+                            <i class="fa-solid fa-edit me-1"></i>Editar
+                        </button>
+                    </div>
+                    <div id="obs-view-mode">
+                        <p class="text-muted" id="obs-display">${user.userObs || 'Nenhuma observação registrada.'}</p>
+                    </div>
+                    <div id="obs-edit-mode" class="d-none">
+                        <div class="form-floating mb-3">
+                            <textarea class="form-control" placeholder="Deixe um comentário aqui" id="user-obs-textarea" style="height: 100px">${user.userObs || ''}</textarea>
+                            <label for="user-obs-textarea" class="text-muted">Adicione suas observações...</label>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button type="button" class="btn btn-sm btn-secondary" id="cancel-obs-btn">Cancelar</button>
+                            <button type="button" class="btn btn-sm btn-primary" id="save-obs-btn">
+                                <i class="fa-solid fa-save me-1"></i>Salvar
+                            </button>
+                        </div>
                     </div>
                 </div>
             `;
@@ -382,7 +398,7 @@ document.getElementById('schedule-interview-btn').addEventListener('click', () =
     if (!scheduleInterviewModal) {
         scheduleInterviewModal = new bootstrap.Modal(document.getElementById('scheduleInterviewModal'));
     }
-    
+
     // Pré-preenche com a data atual se houver
     const dateInput = document.getElementById('interview-date-input');
     if (currentUserData && currentUserData.interviewDate) {
@@ -391,13 +407,88 @@ document.getElementById('schedule-interview-btn').addEventListener('click', () =
     } else {
         dateInput.value = '';
     }
-    
+
     scheduleInterviewModal.show();
 });
 
 document.getElementById('save-interview-btn').addEventListener('click', async () => {
     const dateInput = document.getElementById('interview-date-input');
     const modalStatusMessage = document.getElementById('modal-status-message');
+
+    if (!dateInput.value) {
+        modalStatusMessage.textContent = 'Por favor, selecione uma data e hora.';
+        modalStatusMessage.classList.remove('d-none', 'alert-success');
+        modalStatusMessage.classList.add('alert-danger');
+        return;
+    }
+
+    const interviewDate = new Date(dateInput.value);
+
+    try {
+        const updatedData = {
+            ...currentUserData,
+            interviewDate: interviewDate.getTime(),
+            scheduledFirstWorkout: true
+        };
+
+        delete updatedData.toJSON;
+
+        const response = await getAuthTokenAndFetch(`${USERS_API_URL}/${currentUserId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(updatedData)
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`Falha ao agendar entrevista. ${errorText}`);
+        }
+
+        const updatedUser = await response.json();
+        currentUserData = updatedUser;
+
+        modalStatusMessage.textContent = 'Entrevista agendada com sucesso!';
+        modalStatusMessage.classList.remove('d-none', 'alert-danger');
+        modalStatusMessage.classList.add('alert-success');
+
+        setTimeout(() => {
+            scheduleInterviewModal.hide();
+            modalStatusMessage.classList.add('d-none');
+            renderUserTabs(currentTab);
+            showMessage('Entrevista agendada com sucesso!', false);
+        }, 1500);
+
+    } catch (error) {
+        modalStatusMessage.textContent = `Erro: ${error.message}`;
+        modalStatusMessage.classList.remove('d-none', 'alert-success');
+        modalStatusMessage.classList.add('alert-danger');
+    }
+});
+
+// --- Lógica de Agendamento de Primeiro Treino ---
+
+let scheduleWorkoutModal;
+
+document.getElementById('schedule-workout-btn').addEventListener('click', () => {
+    if (!scheduleWorkoutModal) {
+        scheduleWorkoutModal = new bootstrap.Modal(document.getElementById('scheduleWorkoutModal'));
+    }
+    
+    // Pré-preenche com a data atual se houver
+    const dateInput = document.getElementById('workout-date-input');
+    if (currentUserData && currentUserData.firstWorkoutDate) {
+        const date = new Date(currentUserData.firstWorkoutDate);
+        dateInput.value = date.toISOString().slice(0, 16);
+    } else {
+        dateInput.value = '';
+    }
+    
+    scheduleWorkoutModal.show();
+});
+
+document.getElementById('save-workout-btn').addEventListener('click', async () => {
+    const dateInput = document.getElementById('workout-date-input');
+    const modalStatusMessage = document.getElementById('modal-workout-status-message');
     
     if (!dateInput.value) {
         modalStatusMessage.textContent = 'Por favor, selecione uma data e hora.';
@@ -406,12 +497,12 @@ document.getElementById('save-interview-btn').addEventListener('click', async ()
         return;
     }
     
-    const interviewDate = new Date(dateInput.value);
+    const workoutDate = new Date(dateInput.value);
     
     try {
         const updatedData = {
             ...currentUserData,
-            interviewDate: interviewDate.toISOString(),
+            firstWorkoutDate: workoutDate.getTime(),
             scheduledFirstWorkout: true
         };
         
@@ -425,21 +516,21 @@ document.getElementById('save-interview-btn').addEventListener('click', async ()
         
         if (!response.ok) {
             const errorText = await response.text();
-            throw new Error(`Falha ao agendar entrevista. ${errorText}`);
+            throw new Error(`Falha ao agendar primeiro treino. ${errorText}`);
         }
         
         const updatedUser = await response.json();
         currentUserData = updatedUser;
         
-        modalStatusMessage.textContent = 'Entrevista agendada com sucesso!';
+        modalStatusMessage.textContent = 'Primeiro treino agendado com sucesso!';
         modalStatusMessage.classList.remove('d-none', 'alert-danger');
         modalStatusMessage.classList.add('alert-success');
         
         setTimeout(() => {
-            scheduleInterviewModal.hide();
+            scheduleWorkoutModal.hide();
             modalStatusMessage.classList.add('d-none');
             renderUserTabs(currentTab);
-            showMessage('Entrevista agendada com sucesso!', false);
+            showMessage('Primeiro treino agendado com sucesso!', false);
         }, 1500);
         
     } catch (error) {
@@ -448,3 +539,67 @@ document.getElementById('save-interview-btn').addEventListener('click', async ()
         modalStatusMessage.classList.add('alert-danger');
     }
 });
+
+// --- Lógica de Edição de Observações ---
+
+document.addEventListener('click', (e) => {
+    // Botão Editar Observações
+    if (e.target.closest('#edit-obs-btn')) {
+        document.getElementById('obs-view-mode').classList.add('d-none');
+        document.getElementById('obs-edit-mode').classList.remove('d-none');
+        document.getElementById('edit-obs-btn').classList.add('d-none');
+    }
+    
+    // Botão Cancelar Observações
+    if (e.target.closest('#cancel-obs-btn')) {
+        document.getElementById('obs-edit-mode').classList.add('d-none');
+        document.getElementById('obs-view-mode').classList.remove('d-none');
+        document.getElementById('edit-obs-btn').classList.remove('d-none');
+        // Restaura o valor original
+        document.getElementById('user-obs-textarea').value = currentUserData.userObs || '';
+    }
+    
+    // Botão Salvar Observações
+    if (e.target.closest('#save-obs-btn')) {
+        saveUserObservations();
+    }
+});
+
+async function saveUserObservations() {
+    const textarea = document.getElementById('user-obs-textarea');
+    const newObs = textarea.value.trim();
+    
+    try {
+        const updatedData = {
+            ...currentUserData,
+            userObs: newObs
+        };
+        
+        delete updatedData.toJSON;
+        
+        const response = await getAuthTokenAndFetch(`${USERS_API_URL}/${currentUserId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(updatedData)
+        });
+        
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`Falha ao salvar observações. ${errorText}`);
+        }
+        
+        const updatedUser = await response.json();
+        currentUserData = updatedUser;
+        
+        // Atualiza a visualização
+        document.getElementById('obs-display').textContent = newObs || 'Nenhuma observação registrada.';
+        document.getElementById('obs-edit-mode').classList.add('d-none');
+        document.getElementById('obs-view-mode').classList.remove('d-none');
+        document.getElementById('edit-obs-btn').classList.remove('d-none');
+        
+        showMessage('Observações salvas com sucesso!', false);
+        
+    } catch (error) {
+        showMessage(`Erro ao salvar observações: ${error.message}`, true);
+    }
+}
