@@ -197,10 +197,9 @@ form.addEventListener('submit', async (e) => {
     console.log('Enviando dados da academia:', formData);
 
     try {
+        // A API usa um singleton, então PUT não precisa de ID na URL
         const method = currentAcademyInfo ? 'PUT' : 'POST';
-        const url = currentAcademyInfo
-            ? `${ACADEMY_INFO_API_URL}/${currentAcademyInfo.id}`
-            : ACADEMY_INFO_API_URL;
+        const url = ACADEMY_INFO_API_URL;
 
         const response = await getAuthTokenAndFetch(url, {
             method: method,
