@@ -103,17 +103,17 @@ async function saveUserStatus() {
         phoneNumber: currentUserData.phoneNumber,
         role: currentUserData.role,
         createdAt: currentUserData.createdAt,
-        isActive: Boolean(document.getElementById('switch-is-active')?.checked),
+        active: Boolean(document.getElementById('switch-is-active')?.checked),
         affiliationType: currentUserData.affiliationType,
         interviewed: Boolean(document.getElementById('switch-interviewed')?.checked),
         didFirstWorkout: Boolean(document.getElementById('switch-did-first-workout')?.checked),
         scheduledFirstWorkout: Boolean(currentUserData.scheduledFirstWorkout),
-        isAppUser: Boolean(currentUserData.isAppUser),
+        appUser: Boolean(currentUserData.appUser),
         firstWorkoutDate: currentUserData.firstWorkoutDate,
         interviewDate: currentUserData.interviewDate,
         signedTermOfCommitment: Boolean(document.getElementById('switch-signed-commitment')?.checked),
         workoutChartId: currentUserData.workoutChartId,
-        isAdmin: currentUserData.isAdmin,
+        admin: currentUserData.admin,
         parqId: currentUserData.parqId,
         anamneseId: currentUserData.anamneseId,
         userObs: currentUserData.userObs
@@ -329,17 +329,11 @@ function renderUserTabs(tab) {
     if (tab === 'info') {
         contentHTML = renderGeneralInfoContent(currentUserData, isEditing);
     } else if (tab === 'parq') {
-        contentHTML = `
-                    <div class="alert alert-info text-center mt-4">
-                        O conteúdo do Questionário PAR-Q será implementado aqui.
-                    </div>
-                `;
+        renderParQContent();
+        return; // Renderização assíncrona
     } else if (tab === 'anamnese') {
-        contentHTML = `
-                    <div class="alert alert-info text-center mt-4">
-                        O conteúdo da Ficha de Anamnese será implementado aqui.
-                    </div>
-                `;
+        renderAnamneseContent();
+        return; // Renderização assíncrona
     }
 
     contentView.innerHTML = contentHTML;
@@ -446,17 +440,17 @@ document.getElementById('save-interview-btn').addEventListener('click', async ()
             phoneNumber: currentUserData.phoneNumber,
             role: currentUserData.role,
             createdAt: currentUserData.createdAt,
-            isActive: Boolean(currentUserData.isActive),
+            active: Boolean(currentUserData.active),
             affiliationType: currentUserData.affiliationType,
             interviewed: Boolean(currentUserData.interviewed),
             didFirstWorkout: Boolean(currentUserData.didFirstWorkout),
             scheduledFirstWorkout: true,
-            isAppUser: Boolean(currentUserData.isAppUser),
+            appUser: Boolean(currentUserData.appUser),
             firstWorkoutDate: currentUserData.firstWorkoutDate,
             interviewDate: interviewDate.toISOString(),
             signedTermOfCommitment: Boolean(currentUserData.signedTermOfCommitment),
             workoutChartId: currentUserData.workoutChartId,
-            isAdmin: currentUserData.isAdmin,
+            admin: currentUserData.admin,
             parqId: currentUserData.parqId,
             anamneseId: currentUserData.anamneseId,
             userObs: currentUserData.userObs
@@ -539,21 +533,21 @@ document.getElementById('save-workout-btn').addEventListener('click', async () =
             phoneNumber: currentUserData.phoneNumber,
             role: currentUserData.role,
             createdAt: currentUserData.createdAt,
-            isActive: Boolean(currentUserData.isActive),
+            active: Boolean(currentUserData.active),
             affiliationType: currentUserData.affiliationType,
             interviewed: Boolean(currentUserData.interviewed),
             didFirstWorkout: Boolean(currentUserData.didFirstWorkout),
             scheduledFirstWorkout: true,
-            isAppUser: Boolean(currentUserData.isAppUser),
+            appUser: Boolean(currentUserData.appUser),
             firstWorkoutDate: workoutDate.toISOString(),
             interviewDate: currentUserData.interviewDate,
             signedTermOfCommitment: Boolean(currentUserData.signedTermOfCommitment),
             workoutChartId: currentUserData.workoutChartId,
-            isAdmin: currentUserData.isAdmin,
+            admin: currentUserData.admin,
             parqId: currentUserData.parqId,
             anamneseId: currentUserData.anamneseId,
             userObs: currentUserData.userObs
-        }; delete updatedData.toJSON;
+        };
 
         console.log('Enviando primeiro treino:', updatedData);
 
@@ -627,17 +621,17 @@ async function saveUserObservations() {
             phoneNumber: currentUserData.phoneNumber,
             role: currentUserData.role,
             createdAt: currentUserData.createdAt,
-            isActive: Boolean(currentUserData.isActive),
+            active: Boolean(currentUserData.active),
             affiliationType: currentUserData.affiliationType,
             interviewed: Boolean(currentUserData.interviewed),
             didFirstWorkout: Boolean(currentUserData.didFirstWorkout),
             scheduledFirstWorkout: Boolean(currentUserData.scheduledFirstWorkout),
-            isAppUser: Boolean(currentUserData.isAppUser),
+            appUser: Boolean(currentUserData.appUser),
             firstWorkoutDate: currentUserData.firstWorkoutDate,
             interviewDate: currentUserData.interviewDate,
             signedTermOfCommitment: Boolean(currentUserData.signedTermOfCommitment),
             workoutChartId: currentUserData.workoutChartId,
-            isAdmin: currentUserData.isAdmin,
+            admin: currentUserData.admin,
             parqId: currentUserData.parqId,
             anamneseId: currentUserData.anamneseId,
             userObs: newObs
@@ -669,5 +663,282 @@ async function saveUserObservations() {
 
     } catch (error) {
         showMessage(`Erro ao salvar observações: ${error.message}`, true);
+    }
+}
+
+// --- Renderização de PARQ ---
+
+async function renderParQContent() {
+    contentView.innerHTML = '<div class="text-center p-5"><div class="spinner-border text-primary" role="status"></div></div>';
+
+    if (!currentUserData.parqId) {
+        contentView.innerHTML = `
+            <div class="alert alert-warning text-center mt-4">
+                <i class="fa-solid fa-clipboard-question fa-2x mb-3"></i>
+                <h5>PAR-Q não preenchido</h5>
+                <p class="mb-0">Este usuário ainda não respondeu ao Questionário de Prontidão para Atividade Física (PAR-Q).</p>
+            </div>
+        `;
+        return;
+    }
+
+    try {
+        const response = await getAuthTokenAndFetch(`${API_BASE_URL}/parq/${currentUserData.parqId}`);
+        if (!response.ok) throw new Error('Falha ao carregar PAR-Q');
+        
+        const parq = await response.json();
+        
+        const questions = {
+            'q1': 'Algum médico já disse que você possui algum problema de coração e que só deveria realizar atividade física supervisionado por profissionais de saúde?',
+            'q2': 'Você sente dores no peito quando pratica atividade física?',
+            'q3': 'No último mês, você sentiu dores no peito quando praticou atividade física?',
+            'q4': 'Você apresenta desequilíbrio devido à tontura e/ou perda de consciência?',
+            'q5': 'Você possui algum problema ósseo ou articular que poderia ser piorado pela atividade física?',
+            'q6': 'Você toma atualmente algum medicamento para pressão arterial e/ou problema de coração?',
+            'q7': 'Sabe de alguma outra razão pela qual você não deve praticar atividade física?'
+        };
+
+        let questionsHTML = '';
+        for (const [key, question] of Object.entries(questions)) {
+            const answer = parq.respostas && parq.respostas[key];
+            const answerBadge = answer 
+                ? '<span class="badge bg-danger">SIM</span>' 
+                : '<span class="badge bg-success">NÃO</span>';
+            
+            questionsHTML += `
+                <div class="card mb-3 border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <p class="mb-0 flex-grow-1"><strong>${key.toUpperCase()}:</strong> ${question}</p>
+                            ${answerBadge}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        contentView.innerHTML = `
+            <div class="mt-3">
+                <h5 class="fw-bold text-custom-slate-800 mb-4">
+                    <i class="fa-solid fa-clipboard-question me-2"></i>Questionário PAR-Q
+                </h5>
+                ${questionsHTML}
+                
+                <div class="card mt-4 border-0 shadow-sm">
+                    <div class="card-body">
+                        <h6 class="fw-bold mb-3">Observações Adicionais</h6>
+                        <div id="parq-obs-view-mode">
+                            <p id="parq-obs-display" class="text-muted">${parq.observacoes || 'Nenhuma observação registrada.'}</p>
+                            <button id="edit-parq-obs-btn" class="btn btn-sm btn-outline-primary">
+                                <i class="fa-solid fa-edit me-1"></i>Editar Observações
+                            </button>
+                        </div>
+                        <div id="parq-obs-edit-mode" class="d-none">
+                            <textarea id="parq-obs-textarea" class="form-control mb-3" rows="4">${parq.observacoes || ''}</textarea>
+                            <div class="d-flex gap-2">
+                                <button id="save-parq-obs-btn" class="btn btn-success btn-sm">
+                                    <i class="fa-solid fa-save me-1"></i>Salvar
+                                </button>
+                                <button id="cancel-parq-obs-btn" class="btn btn-secondary btn-sm">Cancelar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // Event listeners para edição de observações
+        document.getElementById('edit-parq-obs-btn')?.addEventListener('click', () => {
+            document.getElementById('parq-obs-view-mode').classList.add('d-none');
+            document.getElementById('parq-obs-edit-mode').classList.remove('d-none');
+        });
+
+        document.getElementById('cancel-parq-obs-btn')?.addEventListener('click', () => {
+            document.getElementById('parq-obs-edit-mode').classList.add('d-none');
+            document.getElementById('parq-obs-view-mode').classList.remove('d-none');
+            document.getElementById('parq-obs-textarea').value = parq.observacoes || '';
+        });
+
+        document.getElementById('save-parq-obs-btn')?.addEventListener('click', () => {
+            saveParQObservations(parq);
+        });
+
+    } catch (error) {
+        contentView.innerHTML = `
+            <div class="alert alert-danger text-center mt-4">
+                <i class="fa-solid fa-exclamation-triangle fa-2x mb-3"></i>
+                <h5>Erro ao carregar PAR-Q</h5>
+                <p class="mb-0">${error.message}</p>
+            </div>
+        `;
+    }
+}
+
+async function saveParQObservations(parq) {
+    const textarea = document.getElementById('parq-obs-textarea');
+    const newObs = textarea.value.trim();
+
+    try {
+        const updatedParq = {
+            ...parq,
+            observacoes: newObs
+        };
+
+        const response = await getAuthTokenAndFetch(`${API_BASE_URL}/parq/${parq.parqId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(updatedParq)
+        });
+
+        if (!response.ok) throw new Error('Falha ao salvar observações do PAR-Q');
+
+        document.getElementById('parq-obs-display').textContent = newObs || 'Nenhuma observação registrada.';
+        document.getElementById('parq-obs-edit-mode').classList.add('d-none');
+        document.getElementById('parq-obs-view-mode').classList.remove('d-none');
+        
+        showMessage('Observações do PAR-Q salvas com sucesso!', false);
+
+    } catch (error) {
+        showMessage(`Erro ao salvar: ${error.message}`, true);
+    }
+}
+
+// --- Renderização de Anamnese ---
+
+async function renderAnamneseContent() {
+    contentView.innerHTML = '<div class="text-center p-5"><div class="spinner-border text-primary" role="status"></div></div>';
+
+    if (!currentUserData.anamneseId) {
+        contentView.innerHTML = `
+            <div class="alert alert-warning text-center mt-4">
+                <i class="fa-solid fa-notes-medical fa-2x mb-3"></i>
+                <h5>Anamnese não preenchida</h5>
+                <p class="mb-0">Este usuário ainda não respondeu à Ficha de Anamnese.</p>
+            </div>
+        `;
+        return;
+    }
+
+    try {
+        const response = await getAuthTokenAndFetch(`${API_BASE_URL}/anamnese/${currentUserData.anamneseId}`);
+        if (!response.ok) throw new Error('Falha ao carregar Anamnese');
+        
+        const anamnese = await response.json();
+        
+        const questions = {
+            'q1': 'Você possui ou teve alguma doença cardiovascular?',
+            'q2': 'Você possui diabetes?',
+            'q3': 'Você possui ou teve alguma doença respiratória?',
+            'q4': 'Você possui hipertensão arterial?',
+            'q5': 'Você possui ou teve alguma lesão muscular ou articular?',
+            'q6': 'Você faz uso regular de medicamentos?',
+            'q7': 'Você já foi submetido a alguma cirurgia?',
+            'q8': 'Você possui alergias conhecidas?',
+            'q9': 'Você pratica atividade física regularmente?',
+            'q10': 'Você fuma ou já fumou?'
+        };
+
+        let questionsHTML = '';
+        for (const [key, question] of Object.entries(questions)) {
+            const answer = anamnese.respostas && anamnese.respostas[key];
+            const answerBadge = answer 
+                ? '<span class="badge bg-warning text-dark">SIM</span>' 
+                : '<span class="badge bg-success">NÃO</span>';
+            
+            questionsHTML += `
+                <div class="card mb-3 border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <p class="mb-0 flex-grow-1"><strong>${key.toUpperCase()}:</strong> ${question}</p>
+                            ${answerBadge}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        contentView.innerHTML = `
+            <div class="mt-3">
+                <h5 class="fw-bold text-custom-slate-800 mb-4">
+                    <i class="fa-solid fa-notes-medical me-2"></i>Ficha de Anamnese
+                </h5>
+                ${questionsHTML}
+                
+                <div class="card mt-4 border-0 shadow-sm">
+                    <div class="card-body">
+                        <h6 class="fw-bold mb-3">Observações Adicionais</h6>
+                        <div id="anamnese-obs-view-mode">
+                            <p id="anamnese-obs-display" class="text-muted">${anamnese.observacoes || 'Nenhuma observação registrada.'}</p>
+                            <button id="edit-anamnese-obs-btn" class="btn btn-sm btn-outline-primary">
+                                <i class="fa-solid fa-edit me-1"></i>Editar Observações
+                            </button>
+                        </div>
+                        <div id="anamnese-obs-edit-mode" class="d-none">
+                            <textarea id="anamnese-obs-textarea" class="form-control mb-3" rows="4">${anamnese.observacoes || ''}</textarea>
+                            <div class="d-flex gap-2">
+                                <button id="save-anamnese-obs-btn" class="btn btn-success btn-sm">
+                                    <i class="fa-solid fa-save me-1"></i>Salvar
+                                </button>
+                                <button id="cancel-anamnese-obs-btn" class="btn btn-secondary btn-sm">Cancelar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // Event listeners para edição de observações
+        document.getElementById('edit-anamnese-obs-btn')?.addEventListener('click', () => {
+            document.getElementById('anamnese-obs-view-mode').classList.add('d-none');
+            document.getElementById('anamnese-obs-edit-mode').classList.remove('d-none');
+        });
+
+        document.getElementById('cancel-anamnese-obs-btn')?.addEventListener('click', () => {
+            document.getElementById('anamnese-obs-edit-mode').classList.add('d-none');
+            document.getElementById('anamnese-obs-view-mode').classList.remove('d-none');
+            document.getElementById('anamnese-obs-textarea').value = anamnese.observacoes || '';
+        });
+
+        document.getElementById('save-anamnese-obs-btn')?.addEventListener('click', () => {
+            saveAnamneseObservations(anamnese);
+        });
+
+    } catch (error) {
+        contentView.innerHTML = `
+            <div class="alert alert-danger text-center mt-4">
+                <i class="fa-solid fa-exclamation-triangle fa-2x mb-3"></i>
+                <h5>Erro ao carregar Anamnese</h5>
+                <p class="mb-0">${error.message}</p>
+            </div>
+        `;
+    }
+}
+
+async function saveAnamneseObservations(anamnese) {
+    const textarea = document.getElementById('anamnese-obs-textarea');
+    const newObs = textarea.value.trim();
+
+    try {
+        const updatedAnamnese = {
+            ...anamnese,
+            observacoes: newObs
+        };
+
+        const response = await getAuthTokenAndFetch(`${API_BASE_URL}/anamnese/${anamnese.anamneseId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(updatedAnamnese)
+        });
+
+        if (!response.ok) throw new Error('Falha ao salvar observações da Anamnese');
+
+        document.getElementById('anamnese-obs-display').textContent = newObs || 'Nenhuma observação registrada.';
+        document.getElementById('anamnese-obs-edit-mode').classList.add('d-none');
+        document.getElementById('anamnese-obs-view-mode').classList.remove('d-none');
+        
+        showMessage('Observações da Anamnese salvas com sucesso!', false);
+
+    } catch (error) {
+        showMessage(`Erro ao salvar: ${error.message}`, true);
     }
 }

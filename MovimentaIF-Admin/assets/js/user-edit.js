@@ -66,7 +66,7 @@ async function loadEditForm() {
         // Preenche os switches com os valores atuais
         document.getElementById('edit-interviewed').checked = user.interviewed || false;
         document.getElementById('edit-did-first-workout').checked = user.didFirstWorkout || false;
-        document.getElementById('edit-is-active').checked = user.isActive || false;
+        document.getElementById('edit-is-active').checked = user.active || false;
         // Simulação: Assinado
         document.getElementById('edit-signed-commitment').checked = user.interviewed || false;
 
@@ -96,17 +96,17 @@ editUserStatusForm.addEventListener('submit', async (e) => {
         phoneNumber: currentUserData.phoneNumber,
         role: currentUserData.role,
         createdAt: currentUserData.createdAt,
-        isActive: Boolean(activeStatus),
+        active: Boolean(activeStatus),
         affiliationType: currentUserData.affiliationType,
         interviewed: Boolean(interviewStatus),
         didFirstWorkout: Boolean(firstWorkoutStatus),
         scheduledFirstWorkout: Boolean(currentUserData.scheduledFirstWorkout),
-        isAppUser: Boolean(currentUserData.isAppUser),
+        appUser: Boolean(currentUserData.appUser),
         firstWorkoutDate: currentUserData.firstWorkoutDate, // Preserva a data
         interviewDate: currentUserData.interviewDate, // Preserva a data
         signedTermOfCommitment: Boolean(currentUserData.signedTermOfCommitment),
         workoutChartId: currentUserData.workoutChartId,
-        isAdmin: currentUserData.isAdmin,
+        admin: currentUserData.admin,
         parqId: currentUserData.parqId,
         anamneseId: currentUserData.anamneseId,
         userObs: currentUserData.userObs
