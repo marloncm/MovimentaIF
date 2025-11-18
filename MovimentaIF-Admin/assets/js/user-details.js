@@ -426,12 +426,30 @@ document.getElementById('save-interview-btn').addEventListener('click', async ()
 
     try {
         const updatedData = {
-            ...currentUserData,
+            userId: currentUserData.userId,
+            userName: currentUserData.userName,
+            email: currentUserData.email,
+            age: currentUserData.age,
+            phoneNumber: currentUserData.phoneNumber,
+            role: currentUserData.role,
+            createdAt: currentUserData.createdAt,
+            isActive: currentUserData.isActive,
+            affiliationType: currentUserData.affiliationType,
+            interviewed: currentUserData.interviewed,
+            didFirstWorkout: currentUserData.didFirstWorkout,
+            scheduledFirstWorkout: true,
+            isAppUser: currentUserData.isAppUser,
+            firstWorkoutDate: currentUserData.firstWorkoutDate,
             interviewDate: interviewDate.toISOString(),
-            scheduledFirstWorkout: true
+            signedTermOfCommitment: currentUserData.signedTermOfCommitment,
+            workoutChartId: currentUserData.workoutChartId,
+            isAdmin: currentUserData.isAdmin,
+            parqId: currentUserData.parqId,
+            anamneseId: currentUserData.anamneseId,
+            userObs: currentUserData.userObs
         };
 
-        delete updatedData.toJSON;
+        console.log('Enviando dados de entrevista:', updatedData);
 
         const response = await getAuthTokenAndFetch(`${USERS_API_URL}/${currentUserId}`, {
             method: 'PUT',
@@ -504,7 +522,11 @@ document.getElementById('save-workout-btn').addEventListener('click', async () =
             ...currentUserData,
             firstWorkoutDate: workoutDate.toISOString(),
             scheduledFirstWorkout: true
-        };        delete updatedData.toJSON;
+        };
+        
+        delete updatedData.toJSON;
+
+        console.log('Enviando primeiro treino:', updatedData);
 
         const response = await getAuthTokenAndFetch(`${USERS_API_URL}/${currentUserId}`, {
             method: 'PUT',
