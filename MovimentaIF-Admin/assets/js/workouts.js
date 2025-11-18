@@ -41,7 +41,7 @@ async function fetchWorkouts() {
         allWorkouts = workouts; // Armazena todos os treinos
         renderWorkouts(allWorkouts);
     } catch (error) {
-        workoutsList.innerHTML = `<div class="alert alert-danger text-center mt-4" role="alert">Erro ao carregar treinos: ${error.message}</div>`;
+        workoutsList.innerHTML = '<div class="alert alert-danger text-center mt-4" role="alert">Erro ao carregar treinos: ' + error.message + '</div>';
     }
 }
 

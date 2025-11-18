@@ -433,15 +433,15 @@ document.getElementById('save-interview-btn').addEventListener('click', async ()
             phoneNumber: currentUserData.phoneNumber,
             role: currentUserData.role,
             createdAt: currentUserData.createdAt,
-            isActive: currentUserData.isActive,
+            isActive: Boolean(currentUserData.isActive),
             affiliationType: currentUserData.affiliationType,
-            interviewed: currentUserData.interviewed,
-            didFirstWorkout: currentUserData.didFirstWorkout,
+            interviewed: Boolean(currentUserData.interviewed),
+            didFirstWorkout: Boolean(currentUserData.didFirstWorkout),
             scheduledFirstWorkout: true,
-            isAppUser: currentUserData.isAppUser,
+            isAppUser: Boolean(currentUserData.isAppUser),
             firstWorkoutDate: currentUserData.firstWorkoutDate,
             interviewDate: interviewDate.toISOString(),
-            signedTermOfCommitment: currentUserData.signedTermOfCommitment,
+            signedTermOfCommitment: Boolean(currentUserData.signedTermOfCommitment),
             workoutChartId: currentUserData.workoutChartId,
             isAdmin: currentUserData.isAdmin,
             parqId: currentUserData.parqId,
@@ -519,12 +519,28 @@ document.getElementById('save-workout-btn').addEventListener('click', async () =
     
     try {
         const updatedData = {
-            ...currentUserData,
+            userId: currentUserData.userId,
+            userName: currentUserData.userName,
+            email: currentUserData.email,
+            age: currentUserData.age,
+            phoneNumber: currentUserData.phoneNumber,
+            role: currentUserData.role,
+            createdAt: currentUserData.createdAt,
+            isActive: Boolean(currentUserData.isActive),
+            affiliationType: currentUserData.affiliationType,
+            interviewed: Boolean(currentUserData.interviewed),
+            didFirstWorkout: Boolean(currentUserData.didFirstWorkout),
+            scheduledFirstWorkout: true,
+            isAppUser: Boolean(currentUserData.isAppUser),
             firstWorkoutDate: workoutDate.toISOString(),
-            scheduledFirstWorkout: true
-        };
-        
-        delete updatedData.toJSON;
+            interviewDate: currentUserData.interviewDate,
+            signedTermOfCommitment: Boolean(currentUserData.signedTermOfCommitment),
+            workoutChartId: currentUserData.workoutChartId,
+            isAdmin: currentUserData.isAdmin,
+            parqId: currentUserData.parqId,
+            anamneseId: currentUserData.anamneseId,
+            userObs: currentUserData.userObs
+        };        delete updatedData.toJSON;
 
         console.log('Enviando primeiro treino:', updatedData);
 

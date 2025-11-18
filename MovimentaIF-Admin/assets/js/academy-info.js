@@ -91,7 +91,14 @@ async function fetchAcademyInfo() {
             throw new Error(`Erro ao buscar informações. Status: ${response.status}`);
         }
 
-        currentAcademyInfo = await response.json();
+        const text = await response.text();
+        if (!text) {
+            showMessage('Nenhuma informação encontrada. Configure os dados abaixo.', false);
+            academyInfoContainer.classList.remove('d-none');
+            return;
+        }
+
+        currentAcademyInfo = JSON.parse(text);
         populateForm(currentAcademyInfo);
         academyInfoContainer.classList.remove('d-none');
 
