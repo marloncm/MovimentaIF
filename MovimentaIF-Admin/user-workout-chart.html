@@ -71,7 +71,7 @@
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addWorkoutModalLabel">Adicionar Treino ao Dia</h5>
+                    <h5 class="modal-title" id="addWorkoutModalLabel">Adicionar Exercício ao Dia</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
 
@@ -80,10 +80,10 @@
                     <form id="user-workout-form">
 
                         <div class="mb-3">
-                            <label for="workout-select" class="form-label">Selecione o Treino</label>
+                            <label for="workout-select" class="form-label">Selecione o Exercício</label>
                             <!-- CRÍTICO: Este é o <select> que o JS estava procurando -->
                             <select class="form-select" id="workout-select" required>
-                                <option value="">Carregando treinos...</option>
+                                <option value="">Carregando exercícios...</option>
                             </select>
                         </div>
 
@@ -108,7 +108,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-                    <button type="button" class="btn btn-primary" id="save-user-workout-btn">Adicionar Treino</button>
+                    <button type="button" class="btn btn-primary" id="save-user-workout-btn">Adicionar Exercício</button>
                 </div>
             </div>
         </div>

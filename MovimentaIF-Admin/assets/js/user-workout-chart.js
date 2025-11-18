@@ -248,7 +248,7 @@ async function renderChartEditView(chart) {
                                 <div class="card-body">
                                     <ul class="list-group" id="${key}-list">${itemsHTML}</ul>
                                     <button type="button" class="btn btn-outline-primary btn-sm mt-3 w-100 add-workout-btn" data-day-key="${key}">
-                                        Adicionar Treino
+                                        Adicionar Exercício
                                     </button>
                                 </div>
                             </div>
@@ -318,7 +318,7 @@ function showWorkoutSelectionModal(dayKey) {
     }
 
     // Popular o select
-    selectEl.innerHTML = '<option value="" selected disabled>Selecione um treino...</option>';
+    selectEl.innerHTML = '<option value="" selected disabled>Selecione um exercício...</option>';
     allAvailableWorkouts.forEach(workout => {
         selectEl.appendChild(new Option(workout.workoutName, workout.workoutId));
     });
