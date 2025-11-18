@@ -647,6 +647,8 @@ async function saveUserObservations() {
     const textarea = document.getElementById('user-obs-textarea');
     const newObs = textarea.value.trim();
 
+    console.log('Iniciando salvamento de observações:', newObs);
+
     try {
         const updatedData = {
             userId: currentUserData.userId,
@@ -672,7 +674,7 @@ async function saveUserObservations() {
             userObs: newObs
         };
 
-        console.log('Salvando observações:', updatedData);
+        console.log('Enviando observações para API:', updatedData);
 
         const response = await getAuthTokenAndFetch(`${USERS_API_URL}/${currentUserId}`, {
             method: 'PUT',
@@ -682,11 +684,14 @@ async function saveUserObservations() {
 
         if (!response.ok) {
             const errorText = await response.text();
+            console.error('Erro na resposta da API:', errorText);
             throw new Error(`Falha ao salvar observações. ${errorText}`);
         }
 
         const updatedUser = await response.json();
         currentUserData = updatedUser;
+        
+        console.log('Observações salvas com sucesso. Dados atualizados:', currentUserData);
 
         // Atualiza a visualização
         document.getElementById('obs-display').textContent = newObs || 'Nenhuma observação registrada.';
@@ -697,6 +702,7 @@ async function saveUserObservations() {
         showMessage('Observações salvas com sucesso!', false);
 
     } catch (error) {
+        console.error('Erro ao salvar observações:', error);
         showMessage(`Erro ao salvar observações: ${error.message}`, true);
     }
 }
