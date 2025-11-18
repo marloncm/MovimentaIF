@@ -19,23 +19,23 @@ function showMessage(message, isError = true) {
 
 function formatDateForInput(dateValue) {
     if (!dateValue) return '';
-    
+
     let date;
-    
+
     // Trata timestamp ou string
     if (typeof dateValue === 'number' || (typeof dateValue === 'string' && /^\d+$/.test(dateValue))) {
         date = new Date(Number(dateValue));
     } else if (typeof dateValue === 'string') {
         date = new Date(dateValue);
     }
-    
+
     if (!date || isNaN(date.getTime())) return '';
-    
+
     // Retorna no formato YYYY-MM-DD para input type="date"
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
-    
+
     return `${year}-${month}-${day}`;
 }
 
@@ -47,18 +47,18 @@ function formatTimeForInput(timeString) {
 
 function formatDateForDisplay(dateValue) {
     if (!dateValue) return '-';
-    
+
     let date;
-    
+
     // Trata timestamp ou string
     if (typeof dateValue === 'number' || (typeof dateValue === 'string' && /^\d+$/.test(dateValue))) {
         date = new Date(Number(dateValue));
     } else if (typeof dateValue === 'string') {
         date = new Date(dateValue);
     }
-    
+
     if (!date || isNaN(date.getTime())) return '-';
-    
+
     return date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
 }
 
@@ -182,21 +182,35 @@ document.getElementById('cancel-btn').addEventListener('click', () => {
 form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    // Converte as datas para ISO string (compatível com java.util.Date)
+    // Converte as datas para timestamp (milissegundos desde epoch)
     const startDateValue = document.getElementById('start-date').value;
     const endDateValue = document.getElementById('end-date').value;
-    
+
+    // Cria data no horário local (00:00:00) e converte para ISO string
+    let startDateISO = null;
+    let endDateISO = null;
+
+    if (startDateValue) {
+        const [year, month, day] = startDateValue.split('-');
+        const startDate = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+        startDateISO = startDate.toISOString();
+    }
+
+    if (endDateValue) {
+        const [year, month, day] = endDateValue.split('-');
+        const endDate = new Date(parseInt(year), parseInt(month) - 1, parseInt(day), 23, 59, 59);
+        endDateISO = endDate.toISOString();
+    }
+
     const formData = {
-        startDate: startDateValue ? new Date(startDateValue + 'T00:00:00').toISOString() : null,
-        endDate: endDateValue ? new Date(endDateValue + 'T23:59:59').toISOString() : null,
+        startDate: startDateISO,
+        endDate: endDateISO,
         openHour: document.getElementById('open-hour').value + ':00', // Adiciona segundos
         closeHour: document.getElementById('close-hour').value + ':00',
         additionalInfo: document.getElementById('additional-info').value
     };
 
-    console.log('Enviando dados da academia:', formData);
-
-    try {
+    console.log('Enviando dados da academia:', formData); try {
         // A API usa um singleton, então PUT não precisa de ID na URL
         const method = currentAcademyInfo ? 'PUT' : 'POST';
         const url = ACADEMY_INFO_API_URL;
