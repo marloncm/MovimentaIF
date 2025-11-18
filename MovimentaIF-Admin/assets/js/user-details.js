@@ -29,7 +29,13 @@ function formatDateTime(dateValue) {
 
     let date;
 
-    if (typeof dateValue === 'number' || (typeof dateValue === 'string' && /^\d+$/.test(dateValue))) {
+    // Se for string no formato YYYY-MM-DDTHH:mm (datetime-local), parsear diretamente
+    if (typeof dateValue === 'string' && dateValue.includes('T')) {
+        const [datePart, timePart] = dateValue.split('T');
+        const [year, month, day] = datePart.split('-');
+        const [hour, minute] = timePart.split(':');
+        date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day), parseInt(hour), parseInt(minute));
+    } else if (typeof dateValue === 'number' || (typeof dateValue === 'string' && /^\d+$/.test(dateValue))) {
         date = new Date(Number(dateValue));
     } else if (typeof dateValue === 'string') {
         date = new Date(dateValue);
@@ -409,8 +415,13 @@ document.getElementById('schedule-interview-btn').addEventListener('click', () =
     // Pré-preenche com a data atual se houver
     const dateInput = document.getElementById('interview-date-input');
     if (currentUserData && currentUserData.interviewDate) {
-        const date = new Date(currentUserData.interviewDate);
-        dateInput.value = date.toISOString().slice(0, 16);
+        // Se já está no formato YYYY-MM-DDTHH:mm, usa diretamente
+        if (typeof currentUserData.interviewDate === 'string' && currentUserData.interviewDate.includes('T')) {
+            dateInput.value = currentUserData.interviewDate.slice(0, 16);
+        } else {
+            const date = new Date(currentUserData.interviewDate);
+            dateInput.value = date.toISOString().slice(0, 16);
+        }
     } else {
         dateInput.value = '';
     }
@@ -431,16 +442,6 @@ document.getElementById('save-interview-btn').addEventListener('click', async ()
 
     // Converter datetime-local para Date usando horário local
     const dateTimeValue = dateInput.value; // formato: YYYY-MM-DDTHH:mm
-    const [datePart, timePart] = dateTimeValue.split('T');
-    const [year, month, day] = datePart.split('-');
-    const [hour, minute] = timePart.split(':');
-    const interviewDate = new Date(
-        parseInt(year),
-        parseInt(month) - 1,
-        parseInt(day),
-        parseInt(hour),
-        parseInt(minute)
-    );
 
     try {
         const updatedData = {
@@ -458,7 +459,7 @@ document.getElementById('save-interview-btn').addEventListener('click', async ()
             scheduledFirstWorkout: true,
             appUser: Boolean(currentUserData.appUser),
             firstWorkoutDate: currentUserData.firstWorkoutDate,
-            interviewDate: interviewDate.toISOString(),
+            interviewDate: dateTimeValue,
             signedTermOfCommitment: Boolean(currentUserData.signedTermOfCommitment),
             workoutChartId: currentUserData.workoutChartId,
             admin: currentUserData.admin,
@@ -513,8 +514,13 @@ document.getElementById('schedule-workout-btn').addEventListener('click', () => 
     // Pré-preenche com a data atual se houver
     const dateInput = document.getElementById('workout-date-input');
     if (currentUserData && currentUserData.firstWorkoutDate) {
-        const date = new Date(currentUserData.firstWorkoutDate);
-        dateInput.value = date.toISOString().slice(0, 16);
+        // Se já está no formato YYYY-MM-DDTHH:mm, usa diretamente
+        if (typeof currentUserData.firstWorkoutDate === 'string' && currentUserData.firstWorkoutDate.includes('T')) {
+            dateInput.value = currentUserData.firstWorkoutDate.slice(0, 16);
+        } else {
+            const date = new Date(currentUserData.firstWorkoutDate);
+            dateInput.value = date.toISOString().slice(0, 16);
+        }
     } else {
         dateInput.value = '';
     }
@@ -535,16 +541,6 @@ document.getElementById('save-workout-btn').addEventListener('click', async () =
 
     // Converter datetime-local para Date usando horário local
     const dateTimeValue = dateInput.value; // formato: YYYY-MM-DDTHH:mm
-    const [datePart, timePart] = dateTimeValue.split('T');
-    const [year, month, day] = datePart.split('-');
-    const [hour, minute] = timePart.split(':');
-    const workoutDate = new Date(
-        parseInt(year),
-        parseInt(month) - 1,
-        parseInt(day),
-        parseInt(hour),
-        parseInt(minute)
-    );
 
     try {
         const updatedData = {
@@ -561,7 +557,7 @@ document.getElementById('save-workout-btn').addEventListener('click', async () =
             didFirstWorkout: Boolean(currentUserData.didFirstWorkout),
             scheduledFirstWorkout: true,
             appUser: Boolean(currentUserData.appUser),
-            firstWorkoutDate: workoutDate.toISOString(),
+            firstWorkoutDate: dateTimeValue,
             interviewDate: currentUserData.interviewDate,
             signedTermOfCommitment: Boolean(currentUserData.signedTermOfCommitment),
             workoutChartId: currentUserData.workoutChartId,

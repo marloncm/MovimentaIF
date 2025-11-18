@@ -20,8 +20,8 @@ public class User {
     private boolean didFirstWorkout;
     private boolean scheduledFirstWorkout;
     private boolean isAppUser;
-    private Date firstWorkoutDate;
-    private Date interviewDate;
+    private String firstWorkoutDate;
+    private String interviewDate;
     private boolean signedTermOfCommitment;
     private String workoutChartId;
     private Boolean isAdmin;
@@ -185,11 +185,11 @@ public class User {
         isAppUser = appUser;
     }
 
-    public Date getFirstWorkoutDate() {
+    public String getFirstWorkoutDate() {
         return firstWorkoutDate;
     }
 
-    public void setFirstWorkoutDate(Date firstWorkoutDate) {
+    public void setFirstWorkoutDate(String firstWorkoutDate) {
         this.firstWorkoutDate = firstWorkoutDate;
     }
 
@@ -233,11 +233,11 @@ public class User {
         this.anamneseId = anamneseId;
     }
 
-    public Date getInterviewDate() {
+    public String getInterviewDate() {
         return interviewDate;
     }
 
-    public void setInterviewDate(Date interviewDate) {
+    public void setInterviewDate(String interviewDate) {
         this.interviewDate = interviewDate;
     }
 
