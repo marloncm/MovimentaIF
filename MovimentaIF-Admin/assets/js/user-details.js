@@ -96,17 +96,30 @@ async function saveUserStatus() {
 
     // 1. Coleta os novos valores dos switches
     const updatedData = {
-        // Preservar todos os campos existentes para o PUT parcial funcionar
-        ...currentUserData,
-
-        // Campos booleanos de edição
-        interviewed: document.getElementById('switch-interviewed')?.checked,
-        didFirstWorkout: document.getElementById('switch-did-first-workout')?.checked,
-        active: document.getElementById('switch-is-active')?.checked,
-        signedTermOfCommitment: document.getElementById('switch-signed-commitment')?.checked
+        userId: currentUserData.userId,
+        userName: currentUserData.userName,
+        email: currentUserData.email,
+        age: currentUserData.age,
+        phoneNumber: currentUserData.phoneNumber,
+        role: currentUserData.role,
+        createdAt: currentUserData.createdAt,
+        isActive: Boolean(document.getElementById('switch-is-active')?.checked),
+        affiliationType: currentUserData.affiliationType,
+        interviewed: Boolean(document.getElementById('switch-interviewed')?.checked),
+        didFirstWorkout: Boolean(document.getElementById('switch-did-first-workout')?.checked),
+        scheduledFirstWorkout: Boolean(currentUserData.scheduledFirstWorkout),
+        isAppUser: Boolean(currentUserData.isAppUser),
+        firstWorkoutDate: currentUserData.firstWorkoutDate,
+        interviewDate: currentUserData.interviewDate,
+        signedTermOfCommitment: Boolean(document.getElementById('switch-signed-commitment')?.checked),
+        workoutChartId: currentUserData.workoutChartId,
+        isAdmin: currentUserData.isAdmin,
+        parqId: currentUserData.parqId,
+        anamneseId: currentUserData.anamneseId,
+        userObs: currentUserData.userObs
     };
 
-    delete updatedData.toJSON;
+    console.log('Salvando status do usuário:', updatedData);
 
     try {
         // Requisição PUT para o endpoint de atualização
@@ -516,7 +529,7 @@ document.getElementById('save-workout-btn').addEventListener('click', async () =
     }
 
     const workoutDate = new Date(dateInput.value);
-    
+
     try {
         const updatedData = {
             userId: currentUserData.userId,
@@ -540,7 +553,7 @@ document.getElementById('save-workout-btn').addEventListener('click', async () =
             parqId: currentUserData.parqId,
             anamneseId: currentUserData.anamneseId,
             userObs: currentUserData.userObs
-        };        delete updatedData.toJSON;
+        }; delete updatedData.toJSON;
 
         console.log('Enviando primeiro treino:', updatedData);
 
@@ -607,11 +620,30 @@ async function saveUserObservations() {
 
     try {
         const updatedData = {
-            ...currentUserData,
+            userId: currentUserData.userId,
+            userName: currentUserData.userName,
+            email: currentUserData.email,
+            age: currentUserData.age,
+            phoneNumber: currentUserData.phoneNumber,
+            role: currentUserData.role,
+            createdAt: currentUserData.createdAt,
+            isActive: Boolean(currentUserData.isActive),
+            affiliationType: currentUserData.affiliationType,
+            interviewed: Boolean(currentUserData.interviewed),
+            didFirstWorkout: Boolean(currentUserData.didFirstWorkout),
+            scheduledFirstWorkout: Boolean(currentUserData.scheduledFirstWorkout),
+            isAppUser: Boolean(currentUserData.isAppUser),
+            firstWorkoutDate: currentUserData.firstWorkoutDate,
+            interviewDate: currentUserData.interviewDate,
+            signedTermOfCommitment: Boolean(currentUserData.signedTermOfCommitment),
+            workoutChartId: currentUserData.workoutChartId,
+            isAdmin: currentUserData.isAdmin,
+            parqId: currentUserData.parqId,
+            anamneseId: currentUserData.anamneseId,
             userObs: newObs
         };
 
-        delete updatedData.toJSON;
+        console.log('Salvando observações:', updatedData);
 
         const response = await getAuthTokenAndFetch(`${USERS_API_URL}/${currentUserId}`, {
             method: 'PUT',
