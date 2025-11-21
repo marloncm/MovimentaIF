@@ -4,6 +4,7 @@ import com.ifrs.movimentaif.movimentaifapi.model.Anamnese;
 import com.ifrs.movimentaif.movimentaifapi.repository.AnamneseRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
@@ -39,5 +40,9 @@ public class AnamneseService {
 
     public String deleteAnamnese(String anamneseId) throws ExecutionException, InterruptedException {
         return anamneseRepository.deleteAnamnese(anamneseId);
+    }
+
+    public List<Anamnese> getAllAnamnese() throws ExecutionException, InterruptedException {
+        return anamneseRepository.getAllAnamnese();
     }
 }

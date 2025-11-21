@@ -9,6 +9,7 @@ import com.google.firebase.cloud.FirestoreClient;
 import com.ifrs.movimentaif.movimentaifapi.model.Anamnese;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 @Repository
@@ -58,5 +59,12 @@ public class AnamneseRepository {
         ApiFuture<com.google.cloud.firestore.WriteResult> writeResult = dbFirestore.collection(COLLECTION_NAME)
                 .document(anamneseId).delete();
         return writeResult.get().getUpdateTime().toString();
+    }
+
+    public List<Anamnese> getAllAnamnese() throws ExecutionException, InterruptedException {
+        Firestore dbFirestore = FirestoreClient.getFirestore();
+        ApiFuture<QuerySnapshot> future = dbFirestore.collection(COLLECTION_NAME).get();
+        QuerySnapshot querySnapshot = future.get();
+        return querySnapshot.toObjects(Anamnese.class);
     }
 }

@@ -32,6 +32,7 @@ public class SecurityConfig {
                         // 1. Endpoints públicos (sem autenticação)
                         .requestMatchers("/api/health", "/api/", "/").permitAll()
                         .requestMatchers("/api/test/**").permitAll()
+                        .requestMatchers("/api/init/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
 

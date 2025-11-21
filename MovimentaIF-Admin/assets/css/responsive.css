@@ -1,0 +1,281 @@
+/* ========================================
+   RESPONSIVE STYLES - MovimentaIF Admin
+   ======================================== */
+
+/* Mobile Menu Toggle */
+.mobile-menu-toggle {
+    display: none;
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    z-index: 1050;
+    background-color: white;
+    border: none;
+    border-radius: 0.5rem;
+    padding: 0.75rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.mobile-menu-toggle i {
+    font-size: 1.25rem;
+    color: #1e293b;
+}
+
+/* Sidebar Responsive */
+aside.sidebar {
+    transition: transform 0.3s ease-in-out;
+}
+
+/* Overlay para fechar menu em mobile */
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1040;
+}
+
+/* ========================================
+   TABLETS (até 992px)
+   ======================================== */
+@media (max-width: 992px) {
+    /* Mostrar botão de menu mobile */
+    .mobile-menu-toggle {
+        display: block;
+    }
+
+    /* Sidebar vira drawer lateral */
+    aside.sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        width: 280px;
+        z-index: 1045;
+        transform: translateX(-100%);
+    }
+
+    aside.sidebar.show {
+        transform: translateX(0);
+    }
+
+    .sidebar-overlay.show {
+        display: block;
+    }
+
+    /* Main content ocupa tela toda */
+    .main-content {
+        width: 100% !important;
+        margin-left: 0 !important;
+    }
+
+    /* Header ajustes */
+    header {
+        padding-left: 4rem !important;
+    }
+
+    header h2 {
+        font-size: 1.1rem !important;
+    }
+
+    header .d-flex {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    header #user-email {
+        display: none;
+    }
+}
+
+/* ========================================
+   MOBILE (até 768px)
+   ======================================== */
+@media (max-width: 768px) {
+    /* Cabeçalhos menores */
+    .h4, h4 {
+        font-size: 1.25rem !important;
+    }
+
+    .h5, h5 {
+        font-size: 1rem !important;
+    }
+
+    /* Padding reduzido */
+    main {
+        padding: 1rem !important;
+    }
+
+    header {
+        padding: 1rem 1rem 1rem 4rem !important;
+    }
+
+    /* Cards */
+    .card {
+        margin-bottom: 1rem;
+    }
+
+    /* Tabelas responsivas */
+    .list-group-item {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        padding: 1rem !important;
+    }
+
+    .list-group-item > div {
+        width: 100% !important;
+        text-align: left !important;
+        margin-bottom: 0.5rem;
+    }
+
+    .list-group-item .text-end,
+    .list-group-item .text-center {
+        text-align: left !important;
+    }
+
+    /* Botões de ação em lista */
+    .list-group-item .btn {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+
+    .list-group-item .d-flex.gap-2 {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    /* Formulários */
+    .form-control,
+    .form-select {
+        font-size: 16px !important; /* Evita zoom no iOS */
+    }
+
+    /* Busca */
+    #search-input {
+        max-width: 100% !important;
+        margin-bottom: 1rem;
+    }
+
+    /* Badges e status */
+    .badge {
+        font-size: 0.75rem;
+        padding: 0.35rem 0.65rem;
+    }
+
+    /* Modais */
+    .modal-dialog {
+        margin: 0.5rem;
+    }
+
+    /* Tabs */
+    .nav-tabs .nav-link {
+        font-size: 0.875rem;
+        padding: 0.5rem 0.75rem;
+    }
+
+    /* Stats cards */
+    .col-md-3 {
+        width: 100% !important;
+        margin-bottom: 1rem;
+    }
+
+    /* Dropdown menus */
+    .dropdown-menu {
+        width: 100%;
+    }
+}
+
+/* ========================================
+   MOBILE PEQUENO (até 576px)
+   ======================================== */
+@media (max-width: 576px) {
+    /* Logo menor */
+    .logo-title {
+        font-size: 1.5rem !important;
+    }
+
+    /* Sidebar mais estreita */
+    aside.sidebar {
+        width: 260px;
+    }
+
+    /* Botões */
+    .btn {
+        font-size: 0.875rem;
+        padding: 0.5rem 1rem;
+    }
+
+    .btn-sm {
+        font-size: 0.75rem;
+        padding: 0.375rem 0.75rem;
+    }
+
+    /* Container fluid com menos padding */
+    .container-fluid {
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+    }
+
+    /* Cards */
+    .card {
+        padding: 1rem !important;
+    }
+
+    /* Forms em duas colunas viram coluna única */
+    .row > .col-md-6,
+    .row > .col-lg-6 {
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+
+    /* Gráficos */
+    canvas {
+        max-height: 250px !important;
+    }
+
+    /* Alertas */
+    .alert {
+        font-size: 0.875rem;
+        padding: 0.75rem;
+    }
+}
+
+/* ========================================
+   UTILITIES RESPONSIVAS
+   ======================================== */
+
+/* Hide on mobile */
+@media (max-width: 768px) {
+    .hide-mobile {
+        display: none !important;
+    }
+}
+
+/* Show only on mobile */
+.show-mobile {
+    display: none !important;
+}
+
+@media (max-width: 768px) {
+    .show-mobile {
+        display: block !important;
+    }
+}
+
+/* Scroll horizontal para tabelas grandes */
+@media (max-width: 768px) {
+    .table-responsive-mobile {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+/* Ajuste de flex direction em mobile */
+@media (max-width: 768px) {
+    .flex-mobile-column {
+        flex-direction: column !important;
+    }
+}

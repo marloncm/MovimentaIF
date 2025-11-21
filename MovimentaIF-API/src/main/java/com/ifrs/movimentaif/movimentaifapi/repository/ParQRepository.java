@@ -9,6 +9,7 @@ import com.google.firebase.cloud.FirestoreClient;
 import com.ifrs.movimentaif.movimentaifapi.model.ParQ;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 @Repository
@@ -58,5 +59,12 @@ public class ParQRepository {
         ApiFuture<com.google.cloud.firestore.WriteResult> writeResult = dbFirestore.collection(COLLECTION_NAME)
                 .document(parqId).delete();
         return writeResult.get().getUpdateTime().toString();
+    }
+
+    public List<ParQ> getAllParQ() throws ExecutionException, InterruptedException {
+        Firestore dbFirestore = FirestoreClient.getFirestore();
+        ApiFuture<QuerySnapshot> future = dbFirestore.collection(COLLECTION_NAME).get();
+        QuerySnapshot querySnapshot = future.get();
+        return querySnapshot.toObjects(ParQ.class);
     }
 }

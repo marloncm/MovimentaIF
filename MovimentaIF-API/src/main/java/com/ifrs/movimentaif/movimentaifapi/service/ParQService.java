@@ -4,6 +4,7 @@ import com.ifrs.movimentaif.movimentaifapi.model.ParQ;
 import com.ifrs.movimentaif.movimentaifapi.repository.ParQRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
@@ -39,5 +40,9 @@ public class ParQService {
 
     public String deleteParQ(String parqId) throws ExecutionException, InterruptedException {
         return parQRepository.deleteParQ(parqId);
+    }
+
+    public List<ParQ> getAllParQ() throws ExecutionException, InterruptedException {
+        return parQRepository.getAllParQ();
     }
 }
