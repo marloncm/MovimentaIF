@@ -6,22 +6,23 @@
     --bs-slate-800: #1e293b;
 }
 
-/* Estilo do link ativo no menu lateral */
+/* Links normais do menu em preto */
+.nav-link {
+    color: #1e293b !important;
+    transition: all 0.2s ease;
+}
+
+/* Hover em links não ativos - azul */
+.nav-link:hover:not(.active) {
+    color: #4078c0 !important;
+    background-color: rgba(64, 120, 192, 0.05) !important;
+}
+
+/* Link ativo - azul com texto branco */
 .nav-link.active {
-    background-color: var(--bs-primary) !important;
+    background-color: #4078c0 !important;
     color: white !important;
     font-weight: 600;
-}
-
-/* Links normais do menu em preto/cinza escuro */
-.nav-link:not(.active) {
-    color: var(--bs-slate-700) !important;
-}
-
-/* Hover em azul apenas para links não ativos */
-.nav-link:not(.active):hover {
-    color: var(--bs-primary) !important;
-    background-color: rgba(64, 120, 192, 0.1) !important;
 }
 
 #academy-info-container {
