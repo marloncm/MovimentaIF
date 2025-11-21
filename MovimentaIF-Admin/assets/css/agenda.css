@@ -1,4 +1,11 @@
- :root {
+ @font-face {
+    font-family: 'Lumios Brush';
+    src: url('/assets/fonts/lumiosbrush_regular.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+:root {
      /* Cores Neutras (Base) */
      --bs-slate-700: #334155;
      --bs-slate-800: #1e293b;
@@ -16,6 +23,8 @@
 
      --bs-movif-orange: #ff5722;
      --bs-movif-raspberry: rgb(220, 50, 112);
+     
+     --font-title: 'Lumios Brush';
  }
 
  body {
@@ -38,6 +47,11 @@
  /* O Sidebar, Header e o Card principal devem ser brancos para contraste */
  .bg-custom-white {
      background-color: white !important;
+ }
+
+ .logo-title {
+     font-family: var(--font-title) !important;
+     font-size: 2.0rem !important;
  }
 
  /* O nav-link ativo usa a cor primária (Azul Neutro) */
