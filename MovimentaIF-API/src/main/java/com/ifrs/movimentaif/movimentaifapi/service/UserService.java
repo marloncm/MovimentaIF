@@ -91,7 +91,13 @@ public class UserService {
             existingUser.setSignedTermOfCommitment(user.isSignedTermOfCommitment() != existingUser.isSignedTermOfCommitment() ? user.isSignedTermOfCommitment() : existingUser.isSignedTermOfCommitment());
             existingUser.setInterviewed(user.isInterviewed() != existingUser.isInterviewed() ? user.isInterviewed() : existingUser.isInterviewed());
             existingUser.setDidFirstWorkout(user.isDidFirstWorkout() != existingUser.isDidFirstWorkout() ? user.isDidFirstWorkout() : existingUser.isDidFirstWorkout());
-
+            existingUser.setScheduledFirstWorkout(user.isScheduledFirstWorkout() != existingUser.isScheduledFirstWorkout() ? user.isScheduledFirstWorkout() : existingUser.isScheduledFirstWorkout());
+            existingUser.setFirstWorkoutDate(user.getFirstWorkoutDate() != null ? user.getFirstWorkoutDate() : existingUser.getFirstWorkoutDate());
+            existingUser.setInterviewDate(user.getInterviewDate() != null ? user.getInterviewDate() : existingUser.getInterviewDate());
+            existingUser.setUserObs(user.getUserObs() != null ? user.getUserObs() : existingUser.getUserObs());
+            existingUser.setParqId(user.getParqId() != null && !user.getParqId().isEmpty() ? user.getParqId() : existingUser.getParqId());
+            existingUser.setAnamneseId(user.getAnamneseId() != null && !user.getAnamneseId().isEmpty() ? user.getAnamneseId() : existingUser.getAnamneseId());
+            existingUser.setWorkoutChartId(user.getWorkoutChartId() != null && !user.getWorkoutChartId().isEmpty() ? user.getWorkoutChartId() : existingUser.getWorkoutChartId());
 
             saveUser(existingUser);
             return existingUser;
