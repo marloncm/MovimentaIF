@@ -47,13 +47,16 @@ class AnamneseActivity : AppCompatActivity() {
     }
 
     private fun initializeViews() {
-        checkBoxes["pergunta1"] = findViewById(R.id.cbPergunta1)
-        checkBoxes["pergunta2"] = findViewById(R.id.cbPergunta2)
-        checkBoxes["pergunta3"] = findViewById(R.id.cbPergunta3)
-        checkBoxes["pergunta4"] = findViewById(R.id.cbPergunta4)
-        checkBoxes["pergunta5"] = findViewById(R.id.cbPergunta5)
-        checkBoxes["pergunta6"] = findViewById(R.id.cbPergunta6)
-        checkBoxes["pergunta7"] = findViewById(R.id.cbPergunta7)
+        checkBoxes["q1"] = findViewById(R.id.cbPergunta1)
+        checkBoxes["q2"] = findViewById(R.id.cbPergunta2)
+        checkBoxes["q3"] = findViewById(R.id.cbPergunta3)
+        checkBoxes["q4"] = findViewById(R.id.cbPergunta4)
+        checkBoxes["q5"] = findViewById(R.id.cbPergunta5)
+        checkBoxes["q6"] = findViewById(R.id.cbPergunta6)
+        checkBoxes["q7"] = findViewById(R.id.cbPergunta7)
+        checkBoxes["q8"] = findViewById(R.id.cbPergunta8)
+        checkBoxes["q9"] = findViewById(R.id.cbPergunta9)
+        checkBoxes["q10"] = findViewById(R.id.cbPergunta10)
         
         btnSave = findViewById(R.id.btnSave)
         btnCancel = findViewById(R.id.btnCancel)
@@ -111,6 +114,24 @@ class AnamneseActivity : AppCompatActivity() {
                 }
 
                 if (response.isSuccessful) {
+                    val savedAnamnese = response.body()
+                    
+                    // Atualizar o usuário com o anamneseId
+                    savedAnamnese?.let { 
+                        try {
+                            val userResponse = RetrofitInstance.api.getUserById(currentUser.uid)
+                            if (userResponse.isSuccessful) {
+                                val user = userResponse.body()
+                                user?.let { u ->
+                                    u.anamneseId = it.anamneseId
+                                    RetrofitInstance.api.updateUser(currentUser.uid, u)
+                                }
+                            }
+                        } catch (e: Exception) {
+                            // Continua mesmo se falhar ao atualizar usuário
+                        }
+                    }
+                    
                     Toast.makeText(this@AnamneseActivity, "Anamnese salva com sucesso", Toast.LENGTH_SHORT).show()
                     finish()
                 } else {

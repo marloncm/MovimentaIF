@@ -5,4 +5,13 @@
 
     <color name="maisMovimentoPrimary">#F3991D</color>
     <color name="maisMovimentoSecondary">#DC3270</color>
+    
+    <!-- Default light theme colors -->
+    <color name="background_dark">#FFFFFF</color>
+    <color name="surface_dark">#FFFFFF</color>
+    <color name="card_dark">#FFFFFF</color>
+    <color name="text_primary_dark">#000000</color>
+    <color name="text_secondary_dark">#757575</color>
+    <color name="accent_dark">#F3991D</color>
+    <color name="error_dark">#B00020</color>
 </resources>

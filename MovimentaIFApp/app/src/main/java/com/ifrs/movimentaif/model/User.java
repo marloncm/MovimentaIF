@@ -14,8 +14,8 @@ public class User {
     private String role; //USER, ADMIN
     private Date createdAt;
     
-    @SerializedName("isActive")
-    private boolean isActive;
+    @SerializedName("active")
+    private boolean active;
     
     private String affiliationType; //STUDENT, PROFESSOR, STAFF TODO transformar em enum
     
@@ -28,8 +28,8 @@ public class User {
     @SerializedName("scheduledFirstWorkout")
     private boolean scheduledFirstWorkout;
     
-    @SerializedName("isAppUser")
-    private boolean isAppUser;
+    @SerializedName("appUser")
+    private boolean appUser;
     
     private Date firstWorkoutDate;
     
@@ -38,8 +38,8 @@ public class User {
     
     private String workoutChartId;
     
-    @SerializedName("isAdmin")
-    private Boolean isAdmin;
+    @SerializedName("admin")
+    private Boolean admin;
     
     private String parqId;
     private String anamneseId;
@@ -47,33 +47,33 @@ public class User {
     public User(){
         this.userId = UUID.randomUUID().toString();
         this.createdAt = new Date();
-        this.isActive = false;
+        this.active = false;
         this.interviewed = false;
         this.didFirstWorkout = false;
         this.scheduledFirstWorkout = false;
     }
 
-    public User(String name, String email, Boolean isAdmin){
+    public User(String name, String email, Boolean admin){
         this.userId = UUID.randomUUID().toString();
         this.userName = name;
         this.email = email;
         this.createdAt = new Date();
-        this.isActive = false;
+        this.active = false;
         this.interviewed = false;
         this.didFirstWorkout = false;
         this.scheduledFirstWorkout = false;
-        this.isAdmin = isAdmin;
+        this.admin = admin;
     }
 
     public User(String userId, String email){
         this.userId = userId;
         this.email = email;
         this.createdAt = new Date();
-        this.isActive = false;
+        this.active = false;
         this.interviewed = false;
         this.didFirstWorkout = false;
         this.scheduledFirstWorkout = false;
-        this.isAppUser = true;
+        this.appUser = true;
     }
 
     public String getUserId() {
@@ -133,11 +133,11 @@ public class User {
     }
 
     public boolean isActive() {
-        return isActive;
+        return active;
     }
 
     public void setActive(boolean active) {
-        this.isActive = active;
+        this.active = active;
     }
 
     public String getAffiliationType() {
@@ -173,11 +173,11 @@ public class User {
     }
 
     public boolean isAppUser() {
-        return isAppUser;
+        return appUser;
     }
 
     public void setAppUser(boolean appUser) {
-        isAppUser = appUser;
+        this.appUser = appUser;
     }
 
     public Date getFirstWorkoutDate() {
@@ -204,12 +204,12 @@ public class User {
         this.workoutChartId = workoutChartId;
     }
 
-    public Boolean getAdmin() {
-        return isAdmin;
+    public Boolean isAdmin() {
+        return admin;
     }
 
     public void setAdmin(Boolean admin) {
-        isAdmin = admin;
+        this.admin = admin;
     }
 
     public String getParqId() {

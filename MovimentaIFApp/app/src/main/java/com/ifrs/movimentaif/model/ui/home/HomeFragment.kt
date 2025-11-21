@@ -76,7 +76,7 @@ class HomeFragment : Fragment() {
                         val user = response.body()
                         user?.let {
                             binding.textUserStatus.visibility = android.view.View.VISIBLE
-                            if (it.active == true) {
+                            if (it.isActive == true) {
                                 binding.textUserStatus.text = "✓ Ativo"
                                 binding.textUserStatus.setTextColor(
                                     resources.getColor(android.R.color.holo_green_light, null)

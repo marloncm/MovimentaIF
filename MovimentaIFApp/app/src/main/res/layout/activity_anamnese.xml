@@ -33,49 +33,70 @@
             android:id="@+id/cbPergunta1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Você já praticou atividade física regularmente antes?"
+            android:text="Você possui ou teve alguma doença cardiovascular?"
             android:layout_marginBottom="12dp" />
 
         <CheckBox
             android:id="@+id/cbPergunta2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Você já sofreu alguma lesão ou machucado durante atividade física?"
+            android:text="Você possui diabetes?"
             android:layout_marginBottom="12dp" />
 
         <CheckBox
             android:id="@+id/cbPergunta3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Você fuma ou já fumou?"
+            android:text="Você possui ou teve alguma doença respiratória?"
             android:layout_marginBottom="12dp" />
 
         <CheckBox
             android:id="@+id/cbPergunta4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Você consome bebidas alcoólicas regularmente?"
+            android:text="Você possui hipertensão arterial?"
             android:layout_marginBottom="12dp" />
 
         <CheckBox
             android:id="@+id/cbPergunta5"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Há histórico de doenças cardíacas na sua família?"
+            android:text="Você possui ou teve alguma lesão muscular ou articular?"
             android:layout_marginBottom="12dp" />
 
         <CheckBox
             android:id="@+id/cbPergunta6"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Você está grávida ou amamentando?"
+            android:text="Você faz uso regular de medicamentos?"
             android:layout_marginBottom="12dp" />
 
         <CheckBox
             android:id="@+id/cbPergunta7"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Você possui alguma alergia relevante?"
+            android:text="Você já foi submetido a alguma cirurgia?"
+            android:layout_marginBottom="12dp" />
+
+        <CheckBox
+            android:id="@+id/cbPergunta8"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Você possui alergias conhecidas?"
+            android:layout_marginBottom="12dp" />
+
+        <CheckBox
+            android:id="@+id/cbPergunta9"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Você pratica atividade física regularmente?"
+            android:layout_marginBottom="12dp" />
+
+        <CheckBox
+            android:id="@+id/cbPergunta10"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Você fuma ou já fumou?"
             android:layout_marginBottom="24dp" />
 
         <ProgressBar

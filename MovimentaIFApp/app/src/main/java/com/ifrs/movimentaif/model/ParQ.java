@@ -29,13 +29,13 @@ public class ParQ {
     }
 
     private void inicializarPerguntas() {
-        respostas.put("pergunta1", false);
-        respostas.put("pergunta2", false);
-        respostas.put("pergunta3", false);
-        respostas.put("pergunta4", false);
-        respostas.put("pergunta5", false);
-        respostas.put("pergunta6", false);
-        respostas.put("pergunta7", false);
+        respostas.put("q1", false);
+        respostas.put("q2", false);
+        respostas.put("q3", false);
+        respostas.put("q4", false);
+        respostas.put("q5", false);
+        respostas.put("q6", false);
+        respostas.put("q7", false);
     }
 
     public static String[] getPerguntas() {
