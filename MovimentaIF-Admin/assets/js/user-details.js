@@ -125,8 +125,6 @@ async function saveUserStatus() {
         userObs: currentUserData.userObs
     };
 
-    console.log('Salvando status do usuário:', updatedData);
-
     try {
         // Requisição PUT para o endpoint de atualização
         const response = await getAuthTokenAndFetch(`${USERS_API_URL}/${currentUserId}`, {
@@ -174,7 +172,7 @@ toggleEditBtn.addEventListener('click', () => {
     }
 });
 
-// NOVO LISTENER: Cancelar Edição (desfaz as alterações visuais sem recarregar)
+//Cancelar Edição 
 cancelEditBtn.addEventListener('click', () => {
     if (isEditing) {
         isEditing = false;
@@ -248,15 +246,8 @@ function renderGeneralInfoContent(user, isEditingMode) {
 
     // Formatação da data de nascimento (Age) e a nova formatação de data/hora
     const ageDate = user.age ? new Date(user.age).toLocaleDateString('pt-BR') : 'N/A';
-    const firstWorkoutDate = formatDateTime(user.firstWorkoutDate);
-    const interviewDateFormatted = formatDateTime(user.interviewDate);
-
-    console.log('Datas do usuário:', {
-        firstWorkoutDate: user.firstWorkoutDate,
-        firstWorkoutDateFormatted: firstWorkoutDate,
-        interviewDate: user.interviewDate,
-        interviewDateFormatted: interviewDateFormatted
-    });
+    const firstWorkoutDate = user.firstWorkoutDate ? new Date(user.firstWorkoutDate).toLocaleDateString('pt-BR') : 'N/A';
+    const interviewDateFormatted = user.interviewDate ? new Date(user.interviewDate).toLocaleDateString('pt-BR') : 'N/A';
 
     return `
                 <div class="row">
@@ -449,6 +440,10 @@ document.getElementById('save-interview-btn').addEventListener('click', async ()
 
     // Converter datetime-local para Date usando horário local
     const dateTimeValue = dateInput.value; // formato: YYYY-MM-DDTHH:mm
+    const [datePart, timePart] = dateTimeValue.split('T');
+    const [year, month, day] = datePart.split('-');
+    const [hour, minute] = timePart.split(':');
+    const interviewDateTime = new Date(parseInt(year), parseInt(month) - 1, parseInt(day), parseInt(hour), parseInt(minute));
 
     try {
         const updatedData = {
@@ -466,7 +461,7 @@ document.getElementById('save-interview-btn').addEventListener('click', async ()
             scheduledFirstWorkout: true,
             appUser: Boolean(currentUserData.appUser),
             firstWorkoutDate: currentUserData.firstWorkoutDate,
-            interviewDate: dateTimeValue,
+            interviewDate: interviewDateTime.getTime(),
             signedTermOfCommitment: Boolean(currentUserData.signedTermOfCommitment),
             workoutChartId: currentUserData.workoutChartId,
             admin: currentUserData.admin,
@@ -474,8 +469,6 @@ document.getElementById('save-interview-btn').addEventListener('click', async ()
             anamneseId: currentUserData.anamneseId,
             userObs: currentUserData.userObs
         };
-
-        console.log('Enviando dados de entrevista:', updatedData);
 
         const response = await getAuthTokenAndFetch(`${USERS_API_URL}/${currentUserId}`, {
             method: 'PUT',
@@ -490,11 +483,6 @@ document.getElementById('save-interview-btn').addEventListener('click', async ()
 
         const updatedUser = await response.json();
         currentUserData = updatedUser;
-
-        console.log('Dados atualizados após salvar entrevista:', {
-            interviewDate: currentUserData.interviewDate,
-            firstWorkoutDate: currentUserData.firstWorkoutDate
-        });
 
         modalStatusMessage.textContent = 'Entrevista agendada com sucesso!';
         modalStatusMessage.classList.remove('d-none', 'alert-danger');
@@ -553,6 +541,10 @@ document.getElementById('save-workout-btn').addEventListener('click', async () =
 
     // Converter datetime-local para Date usando horário local
     const dateTimeValue = dateInput.value; // formato: YYYY-MM-DDTHH:mm
+    const [datePart, timePart] = dateTimeValue.split('T');
+    const [year, month, day] = datePart.split('-');
+    const [hour, minute] = timePart.split(':');
+    const workoutDateTime = new Date(parseInt(year), parseInt(month) - 1, parseInt(day), parseInt(hour), parseInt(minute));
 
     try {
         const updatedData = {
@@ -569,7 +561,7 @@ document.getElementById('save-workout-btn').addEventListener('click', async () =
             didFirstWorkout: Boolean(currentUserData.didFirstWorkout),
             scheduledFirstWorkout: true,
             appUser: Boolean(currentUserData.appUser),
-            firstWorkoutDate: dateTimeValue,
+            firstWorkoutDate: workoutDateTime.getTime(),
             interviewDate: currentUserData.interviewDate,
             signedTermOfCommitment: Boolean(currentUserData.signedTermOfCommitment),
             workoutChartId: currentUserData.workoutChartId,
@@ -578,8 +570,6 @@ document.getElementById('save-workout-btn').addEventListener('click', async () =
             anamneseId: currentUserData.anamneseId,
             userObs: currentUserData.userObs
         };
-
-        console.log('Enviando primeiro treino:', updatedData);
 
         const response = await getAuthTokenAndFetch(`${USERS_API_URL}/${currentUserId}`, {
             method: 'PUT',
@@ -594,11 +584,6 @@ document.getElementById('save-workout-btn').addEventListener('click', async () =
 
         const updatedUser = await response.json();
         currentUserData = updatedUser;
-
-        console.log('Dados atualizados após salvar primeiro treino:', {
-            interviewDate: currentUserData.interviewDate,
-            firstWorkoutDate: currentUserData.firstWorkoutDate
-        });
 
         modalStatusMessage.textContent = 'Primeiro treino agendado com sucesso!';
         modalStatusMessage.classList.remove('d-none', 'alert-danger');
@@ -647,8 +632,6 @@ async function saveUserObservations() {
     const textarea = document.getElementById('user-obs-textarea');
     const newObs = textarea.value.trim();
 
-    console.log('Iniciando salvamento de observações:', newObs);
-
     try {
         const updatedData = {
             userId: currentUserData.userId,
@@ -674,8 +657,6 @@ async function saveUserObservations() {
             userObs: newObs
         };
 
-        console.log('Enviando observações para API:', updatedData);
-
         const response = await getAuthTokenAndFetch(`${USERS_API_URL}/${currentUserId}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
@@ -684,14 +665,11 @@ async function saveUserObservations() {
 
         if (!response.ok) {
             const errorText = await response.text();
-            console.error('Erro na resposta da API:', errorText);
             throw new Error(`Falha ao salvar observações. ${errorText}`);
         }
 
         const updatedUser = await response.json();
         currentUserData = updatedUser;
-        
-        console.log('Observações salvas com sucesso. Dados atualizados:', currentUserData);
 
         // Atualiza a visualização
         document.getElementById('obs-display').textContent = newObs || 'Nenhuma observação registrada.';
@@ -702,7 +680,6 @@ async function saveUserObservations() {
         showMessage('Observações salvas com sucesso!', false);
 
     } catch (error) {
-        console.error('Erro ao salvar observações:', error);
         showMessage(`Erro ao salvar observações: ${error.message}`, true);
     }
 }
