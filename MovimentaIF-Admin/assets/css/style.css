@@ -1,6 +1,6 @@
   @font-face {
       font-family: 'Lumios Brush';
-      src: url('/assets/fonts/lumiosbrush_regular.otf') format('opentype');
+      src: url('../fonts/lumiosbrush_regular.otf') format('opentype');
       font-weight: normal;
       font-style: normal;
   }
