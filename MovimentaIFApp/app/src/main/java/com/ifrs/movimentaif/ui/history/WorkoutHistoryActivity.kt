@@ -77,15 +77,117 @@ class WorkoutHistoryActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             try {
-                // Buscar a ficha atual do usuário
-                val chartResponse = RetrofitInstance.api.getWorkoutChartByUserId(currentUser.uid)
+                // Primeiro tenta buscar WorkoutHistory
+                val workoutHistoryResponse = RetrofitInstance.api.getWorkoutHistoryByUserId(currentUser.uid)
                 
-                // Buscar completions para saber os dias realizados
-                val historyResponse = RetrofitInstance.api.getWorkoutCompletionsByUserId(currentUser.uid)
+                if (workoutHistoryResponse.isSuccessful && workoutHistoryResponse.body() != null) {
+                    // Se tem WorkoutHistory, processa ele
+                    processWorkoutHistory(workoutHistoryResponse.body()!!, currentUser.uid)
+                } else if (workoutHistoryResponse.code() == 404) {
+                    // Se não encontrar (404), usa fallback com ficha atual + completions
+                    Toast.makeText(this@WorkoutHistoryActivity, 
+                        "Carregando histórico da ficha atual...", 
+                        Toast.LENGTH_SHORT).show()
+                    loadHistoryFromCurrentChart(currentUser.uid)
+                } else {
+                    // Outro erro
+                    progressBar.visibility = View.GONE
+                    Toast.makeText(this@WorkoutHistoryActivity, 
+                        "Erro ao buscar histórico: ${workoutHistoryResponse.code()}", 
+                        Toast.LENGTH_SHORT).show()
+                }
+            } catch (e: Exception) {
+                progressBar.visibility = View.GONE
+                Log.e("WorkoutHistory", "Erro ao buscar histórico", e)
+                Toast.makeText(this@WorkoutHistoryActivity, 
+                    "Erro: ${e.message}", Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    private suspend fun processWorkoutHistory(
+        workoutHistory: com.ifrs.movimentaif.model.WorkoutHistory,
+        userId: String
+    ) {
+        val historyItems = mutableListOf<WorkoutHistoryItem>()
+        
+        // Itera sobre cada ficha arquivada
+        for (chart in workoutHistory.workoutCharts) {
+            // Processa cada dia da semana na ficha
+            val days = mapOf(
+                "monday" to chart.mondayWorkouts,
+                "tuesday" to chart.tuesdayWorkouts,
+                "wednesday" to chart.wednesdayWorkouts,
+                "thursday" to chart.thursdayWorkouts,
+                "friday" to chart.fridayWorkouts,
+                "saturday" to chart.saturdayWorkouts,
+                "sunday" to chart.sundayWorkouts
+            )
+            
+            for ((dayOfWeek, workoutIds) in days) {
+                if (workoutIds.isEmpty()) continue
                 
-                // Buscar estatísticas
-                val totalWorkoutsResponse = RetrofitInstance.api.getTotalWorkoutsCompleted(currentUser.uid)
-                val activeDaysResponse = RetrofitInstance.api.getActiveDaysCount(currentUser.uid)
+                val exercises = mutableListOf<ExerciseDetail>()
+                
+                for (workoutId in workoutIds) {
+                    try {
+                        val userWorkoutResponse = RetrofitInstance.api.getUserWorkoutById(workoutId)
+                        if (!userWorkoutResponse.isSuccessful) continue
+                        
+                        val userWorkout = userWorkoutResponse.body() ?: continue
+                        
+                        val workoutResponse = RetrofitInstance.api.getWorkoutById(userWorkout.workoutId)
+                        if (!workoutResponse.isSuccessful) continue
+                        
+                        val workout = workoutResponse.body() ?: continue
+                        
+                        exercises.add(
+                            ExerciseDetail(
+                                name = workout.workoutName,
+                                series = userWorkout.series,
+                                repetitions = userWorkout.repetitions,
+                                weight = userWorkout.weight
+                            )
+                        )
+                    } catch (e: Exception) {
+                        Log.e("WorkoutHistory", "Erro ao buscar exercício", e)
+                        continue
+                    }
+                }
+                
+                if (exercises.isNotEmpty()) {
+                    historyItems.add(
+                        WorkoutHistoryItem(
+                            date = chart.chartId, // Usando chartId como identificador
+                            dayOfWeek = translateDayOfWeek(dayOfWeek),
+                            exercises = exercises
+                        )
+                    )
+                }
+            }
+        }
+        
+        progressBar.visibility = View.GONE
+        
+        if (historyItems.isEmpty()) {
+            tvEmptyState.visibility = View.VISIBLE
+            recyclerView.visibility = View.GONE
+        } else {
+            tvEmptyState.visibility = View.GONE
+            recyclerView.visibility = View.VISIBLE
+            adapter.submitList(historyItems)
+        }
+        
+        // Buscar estatísticas
+        loadStatistics(userId)
+    }
+
+    private suspend fun loadHistoryFromCurrentChart(userId: String) {
+        // Buscar a ficha atual do usuário
+        val chartResponse = RetrofitInstance.api.getWorkoutChartByUserId(userId)
+        
+        // Buscar completions para saber os dias realizados
+        val historyResponse = RetrofitInstance.api.getWorkoutCompletionsByUserId(userId)
 
                 progressBar.visibility = View.GONE
 
@@ -106,15 +208,7 @@ class WorkoutHistoryActivity : AppCompatActivity() {
                     }
                     
                     // Atualizar estatísticas
-                    if (totalWorkoutsResponse.isSuccessful) {
-                        val total = totalWorkoutsResponse.body() ?: 0
-                        tvTotalWorkouts.text = "$total treinos concluídos"
-                    }
-                    
-                    if (activeDaysResponse.isSuccessful) {
-                        val activeDays = activeDaysResponse.body() ?: 0
-                        tvActiveDays.text = "$activeDays dias ativos"
-                    }
+                    loadStatistics(userId)
                 } else {
                     if (!chartResponse.isSuccessful) {
                         Log.e("WorkoutHistory", "Erro ao buscar ficha: ${chartResponse.code()}")
@@ -145,12 +239,24 @@ class WorkoutHistoryActivity : AppCompatActivity() {
                         tvEmptyState.visibility = View.VISIBLE
                     }
                 }
-            } catch (e: Exception) {
-                progressBar.visibility = View.GONE
-                Log.e("WorkoutHistory", "Erro ao buscar histórico", e)
-                Toast.makeText(this@WorkoutHistoryActivity, 
-                    "Erro: ${e.message}", Toast.LENGTH_LONG).show()
+    }
+
+    private suspend fun loadStatistics(userId: String) {
+        try {
+            val totalWorkoutsResponse = RetrofitInstance.api.getTotalWorkoutsCompleted(userId)
+            val activeDaysResponse = RetrofitInstance.api.getActiveDaysCount(userId)
+            
+            if (totalWorkoutsResponse.isSuccessful) {
+                val total = totalWorkoutsResponse.body() ?: 0
+                tvTotalWorkouts.text = "$total treinos concluídos"
             }
+            
+            if (activeDaysResponse.isSuccessful) {
+                val activeDays = activeDaysResponse.body() ?: 0
+                tvActiveDays.text = "$activeDays dias ativos"
+            }
+        } catch (e: Exception) {
+            Log.e("WorkoutHistory", "Erro ao buscar estatísticas", e)
         }
     }
 
