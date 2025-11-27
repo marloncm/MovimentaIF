@@ -13,3 +13,6 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+# Documentação técnica interna
+KOTLIN_IMPLEMENTATION_DETAILS.txt
