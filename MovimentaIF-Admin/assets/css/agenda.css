@@ -1,11 +1,11 @@
  @font-face {
-    font-family: 'Lumios Brush';
-    src: url('/MovimentaIF/assets/fonts/lumiosbrush_regular.otf') format('opentype');
-    font-weight: normal;
-    font-style: normal;
-}
+     font-family: 'Lumios Brush';
+     src: url('/MovimentaIF/assets/fonts/lumiosbrush_regular.otf') format('opentype');
+     font-weight: normal;
+     font-style: normal;
+ }
 
-:root {
+ :root {
      /* Cores Neutras (Base) */
      --bs-slate-700: #334155;
      --bs-slate-800: #1e293b;
@@ -23,7 +23,7 @@
 
      --bs-movif-orange: #ff5722;
      --bs-movif-raspberry: rgb(220, 50, 112);
-     
+
      --font-title: 'Lumios Brush';
  }
 

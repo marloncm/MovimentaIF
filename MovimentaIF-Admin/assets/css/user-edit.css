@@ -5,35 +5,35 @@
     font-style: normal;
 }
 
-        :root {
-            --bs-slate-700: #334155;
-            --bs-slate-800: #1e293b;
-            --color-light-bg: #f4f6f8;
-            --bs-primary: #4078c0;
-            --bs-secondary: #adb5bd;
-            --font-title: 'Lumios Brush';
-        }
+:root {
+    --bs-slate-700: #334155;
+    --bs-slate-800: #1e293b;
+    --color-light-bg: #f4f6f8;
+    --bs-primary: #4078c0;
+    --bs-secondary: #adb5bd;
+    --font-title: 'Lumios Brush';
+}
 
-        .logo-title {
-            font-family: var(--font-title) !important;
-            font-size: 2.0rem !important;
-        }
+.logo-title {
+    font-family: var(--font-title) !important;
+    font-size: 2.0rem !important;
+}
 
-        body {
-            background-color: var(--color-light-bg);
-            font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-        }
+body {
+    background-color: var(--color-light-bg);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
 
-        .bg-custom-white {
-            background-color: white !important;
-        }
+.bg-custom-white {
+    background-color: white !important;
+}
 
-        .nav-link.active {
-            background-color: var(--bs-primary) !important;
-            color: white !important;
-            font-weight: 600;
-        }
+.nav-link.active {
+    background-color: var(--bs-primary) !important;
+    color: white !important;
+    font-weight: 600;
+}
 
-        .form-check-label {
-            font-weight: 500;
-        }
+.form-check-label {
+    font-weight: 500;
+}
