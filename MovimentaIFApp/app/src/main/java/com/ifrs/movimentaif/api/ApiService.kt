@@ -33,6 +33,9 @@ interface ApiService {
     @GET("api/charts/user/{userId}")
     suspend fun getWorkoutChartByUserId(@Path("userId") userId: String): Response<WorkoutChart>
     
+    @GET("api/workout-history/user/{userId}")
+    suspend fun getWorkoutHistoryByUserId(@Path("userId") userId: String): Response<com.ifrs.movimentaif.model.WorkoutHistory>
+    
     @GET("api/workouts/{workoutId}")
     suspend fun getWorkoutById(@Path("workoutId") workoutId: String): Response<Workout>
     

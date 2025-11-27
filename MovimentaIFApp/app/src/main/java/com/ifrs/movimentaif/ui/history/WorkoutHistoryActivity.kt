@@ -77,8 +77,8 @@ class WorkoutHistoryActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             try {
-                // Buscar histórico de treinos
-                val historyResponse = RetrofitInstance.api.getWorkoutCompletionsByUserId(currentUser.uid)
+                // Buscar histórico completo do usuário
+                val historyResponse = RetrofitInstance.api.getWorkoutHistoryByUserId(currentUser.uid)
                 Log.d("WorkoutHistory", "History response: ${historyResponse.code()}")
                 
                 // Buscar estatísticas
@@ -88,20 +88,18 @@ class WorkoutHistoryActivity : AppCompatActivity() {
                 progressBar.visibility = View.GONE
 
                 if (historyResponse.isSuccessful) {
-                    val completions = historyResponse.body() ?: emptyList()
+                    val workoutHistory = historyResponse.body()
                     
-                    Log.d("WorkoutHistory", "Total completions: ${completions.size}")
-                    
-                    if (completions.isEmpty()) {
+                    if (workoutHistory == null || workoutHistory.workoutCharts.isEmpty()) {
                         tvEmptyState.visibility = View.VISIBLE
                         recyclerView.visibility = View.GONE
                     } else {
                         tvEmptyState.visibility = View.GONE
                         recyclerView.visibility = View.VISIBLE
                         
-                        // Agrupar por data e buscar detalhes dos exercícios do dia
-                        val groupedCompletions = groupCompletionsByDateWithExercises(currentUser.uid, completions)
-                        adapter.submitList(groupedCompletions)
+                        // Processar todas as fichas arquivadas
+                        val historyItems = processWorkoutCharts(workoutHistory.workoutCharts)
+                        adapter.submitList(historyItems)
                     }
                     
                     // Atualizar estatísticas
@@ -128,77 +126,68 @@ class WorkoutHistoryActivity : AppCompatActivity() {
         }
     }
 
-    private suspend fun groupCompletionsByDateWithExercises(
-        userId: String,
-        completions: List<DailyWorkoutCompletion>
-    ): List<WorkoutHistoryItem> {
+    private suspend fun processWorkoutCharts(charts: List<com.ifrs.movimentaif.model.WorkoutChart>): List<com.ifrs.movimentaif.ui.history.WorkoutHistoryItem> {
+        val historyItems = mutableListOf<com.ifrs.movimentaif.ui.history.WorkoutHistoryItem>()
         val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-        val grouped = completions
-            .sortedByDescending { it.completedDate }
-            .groupBy { 
-                Pair(dateFormat.format(it.completedDate), it.dayOfWeek)
-            }
         
-        return grouped.map { (dateDay, items) ->
-            val exercises = mutableListOf<ExerciseDetail>()
+        for (chart in charts.sortedByDescending { it.endDate ?: it.startDate }) {
+            val endDate = chart.endDate ?: chart.startDate ?: continue
+            val dateStr = dateFormat.format(endDate)
             
-            // Para cada dia, buscar os exercícios completados naquele dia
-            val dayOfWeek = dateDay.second
-            try {
-                // Buscar ficha de treino do usuário
-                val chartResponse = RetrofitInstance.api.getWorkoutChartByUserId(userId)
-                if (chartResponse.isSuccessful) {
-                    val chart = chartResponse.body()
-                    if (chart != null) {
-                        // Pegar os IDs dos exercícios do dia
-                        val workoutIds = when (dayOfWeek.lowercase()) {
-                            "monday" -> chart.mondayWorkouts
-                            "tuesday" -> chart.tuesdayWorkouts
-                            "wednesday" -> chart.wednesdayWorkouts
-                            "thursday" -> chart.thursdayWorkouts
-                            "friday" -> chart.fridayWorkouts
-                            else -> emptyList()
-                        }
-                        
-                        // Buscar detalhes de cada exercício
-                        for (userWorkoutId in workoutIds) {
-                            try {
-                                val userWorkoutResponse = RetrofitInstance.api.getUserWorkoutById(userWorkoutId)
-                                if (userWorkoutResponse.isSuccessful) {
-                                    val userWorkout = userWorkoutResponse.body()
-                                    if (userWorkout != null) {
-                                        val workoutResponse = RetrofitInstance.api.getWorkoutById(userWorkout.workoutId)
-                                        if (workoutResponse.isSuccessful) {
-                                            val workout = workoutResponse.body()
-                                            if (workout != null) {
-                                                exercises.add(
-                                                    ExerciseDetail(
-                                                        name = workout.workoutName,
-                                                        series = userWorkout.series,
-                                                        repetitions = userWorkout.repetitions,
-                                                        weight = userWorkout.weight
-                                                    )
+            // Processar cada dia da semana que tem exercícios
+            val daysMap = mapOf(
+                "monday" to chart.mondayWorkouts,
+                "tuesday" to chart.tuesdayWorkouts,
+                "wednesday" to chart.wednesdayWorkouts,
+                "thursday" to chart.thursdayWorkouts,
+                "friday" to chart.fridayWorkouts
+            )
+            
+            for ((dayKey, workoutIds) in daysMap) {
+                if (workoutIds.isNotEmpty()) {
+                    val exercises = mutableListOf<ExerciseDetail>()
+                    
+                    for (userWorkoutId in workoutIds) {
+                        try {
+                            val userWorkoutResponse = RetrofitInstance.api.getUserWorkoutById(userWorkoutId)
+                            if (userWorkoutResponse.isSuccessful) {
+                                val userWorkout = userWorkoutResponse.body()
+                                if (userWorkout != null) {
+                                    val workoutResponse = RetrofitInstance.api.getWorkoutById(userWorkout.workoutId)
+                                    if (workoutResponse.isSuccessful) {
+                                        val workout = workoutResponse.body()
+                                        if (workout != null) {
+                                            exercises.add(
+                                                ExerciseDetail(
+                                                    name = workout.workoutName,
+                                                    series = userWorkout.series,
+                                                    repetitions = userWorkout.repetitions,
+                                                    weight = userWorkout.weight
                                                 )
-                                            }
+                                            )
                                         }
                                     }
                                 }
-                            } catch (e: Exception) {
-                                Log.e("WorkoutHistory", "Erro ao buscar exercício $userWorkoutId", e)
                             }
+                        } catch (e: Exception) {
+                            Log.e("WorkoutHistory", "Erro ao buscar exercício", e)
                         }
                     }
+                    
+                    if (exercises.isNotEmpty()) {
+                        historyItems.add(
+                            com.ifrs.movimentaif.ui.history.WorkoutHistoryItem(
+                                date = dateStr,
+                                dayOfWeek = translateDayOfWeek(dayKey),
+                                exercises = exercises
+                            )
+                        )
+                    }
                 }
-            } catch (e: Exception) {
-                Log.e("WorkoutHistory", "Erro ao buscar ficha de treino", e)
             }
-            
-            WorkoutHistoryItem(
-                date = dateDay.first,
-                dayOfWeek = translateDayOfWeek(dayOfWeek),
-                exercises = exercises
-            )
         }
+        
+        return historyItems
     }
 
     private fun translateDayOfWeek(day: String): String {
