@@ -7,7 +7,7 @@ const addEditWorkoutModal = new bootstrap.Modal(document.getElementById('addEdit
 const modalTitle = document.getElementById('addEditWorkoutModalLabel');
 
 const WORKOUTS_API_URL = `${API_BASE_URL}/workouts`;
-let allWorkouts = []; // Variável para armazenar todos os treinos
+let allWorkouts = []; // Variável para armazenar todos os exercícios
 
 onAuthStateChanged(auth, user => {
     if (user) {
@@ -34,20 +34,20 @@ async function fetchWorkouts() {
     try {
         const response = await getAuthTokenAndFetch(WORKOUTS_API_URL);
         if (!response.ok) {
-            throw new Error('Erro ao buscar treinos.');
+            throw new Error('Erro ao buscar exercícios.');
         }
         const workouts = await response.json();
         allWorkouts = workouts; // Armazena todos os treinos
         renderWorkouts(allWorkouts);
     } catch (error) {
-        workoutsList.innerHTML = '<div class="alert alert-danger text-center mt-4" role="alert">Erro ao carregar treinos: ' + error.message + '</div>';
+        workoutsList.innerHTML = '<div class="alert alert-danger text-center mt-4" role="alert">Erro ao carregar exercícios: ' + error.message + '</div>';
     }
 }
 
 function renderWorkouts(workouts) {
     workoutsList.innerHTML = '';
     if (workouts.length === 0) {
-        workoutsList.innerHTML = '<div class="alert alert-info text-center mt-4" role="alert">Nenhum treino cadastrado.</div>';
+        workoutsList.innerHTML = '<div class="alert alert-info text-center mt-4" role="alert">Nenhum exercício cadastrado.</div>';
         return;
     }
     workouts.forEach(workout => {
@@ -99,7 +99,7 @@ workoutForm.addEventListener('submit', async (e) => {
 
         if (!response.ok) {
             const errorText = await response.text();
-            throw new Error(errorText || 'Erro ao salvar o treino.');
+            throw new Error(errorText || 'Erro ao salvar o exercício.');
         }
 
         await fetchWorkouts();
@@ -113,14 +113,14 @@ workoutForm.addEventListener('submit', async (e) => {
 workoutsList.addEventListener('click', async (e) => {
     const id = e.target.dataset.id;
     if (e.target.classList.contains('btn-outline-danger')) {
-        if (confirm('Tem certeza que deseja excluir este treino?')) {
+        if (confirm('Tem certeza que deseja excluir este exercício?')) {
             try {
                 const response = await getAuthTokenAndFetch(`${WORKOUTS_API_URL}/${id}`, {
                     method: 'DELETE',
                 });
                 if (!response.ok) {
                     const errorText = await response.text();
-                    throw new Error(errorText || 'Erro ao excluir o treino.');
+                    throw new Error(errorText || 'Erro ao excluir o exercício.');
                 }
                 await fetchWorkouts();
             } catch (error) {
@@ -134,7 +134,7 @@ workoutsList.addEventListener('click', async (e) => {
         document.getElementById('workoutName').value = workout.workoutName;
         document.getElementById('workoutDescription').value = workout.workoutDescription;
         document.getElementById('workoutVideoLink').value = workout.workoutVideoLink;
-        modalTitle.textContent = 'Editar Treino';
+        modalTitle.textContent = 'Editar Exercício';
     }
 });
 
@@ -142,7 +142,7 @@ document.getElementById('addEditWorkoutModal').addEventListener('show.bs.modal',
     const button = event.relatedTarget;
     const id = button ? button.getAttribute('data-id') : null;
     if (!id) {
-        modalTitle.textContent = 'Adicionar Novo Treino';
+        modalTitle.textContent = 'Adicionar Novo Exercício';
         document.getElementById('workoutForm').reset();
         document.getElementById('workoutId').value = '';
     }
