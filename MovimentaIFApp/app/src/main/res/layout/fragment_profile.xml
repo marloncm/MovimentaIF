@@ -68,7 +68,17 @@
                     android:layout_height="wrap_content"
                     android:text="Editar Perfil"
                     app:icon="@android:drawable/ic_menu_edit"
-                    app:iconGravity="start" />
+                    app:iconGravity="start"
+                    android:layout_marginBottom="8dp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnWorkoutHistory"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Histórico de Treinos"
+                    app:icon="@android:drawable/ic_menu_recent_history"
+                    app:iconGravity="start"
+                    style="@style/Widget.Material3.Button.OutlinedButton" />
 
             </LinearLayout>
 

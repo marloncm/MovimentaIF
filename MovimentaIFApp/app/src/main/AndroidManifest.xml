@@ -73,6 +73,11 @@
             android:exported="false"
             android:label="Anamnese"
             android:parentActivityName=".HomeActivity" />
+        <activity
+            android:name=".ui.history.WorkoutHistoryActivity"
+            android:exported="false"
+            android:label="Histórico de Treinos"
+            android:parentActivityName=".HomeActivity" />
     </application>
 
 </manifest>

@@ -27,6 +27,7 @@ class ProfileFragment : Fragment() {
     private lateinit var tvUserEmail: TextView
     private lateinit var tvUserStatus: TextView
     private lateinit var btnEditProfile: Button
+    private lateinit var btnWorkoutHistory: Button
     private lateinit var cardParQ: MaterialCardView
     private lateinit var cardAnamnese: MaterialCardView
     private lateinit var tvParQStatus: TextView
@@ -49,6 +50,7 @@ class ProfileFragment : Fragment() {
         tvUserEmail = view.findViewById(R.id.tvUserEmail)
         tvUserStatus = view.findViewById(R.id.tvUserStatus)
         btnEditProfile = view.findViewById(R.id.btnEditProfile)
+        btnWorkoutHistory = view.findViewById(R.id.btnWorkoutHistory)
         cardParQ = view.findViewById(R.id.cardParQ)
         cardAnamnese = view.findViewById(R.id.cardAnamnese)
         tvParQStatus = view.findViewById(R.id.tvParQStatus)
@@ -58,6 +60,11 @@ class ProfileFragment : Fragment() {
 
         btnEditProfile.setOnClickListenerWithSound {
             val intent = Intent(requireContext(), ProfileEditActivity::class.java)
+            startActivity(intent)
+        }
+
+        btnWorkoutHistory.setOnClickListenerWithSound {
+            val intent = Intent(requireContext(), com.ifrs.movimentaif.ui.history.WorkoutHistoryActivity::class.java)
             startActivity(intent)
         }
 
