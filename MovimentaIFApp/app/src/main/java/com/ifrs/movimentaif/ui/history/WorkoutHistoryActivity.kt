@@ -154,9 +154,18 @@ class WorkoutHistoryActivity : AppCompatActivity() {
                 }
                 
                 if (exercises.isNotEmpty()) {
+                    val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+                    val dateRange = if (chart.startDate != null && chart.endDate != null) {
+                        "${dateFormat.format(chart.startDate)} - ${dateFormat.format(chart.endDate)}"
+                    } else if (chart.startDate != null) {
+                        "A partir de ${dateFormat.format(chart.startDate)}"
+                    } else {
+                        "Sem data definida"
+                    }
+                    
                     historyItems.add(
                         WorkoutHistoryItem(
-                            date = chart.chartId, // Usando chartId como identificador
+                            date = dateRange,
                             dayOfWeek = translateDayOfWeek(dayOfWeek),
                             exercises = exercises
                         )
