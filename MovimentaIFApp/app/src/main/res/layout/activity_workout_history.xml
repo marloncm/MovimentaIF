@@ -63,7 +63,7 @@
             <View
                 android:layout_width="1dp"
                 android:layout_height="match_parent"
-                android:background="?android:attr/divider"
+                android:background="#E0E0E0"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp" />
 
