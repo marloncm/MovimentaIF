@@ -79,7 +79,10 @@ class WorkoutHistoryActivity : AppCompatActivity() {
             try {
                 // Buscar histórico de treinos e exercícios
                 val historyResponse = RetrofitInstance.api.getWorkoutCompletionsByUserId(currentUser.uid)
+                Log.d("WorkoutHistory", "History response: ${historyResponse.code()}")
+                
                 val exerciseResponse = RetrofitInstance.api.getExerciseCompletionsByUserId(currentUser.uid)
+                Log.d("WorkoutHistory", "Exercise response: ${exerciseResponse.code()}")
                 
                 // Buscar estatísticas
                 val totalWorkoutsResponse = RetrofitInstance.api.getTotalWorkoutsCompleted(currentUser.uid)
@@ -90,6 +93,8 @@ class WorkoutHistoryActivity : AppCompatActivity() {
                 if (historyResponse.isSuccessful && exerciseResponse.isSuccessful) {
                     val completions = historyResponse.body() ?: emptyList()
                     val exerciseCompletions = exerciseResponse.body() ?: emptyList()
+                    
+                    Log.d("WorkoutHistory", "Total completions: ${completions.size}, exercises: ${exerciseCompletions.size}")
                     
                     if (exerciseCompletions.isEmpty()) {
                         tvEmptyState.visibility = View.VISIBLE
@@ -114,14 +119,19 @@ class WorkoutHistoryActivity : AppCompatActivity() {
                         tvActiveDays.text = "$activeDays dias ativos"
                     }
                 } else {
-                    Toast.makeText(this@WorkoutHistoryActivity, 
-                        "Erro ao carregar histórico", Toast.LENGTH_SHORT).show()
+                    val errorMsg = if (!exerciseResponse.isSuccessful) {
+                        "Erro ao buscar exercícios: ${exerciseResponse.code()}"
+                    } else {
+                        "Erro ao buscar histórico: ${historyResponse.code()}"
+                    }
+                    Log.e("WorkoutHistory", errorMsg)
+                    Toast.makeText(this@WorkoutHistoryActivity, errorMsg, Toast.LENGTH_LONG).show()
                 }
             } catch (e: Exception) {
                 progressBar.visibility = View.GONE
                 Log.e("WorkoutHistory", "Erro ao buscar histórico", e)
                 Toast.makeText(this@WorkoutHistoryActivity, 
-                    "Erro: ${e.message}", Toast.LENGTH_SHORT).show()
+                    "Erro: ${e.message}", Toast.LENGTH_LONG).show()
             }
         }
     }
