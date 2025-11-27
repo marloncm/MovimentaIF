@@ -37,7 +37,7 @@ async function fetchWorkouts() {
             throw new Error('Erro ao buscar exercícios.');
         }
         const workouts = await response.json();
-        allWorkouts = workouts; // Armazena todos os treinos
+        allWorkouts = workouts;
         renderWorkouts(allWorkouts);
     } catch (error) {
         workoutsList.innerHTML = '<div class="alert alert-danger text-center mt-4" role="alert">Erro ao carregar exercícios: ' + error.message + '</div>';
