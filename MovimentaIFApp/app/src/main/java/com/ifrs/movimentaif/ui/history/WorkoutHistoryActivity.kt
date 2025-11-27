@@ -119,9 +119,7 @@ class WorkoutHistoryActivity : AppCompatActivity() {
                 "tuesday" to chart.tuesdayWorkouts,
                 "wednesday" to chart.wednesdayWorkouts,
                 "thursday" to chart.thursdayWorkouts,
-                "friday" to chart.fridayWorkouts,
-                "saturday" to chart.saturdayWorkouts,
-                "sunday" to chart.sundayWorkouts
+                "friday" to chart.fridayWorkouts
             )
             
             for ((dayOfWeek, workoutIds) in days) {
