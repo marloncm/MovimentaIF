@@ -158,7 +158,7 @@ class WorkoutHistoryActivity : AppCompatActivity() {
                     val dateRange = if (chart.startDate != null && chart.endDate != null) {
                         "${dateFormat.format(chart.startDate)} - ${dateFormat.format(chart.endDate)}"
                     } else if (chart.startDate != null) {
-                        "A partir de ${dateFormat.format(chart.startDate)}"
+                        "Realizado em ${dateFormat.format(chart.startDate)}"
                     } else {
                         "Sem data definida"
                     }
