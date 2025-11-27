@@ -107,9 +107,6 @@ interface ApiService {
     @GET("api/exercise-completions/user/{userId}/total")
     suspend fun getTotalExercisesCompleted(@Path("userId") userId: String): Response<Int>
     
-    @GET("api/exercise-completions/user/{userId}")
-    suspend fun getExerciseCompletionsByUserId(@Path("userId") userId: String): Response<List<ExerciseCompletion>>
-    
     // Academy Info endpoints
     @GET("api/academy-info")
     suspend fun getAcademyInfo(): Response<AcademyInfo>
