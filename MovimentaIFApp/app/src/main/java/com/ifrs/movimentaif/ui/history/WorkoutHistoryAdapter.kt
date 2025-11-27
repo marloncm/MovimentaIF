@@ -3,6 +3,7 @@ package com.ifrs.movimentaif.ui.history
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -14,7 +15,7 @@ class WorkoutHistoryAdapter : ListAdapter<WorkoutHistoryItem, WorkoutHistoryAdap
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val tvDate: TextView = view.findViewById(R.id.tvDate)
         val tvDayOfWeek: TextView = view.findViewById(R.id.tvDayOfWeek)
-        val tvCount: TextView = view.findViewById(R.id.tvCount)
+        val exercisesContainer: LinearLayout = view.findViewById(R.id.exercisesContainer)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -27,7 +28,27 @@ class WorkoutHistoryAdapter : ListAdapter<WorkoutHistoryItem, WorkoutHistoryAdap
         val item = getItem(position)
         holder.tvDate.text = item.date
         holder.tvDayOfWeek.text = item.dayOfWeek
-        holder.tvCount.text = "${item.count} treino${if (item.count > 1) "s" else ""} completo${if (item.count > 1) "s" else ""}"
+        
+        // Limpar container antes de adicionar novos exercícios
+        holder.exercisesContainer.removeAllViews()
+        
+        // Adicionar cada exercício
+        item.exercises.forEach { exercise ->
+            val exerciseView = LayoutInflater.from(holder.itemView.context)
+                .inflate(R.layout.item_exercise_detail, holder.exercisesContainer, false)
+            
+            val tvExerciseName = exerciseView.findViewById<TextView>(R.id.tvExerciseName)
+            val tvExerciseDetails = exerciseView.findViewById<TextView>(R.id.tvExerciseDetails)
+            
+            tvExerciseName.text = exercise.name
+            tvExerciseDetails.text = "${exercise.series} séries × ${exercise.repetitions} reps"
+            
+            if (exercise.weight > 0) {
+                tvExerciseDetails.text = "${tvExerciseDetails.text} - ${exercise.weight}kg"
+            }
+            
+            holder.exercisesContainer.addView(exerciseView)
+        }
     }
 
     class DiffCallback : DiffUtil.ItemCallback<WorkoutHistoryItem>() {

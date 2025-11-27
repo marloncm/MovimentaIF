@@ -16,6 +16,9 @@ import com.google.firebase.auth.FirebaseAuth
 import com.ifrs.movimentaif.R
 import com.ifrs.movimentaif.api.RetrofitInstance
 import com.ifrs.movimentaif.model.DailyWorkoutCompletion
+import com.ifrs.movimentaif.model.ExerciseCompletion
+import com.ifrs.movimentaif.model.UserWorkout
+import com.ifrs.movimentaif.model.Workout
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -74,8 +77,9 @@ class WorkoutHistoryActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             try {
-                // Buscar histórico de treinos
+                // Buscar histórico de treinos e exercícios
                 val historyResponse = RetrofitInstance.api.getWorkoutCompletionsByUserId(currentUser.uid)
+                val exerciseResponse = RetrofitInstance.api.getExerciseCompletionsByUserId(currentUser.uid)
                 
                 // Buscar estatísticas
                 val totalWorkoutsResponse = RetrofitInstance.api.getTotalWorkoutsCompleted(currentUser.uid)
@@ -83,18 +87,19 @@ class WorkoutHistoryActivity : AppCompatActivity() {
 
                 progressBar.visibility = View.GONE
 
-                if (historyResponse.isSuccessful) {
+                if (historyResponse.isSuccessful && exerciseResponse.isSuccessful) {
                     val completions = historyResponse.body() ?: emptyList()
+                    val exerciseCompletions = exerciseResponse.body() ?: emptyList()
                     
-                    if (completions.isEmpty()) {
+                    if (exerciseCompletions.isEmpty()) {
                         tvEmptyState.visibility = View.VISIBLE
                         recyclerView.visibility = View.GONE
                     } else {
                         tvEmptyState.visibility = View.GONE
                         recyclerView.visibility = View.VISIBLE
                         
-                        // Agrupar por data
-                        val groupedCompletions = groupCompletionsByDate(completions)
+                        // Agrupar por data e buscar detalhes dos exercícios
+                        val groupedCompletions = groupExerciseCompletionsByDate(exerciseCompletions)
                         adapter.submitList(groupedCompletions)
                     }
                     
@@ -121,17 +126,47 @@ class WorkoutHistoryActivity : AppCompatActivity() {
         }
     }
 
-    private fun groupCompletionsByDate(completions: List<DailyWorkoutCompletion>): List<WorkoutHistoryItem> {
+    private suspend fun groupExerciseCompletionsByDate(exerciseCompletions: List<ExerciseCompletion>): List<WorkoutHistoryItem> {
         val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-        val grouped = completions
+        val grouped = exerciseCompletions
             .sortedByDescending { it.completedDate }
             .groupBy { dateFormat.format(it.completedDate) }
         
         return grouped.map { (date, items) ->
+            val exercises = mutableListOf<ExerciseDetail>()
+            
+            // Buscar detalhes de cada exercício
+            for (completion in items) {
+                try {
+                    val userWorkoutResponse = RetrofitInstance.api.getUserWorkoutById(completion.userWorkoutId)
+                    if (userWorkoutResponse.isSuccessful) {
+                        val userWorkout = userWorkoutResponse.body()
+                        if (userWorkout != null) {
+                            val workoutResponse = RetrofitInstance.api.getWorkoutById(userWorkout.workoutId)
+                            if (workoutResponse.isSuccessful) {
+                                val workout = workoutResponse.body()
+                                if (workout != null) {
+                                    exercises.add(
+                                        ExerciseDetail(
+                                            name = workout.workoutName,
+                                            series = userWorkout.series,
+                                            repetitions = userWorkout.repetitions,
+                                            weight = userWorkout.weight
+                                        )
+                                    )
+                                }
+                            }
+                        }
+                    }
+                } catch (e: Exception) {
+                    Log.e("WorkoutHistory", "Erro ao buscar detalhes do exercício", e)
+                }
+            }
+            
             WorkoutHistoryItem(
                 date = date,
                 dayOfWeek = translateDayOfWeek(items.first().dayOfWeek),
-                count = items.size
+                exercises = exercises
             )
         }
     }
@@ -161,5 +196,12 @@ class WorkoutHistoryActivity : AppCompatActivity() {
 data class WorkoutHistoryItem(
     val date: String,
     val dayOfWeek: String,
-    val count: Int
+    val exercises: List<ExerciseDetail>
+)
+
+data class ExerciseDetail(
+    val name: String,
+    val series: Int,
+    val repetitions: Int,
+    val weight: Int
 )
