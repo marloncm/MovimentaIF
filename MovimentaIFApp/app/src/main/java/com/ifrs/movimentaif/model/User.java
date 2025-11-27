@@ -33,6 +33,8 @@ public class User {
     
     private Date firstWorkoutDate;
     
+    private Date interviewDate;
+    
     @SerializedName("signedTermOfCommitment")
     private boolean signedTermOfCommitment;
     
@@ -226,5 +228,13 @@ public class User {
 
     public void setAnamneseId(String anamneseId) {
         this.anamneseId = anamneseId;
+    }
+
+    public Date getInterviewDate() {
+        return interviewDate;
+    }
+
+    public void setInterviewDate(Date interviewDate) {
+        this.interviewDate = interviewDate;
     }
 }

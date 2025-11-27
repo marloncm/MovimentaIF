@@ -87,10 +87,38 @@ class HomeFragment : Fragment() {
                                     resources.getColor(android.R.color.holo_orange_light, null)
                                 )
                             }
+                            
+                            // Mostrar data de entrevista apenas se não foi entrevistado ainda
+                            if (!it.isInterviewed) {
+                                binding.textInterviewDate.visibility = android.view.View.VISIBLE
+                                val dateFormat = java.text.SimpleDateFormat("dd/MM/yyyy", java.util.Locale.getDefault())
+                                if (it.interviewDate != null) {
+                                    binding.textInterviewDate.text = "📋 Entrevista: ${dateFormat.format(it.interviewDate)}"
+                                } else {
+                                    binding.textInterviewDate.text = "📋 Entrevista: Aguardando agendamento"
+                                }
+                            } else {
+                                binding.textInterviewDate.visibility = android.view.View.GONE
+                            }
+                            
+                            // Mostrar data do primeiro treino apenas se não foi realizado ainda
+                            if (!it.isDidFirstWorkout) {
+                                binding.textFirstWorkoutDate.visibility = android.view.View.VISIBLE
+                                val dateFormat = java.text.SimpleDateFormat("dd/MM/yyyy", java.util.Locale.getDefault())
+                                if (it.firstWorkoutDate != null) {
+                                    binding.textFirstWorkoutDate.text = "💪 Primeiro treino: ${dateFormat.format(it.firstWorkoutDate)}"
+                                } else {
+                                    binding.textFirstWorkoutDate.text = "💪 Primeiro treino: Aguardando agendamento"
+                                }
+                            } else {
+                                binding.textFirstWorkoutDate.visibility = android.view.View.GONE
+                            }
                         }
                     }
                 } catch (e: Exception) {
                     binding.textUserStatus.visibility = android.view.View.GONE
+                    binding.textInterviewDate.visibility = android.view.View.GONE
+                    binding.textFirstWorkoutDate.visibility = android.view.View.GONE
                 }
             }
         }
