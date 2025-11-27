@@ -32,26 +32,32 @@ class WorkoutHistoryActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_workout_history)
+        try {
+            setContentView(R.layout.activity_workout_history)
 
-        auth = FirebaseAuth.getInstance()
+            auth = FirebaseAuth.getInstance()
 
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.title = "Histórico de Treinos"
+            val toolbar = findViewById<Toolbar>(R.id.toolbar)
+            setSupportActionBar(toolbar)
+            supportActionBar?.setDisplayHomeAsUpEnabled(true)
+            supportActionBar?.title = "Histórico de Treinos"
 
-        recyclerView = findViewById(R.id.recyclerViewHistory)
-        progressBar = findViewById(R.id.progressBar)
-        tvEmptyState = findViewById(R.id.tvEmptyState)
-        tvTotalWorkouts = findViewById(R.id.tvTotalWorkouts)
-        tvActiveDays = findViewById(R.id.tvActiveDays)
+            recyclerView = findViewById(R.id.recyclerViewHistory)
+            progressBar = findViewById(R.id.progressBar)
+            tvEmptyState = findViewById(R.id.tvEmptyState)
+            tvTotalWorkouts = findViewById(R.id.tvTotalWorkouts)
+            tvActiveDays = findViewById(R.id.tvActiveDays)
 
-        recyclerView.layoutManager = LinearLayoutManager(this)
-        adapter = WorkoutHistoryAdapter()
-        recyclerView.adapter = adapter
+            recyclerView.layoutManager = LinearLayoutManager(this)
+            adapter = WorkoutHistoryAdapter()
+            recyclerView.adapter = adapter
 
-        loadWorkoutHistory()
+            loadWorkoutHistory()
+        } catch (e: Exception) {
+            Log.e("WorkoutHistory", "Erro no onCreate", e)
+            Toast.makeText(this, "Erro ao inicializar: ${e.message}", Toast.LENGTH_LONG).show()
+            finish()
+        }
     }
 
     private fun loadWorkoutHistory() {
@@ -144,7 +150,7 @@ class WorkoutHistoryActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             android.R.id.home -> {
-                onBackPressed()
+                finish()
                 true
             }
             else -> super.onOptionsItemSelected(item)
