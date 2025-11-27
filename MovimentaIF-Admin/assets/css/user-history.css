@@ -6,6 +6,7 @@
 }
 
 :root {
+    --bs-slate-600: #475569;
     --bs-slate-700: #334155;
     --bs-slate-800: #1e293b;
     --color-light-bg: #f4f6f8;
@@ -39,7 +40,7 @@ body {
 }
 
 .nav-link {
-    color: var(--bs-slate-700) !important;
+    color: var(--bs-slate-800) !important;
     transition: background-color 0.15s, color 0.15s;
 }
 
